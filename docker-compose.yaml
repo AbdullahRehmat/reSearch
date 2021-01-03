@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  redis-api:
+    build: ./RedisAPI
+    ports:
+      - 6379:6379
+
+  global-api:
+    build: ./GlobalAPI
+    restart: always
+    ports:
+      - 5001:80
+    volumes:
+      - ./GlobalAPI:/usr/src/app
+    depends_on:
+      - redis
+
+  site:
+    build: ./Site
+    restart: always
+    ports:
+      - 5000:80
+    volumes:
+      - ./Site:/usr/src/app
+    depends_on:
+      - global-api

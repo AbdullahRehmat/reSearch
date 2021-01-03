@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+
+{% block head %} {% endblock %}
+
+
+{% block title %} index.html {% endblock %}
+
+
+{% block body %} 
+
+Hello, World! <br /> This is index.html 
+
+<form method="POST" action="/">
+    {{ form.csrf_token }}
+    {{ form.query.label }} {{ form.query() }}
+    <input type="submit" value="Go">
+</form>
+
+{% endblock %}
