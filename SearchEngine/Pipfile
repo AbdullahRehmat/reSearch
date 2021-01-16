@@ -4,8 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+redis = "*"
+rank-bm25 = "*"
 
 [dev-packages]
+autopep8 = "*"
 
 [requires]
 python_version = "3.8"

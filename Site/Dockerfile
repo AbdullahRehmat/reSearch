@@ -8,4 +8,4 @@ RUN pipenv lock --requirements > requirements.txt
 RUN pip install -r requirements.txt
 
 COPY . .
-CMD [ "python", "./site.py" ]
+CMD [ "python", "site.py" ]

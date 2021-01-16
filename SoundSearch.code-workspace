@@ -1,0 +1,29 @@
+{
+	"folders": [
+		{
+			"name": "RedisAPI",
+			"path": "RedisAPI"
+		},
+		{
+			"name": "GlobalAPI",
+			"path": "GlobalAPI"
+		},
+		{
+			"name": "ContentScraper",
+			"path": "ContentScraper"
+		},
+		{
+			"name": "SearchEngine",
+			"path": "SearchEngine"
+		},
+		{
+			"name": "Site",
+			"path": "Site"
+		},
+		{
+			"name": "SoundSearch",
+			"path": "."
+		}
+	],
+	"settings": {}
+}

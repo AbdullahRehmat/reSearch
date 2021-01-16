@@ -6,9 +6,8 @@ name = "pypi"
 [packages]
 flask = "*"
 flask-restful = "*"
-rank-bm25 = "*"
 redis = "*"
-rejson = "*"
+
 
 [dev-packages]
 autopep8 = "*"

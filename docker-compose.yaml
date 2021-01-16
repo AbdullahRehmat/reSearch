@@ -2,26 +2,54 @@ version: "3"
 
 services:
   redis-api:
+    hostname: redis-api
+    container_name: redisAPI
     build: ./RedisAPI
     ports:
       - 6379:6379
+    restart: unless-stopped
 
   global-api:
+    hostname: global-api
+    container_name: GlobalAPI
     build: ./GlobalAPI
-    restart: always
     ports:
       - 5001:80
     volumes:
       - ./GlobalAPI:/usr/src/app
+    restart: unless-stopped
     depends_on:
-      - redis
+      - redis-api
+
+  mongo-se:
+    image: mongo
+    hostname: mongo-se
+    container_name: MongoSE
+    ports:
+      - 27017:27017
+    volumes:
+      - ./MongoSE:/data/db
+    restart: unless-stopped
+
+
+  search-engine:
+    hostname: search-engine
+    container_name: SearchEngine
+    build: ./SearchEngine
+    restart: unless-stopped
+    depends_on:
+      - redis-api
+      - global-api
+      - mongo-se
 
   site:
+    hostname: site
+    container_name: Site
     build: ./Site
-    restart: always
     ports:
       - 5000:80
     volumes:
       - ./Site:/usr/src/app
+    restart: unless-stopped
     depends_on:
       - global-api

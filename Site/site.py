@@ -17,9 +17,8 @@ class searchEngineAPI():
     def postAPI(form):
         postQuery = form.query.data
         postQuery = postQuery.lower()
-        postIdentifier = "Query"
         api = post('http://global-api/query',
-                   data={"identifier": postIdentifier, "query": postQuery}).json()
+                   data={"query": postQuery}).json()
         return api
 
 
