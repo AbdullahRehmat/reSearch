@@ -1,0 +1,29 @@
+{
+	"folders": [
+		{
+			"path": "ContentScraper"
+		},
+		{
+			"path": "GlobalAPI"
+		},
+		{
+			"path": "MongoCS"
+		},
+		{
+			"path": "MongoSE"
+		},
+		{
+			"path": "RedisAPI"
+		},
+		{
+			"path": "SearchEngine"
+		},
+		{
+			"path": "Website"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {}
+}

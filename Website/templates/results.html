@@ -1,0 +1,14 @@
+{% extends "layout.html" %} {% block head %} {% endblock %} {% block title %}
+results.html {% endblock %} {% block body %}
+
+<section id="results-section">
+  <div id="results-heading">Results</div>
+
+  <div id="results-box">{{ searchResults }}</div>
+</section>
+
+<div id="theme-toggle">
+  <a onclick="toggleTheme()">D/L</a>
+</div>
+
+{% endblock %}

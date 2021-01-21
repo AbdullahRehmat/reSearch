@@ -1,0 +1,23 @@
+{% extends "layout.html" %} {% block head %} {% endblock %} {% block title %}
+index.html {% endblock %} {% block body %}
+
+<section id="home-search-section">
+  <div id="site-name">SoundSearch<span id="version">Pre-Alpha</span>  </div>
+
+  <div id="search-box">
+    <form method="POST" action="/">
+      {{ form.csrf_token }} {{ form.query(autocomplete="off") }}
+      <input type="submit" value="Go" id="submit-button" />
+    </form>
+  </div>
+</section>
+
+<div id="theme-toggle">
+  <a onclick="toggleTheme()">D/L</a>
+</div>
+
+<div id="notice">
+  A.Rehmat &copy; 2021
+</div>
+
+{% endblock %}
