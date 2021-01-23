@@ -11,7 +11,5 @@ COPY Pipfile* ./
 RUN pipenv lock --requirements > requirements.txt
 RUN pip install -r requirements.txt
 
-ENV PYTHONUNBUFFERED=1
-
 COPY . .
 CMD ["python", "engine.py", "-u"]

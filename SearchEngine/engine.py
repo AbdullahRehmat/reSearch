@@ -9,14 +9,13 @@ redis_port = 6379
 redis_password = "Password:)"
 
 mongo_host = "mongo-se"
-mongo_port = 27017
+mongo_port = 27018
 
 # Connect to Redis Streams
 r1 = redis.Redis(host=redis_host, port=redis_port,
                  password=redis_password, db=1, decode_responses=True)
 
 # Connect to MongoSE Database
-#mongodb = pymongo.MongoClient(host='mongodb://mongo-se:27017/')
 mongodb = pymongo.MongoClient(host='mongodb://' + mongo_host + ':' + str(mongo_port) + '/')
 db = mongodb["SearchEngineData"]
 

@@ -1,6 +1,7 @@
 FROM python:3.8-slim
 
 WORKDIR /usr/src/app
+
 RUN apt-get update \
     && apt-get install gcc -y \
     && apt-get clean
@@ -11,4 +12,4 @@ RUN pipenv lock --requirements > requirements.txt
 RUN pip install -r requirements.txt
 
 COPY . .
-CMD [ "python", "scraper.py" ]
+CMD [ "python3", "goSpider.py", "-u" ]
