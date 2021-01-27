@@ -26,7 +26,8 @@ class siteAPI_GP(Resource):
     def get(self):
         queries = r0.get('queryDB')
         return queries, 200
-        
+
+    
     # Adds new Query
     def post(self):
         parser = reqparse.RequestParser()

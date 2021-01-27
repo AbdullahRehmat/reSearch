@@ -50,16 +50,16 @@ services:
     ports:
       - 27018:27017
 
-  content-scraper:
-    hostname: content-scraper
-    container_name: ContentScraper
-    build: ./ContentScraper
-    volumes:
-      - ./ContentScraper:/usr/src/app
-    networks:
-      - backend
-    depends_on:
-      - mongo-cs
+#  content-scraper:
+#    hostname: content-scraper
+#    container_name: ContentScraper
+#    build: ./ContentScraper
+#    volumes:
+#      - ./ContentScraper:/usr/src/app
+#    networks:
+#      - backend
+#    depends_on:
+#      - mongo-cs
 
   search-engine:
     hostname: search-engine

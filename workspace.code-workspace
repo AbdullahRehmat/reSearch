@@ -31,6 +31,9 @@
 		{
 			"name": "SoundSearch",
 			"path": "."
+		},
+		{
+			"path": "Test"
 		}
 	],
 	"settings": {}

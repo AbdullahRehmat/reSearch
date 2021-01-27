@@ -12,4 +12,4 @@ RUN pipenv lock --requirements > requirements.txt
 RUN pip install -r requirements.txt
 
 COPY . .
-CMD ["python", "engine.py", "-u"]
+CMD ["python", "-u", "engine.py"]

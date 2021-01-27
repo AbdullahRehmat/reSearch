@@ -6,10 +6,10 @@ from data.items import DataItem
 class DataSpider(Spider):
     name = "data"
 
-    allowed_domains = ["aboutatheism.net"]
+    allowed_domains = ["www.shia.bs"]
 
     start_urls = [
-        "http://www.aboutatheism.net/archives/2018/12/index.cfm",
+        "http://www.shia.bs/archives/2011/09/",
     ]
 
     def parse(self, response):
