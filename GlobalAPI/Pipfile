@@ -8,6 +8,8 @@ flask = "*"
 flask-restful = "*"
 redis = "*"
 rejson = "*"
+pymongo = "*"
+requests = "*"
 
 [dev-packages]
 autopep8 = "*"

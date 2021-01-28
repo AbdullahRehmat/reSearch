@@ -13,17 +13,17 @@ app.config['SECRET_KEY'] = "Password:)"
 def randomword(length):
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for i in range(length))
-    
+
 
 class searchEngineAPI():
 
-    def getAPI(): # Get Results from Global API
+    def getAPI():  # Get Results from Global API
         api = get('http://global-api/query').json()
         return api
 
-    def postAPI(form): # Send Query to GlobalAPI
+    def postAPI(form):  # Send Query to GlobalAPI
         postQuery = form.query.data
-        postQuery = postQuery.lower()
+        postQuery = postQuery
         identifierString = randomword(10)
 
         api = post('http://global-api/query',

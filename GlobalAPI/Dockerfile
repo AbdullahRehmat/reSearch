@@ -11,4 +11,4 @@ RUN pipenv lock --requirements > requirements.txt
 RUN pip install -r requirements.txt
 
 COPY . .
-CMD [ "python", "api.py" ]
+CMD [ "python", "-u",  "api.py" ]

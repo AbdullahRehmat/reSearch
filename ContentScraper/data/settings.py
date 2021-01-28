@@ -17,7 +17,7 @@ ITEM_PIPELINES = {
 }
 
 MONGO_URI = 'mongodb://mongo-cs:27017/'
-MONGO_DATABASE = 'testDatabase'
+MONGO_DATABASE = 'scrapedDataDB'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent

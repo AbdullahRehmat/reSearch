@@ -4,7 +4,11 @@ results.html {% endblock %} {% block body %}
 <section id="results-section">
   <div id="results-heading">Results</div>
 
-  <div id="results-box">{{ searchResults }}</div>
+  <div id="results-box">
+    {% for i in searchResults %}
+      {{ i | safe}}
+    {% endfor %}
+  </div>
 </section>
 
 <div id="theme-toggle">

@@ -17,7 +17,7 @@ from itemadapter import ItemAdapter
 
 class MongoPipeline(object):
 
-    collection_name = 'testCollection'
+    collection_name = 'scrapedDataCol'
 
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = mongo_uri
@@ -43,6 +43,7 @@ class MongoPipeline(object):
 
     def process_item(self, item, spider):
         ## how to handle each post
+        self.db[self.collection_name].drop()
         self.db[self.collection_name].insert(dict(item))
         logging.debug("Post added to MongoDB")
         return item

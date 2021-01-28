@@ -1,7 +1,10 @@
 import json
 import redis
+import requests
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
+import pymongo
+import time
 
 app = Flask(__name__)
 api = Api(app)
@@ -10,7 +13,9 @@ redis_host = "redis-api"
 redis_port = 6379
 redis_password = "Password:)"
 
-
+mongo_host_1 = "mongo-se"
+mongo_port = 27017
+ 
 # Redis Database
 r0 = redis.Redis(host=redis_host, port=redis_port,
                  password=redis_password, db=0, decode_responses=True)
@@ -19,17 +24,29 @@ r0 = redis.Redis(host=redis_host, port=redis_port,
 r1 = redis.Redis(host=redis_host, port=redis_port,
                  password=redis_password, db=1, decode_responses=True)
 
+# Connect to MongoSE Database
+conn1 = pymongo.MongoClient(
+    host='mongodb://' + mongo_host_1 + ':' + str(mongo_port) + '/')
+db1 = conn1["SearchEngineData"]
+col1 = db1["htmlResults"]
+
+
+def get_mongoSE():
+    for i in col1.find({}, {"_id": 0}):
+        data = i["data"]
+        data = data[0]
+    return data
+
+
 
 class siteAPI_GP(Resource):
 
-    # Returns existing Queries
-    def get(self):
-        queries = r0.get('queryDB')
-        return queries, 200
+    def get(self):  # Send Results
+        time.sleep(2)
+        results = get_mongoSE() #col1.find_one({}, {"_id": 0})        
+        return results, 200
 
-    
-    # Adds new Query
-    def post(self):
+    def post(self):  # Reveive Query
         parser = reqparse.RequestParser()
         parser.add_argument('identifier', required=True)
         parser.add_argument('query', required=True)

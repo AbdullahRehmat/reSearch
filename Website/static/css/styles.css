@@ -49,6 +49,8 @@ body {
   right: 0;
   padding-right: 1.5%;
   padding-bottom: 1%;
+  font-size: 10px;
+  color: var(--fixed-grey);
 }
 
 #query {
@@ -73,21 +75,33 @@ body {
 }
 
 #results-section {
-  height: 100vh;
+  height: fit-content;
   margin: auto;
-  text-align: left;
-  padding-left: 3vw;
+  padding: 2em;
 }
 
 #results-heading {
   font-size: 35px;
-  padding-top: 5vh;
+  padding-top: 2vh;
   margin-bottom: 3vh;
   color: var(--general-color);
 }
 
 #results-box {
-  font-size: 15px;
+  margin: auto;
+}
+
+.searchResult {
+  font-size: 1em;
+  text-decoration: none;
+  color: var(--general-color);
+  margin-bottom: 0.5em;
+  display: block;
+}
+
+.searchResult:hover {
+  color: rgb(141, 10, 10);
+  text-decoration: underline;
 }
 
 #notice {
