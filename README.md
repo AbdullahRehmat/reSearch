@@ -1,6 +1,6 @@
-# Sound Search
+# reSearch
 
-Search Engine and Website Index Service
+Search Engine and Website Index Service intended for reseach purposes
 
 [toc]
 
