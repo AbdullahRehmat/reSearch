@@ -27,7 +27,7 @@ r1 = redis.Redis(host=redis_host, port=redis_port,
 # Connect to MongoSE Database
 conn1 = pymongo.MongoClient(
     host='mongodb://' + mongo_host_1 + ':' + str(mongo_port) + '/')
-db1 = conn1["SearchEngineData"]
+db1 = conn1["SearchEngineDB"]
 col1 = db1["htmlResults"]
 
 

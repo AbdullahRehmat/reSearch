@@ -88,7 +88,9 @@ body {
 }
 
 #results-box {
-  margin: auto;
+  width: 75%;
+  float: left;
+  padding-left: 1rem;
 }
 
 .searchResult {
@@ -100,7 +102,6 @@ body {
 }
 
 .searchResult:hover {
-  color: rgb(141, 10, 10);
   text-decoration: underline;
 }
 

@@ -5,9 +5,7 @@ results.html {% endblock %} {% block body %}
   <div id="results-heading">Results</div>
 
   <div id="results-box">
-    {% for i in searchResults %}
-      {{ i | safe}}
-    {% endfor %}
+    {% for i in searchResults %} {{ i | safe}} {% endfor %}
   </div>
 </section>
 

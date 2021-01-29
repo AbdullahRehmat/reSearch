@@ -23,7 +23,7 @@ class searchEngineAPI():
 
     def postAPI(form):  # Send Query to GlobalAPI
         postQuery = form.query.data
-        postQuery = postQuery
+        postQuery = postQuery.title()
         identifierString = randomword(10)
 
         api = post('http://global-api/query',
@@ -49,6 +49,7 @@ def index():
 
 @app.route("/results")
 def results():
+    form = MyForm()
     searchResults = searchEngineAPI.getAPI()
     return render_template('results.html', searchResults=searchResults)
 

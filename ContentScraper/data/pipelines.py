@@ -17,7 +17,7 @@ from itemadapter import ItemAdapter
 
 class MongoPipeline(object):
 
-    collection_name = 'scrapedDataCol'
+    collection_name = 'ScrapedDataS1'
 
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = mongo_uri
@@ -36,6 +36,7 @@ class MongoPipeline(object):
         ## opening db connection
         self.client = pymongo.MongoClient(self.mongo_uri)
         self.db = self.client[self.mongo_db]
+        self.db[self.collection_name].drop()
 
     def close_spider(self, spider):
         ## clean up when spider is closed
@@ -43,7 +44,6 @@ class MongoPipeline(object):
 
     def process_item(self, item, spider):
         ## how to handle each post
-        self.db[self.collection_name].drop()
         self.db[self.collection_name].insert(dict(item))
         logging.debug("Post added to MongoDB")
         return item

@@ -1,7 +1,7 @@
 import redis
 import json
 import pymongo
-from rank_bm25 import BM25Plus
+from rank_bm25 import BM25Plus, BM25L
 
 # Environment Variables
 redis_host = "redis-api"
@@ -19,15 +19,14 @@ r1 = redis.Redis(host=redis_host, port=redis_port,
 # Connect to MongoSE Database
 conn1 = pymongo.MongoClient(
     host='mongodb://' + mongo_host_1 + ':' + str(mongo_port) + '/')
-db1 = conn1["SearchEngineData"]
+db1 = conn1["SearchEngineDB"]
 col1 = db1["htmlResults"]
 
 # Connect to MongoCS Database
 conn2 = pymongo.MongoClient(
     host='mongodb://' + mongo_host_2 + ':' + str(mongo_port) + '/')
-db2 = conn2["scrapedDataDB"]
-col2 = db2["scrapedDataCol"]
-
+db2 = conn2["ContentScraperDB"]
+col2 = db2["ScrapedDataS1"]
 
 # Redis Streams
 while True:
@@ -53,7 +52,7 @@ while True:
         # BM25 Config
         tokenized_query = query.split(" ")
         tokenized_corpus = [doc.split(" ") for doc in corpus]
-        bm25 = BM25Plus(tokenized_corpus)
+        bm25 = BM25L(tokenized_corpus)
 
         # Return 10 most relavent Titles [n=10]
         rankedResults = bm25.get_top_n(tokenized_query, corpus, n=15)
@@ -86,4 +85,5 @@ while True:
     col1.insert_one(responseDict)
 
     # Return Results via Redis StreamB to GlobalAPI
-    r1.xadd('streamB', {"identifier": streamIdentifier , "results": "Add Dict Here"})
+    r1.xadd('streamB', {"identifier": streamIdentifier,
+                        "results": "Add Dict Here"})
