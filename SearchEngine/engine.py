@@ -82,8 +82,16 @@ while True:
             responseList += [htmlResponse]
             responseDict["data"] = [responseList]
 
+            test = json.dumps(responseList)
+            testDict = {}
+            testDict["test"] = test
+
     col1.insert_one(responseDict)
 
     # Return Results via Redis StreamB to GlobalAPI
-    r1.xadd('streamB', {"identifier": streamIdentifier,
-                        "results": "Add Dict Here"})
+    r1.xadd('streamB', fields=testDict)
+    while True:
+        fromStreamB = r1.xread({'streamB': 'data'})
+
+        if fromStreamB != {}:
+            print(fromStreamB)

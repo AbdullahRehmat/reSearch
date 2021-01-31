@@ -15,7 +15,7 @@ redis_password = "Password:)"
 
 mongo_host_1 = "mongo-se"
 mongo_port = 27017
- 
+
 # Redis Database
 r0 = redis.Redis(host=redis_host, port=redis_port,
                  password=redis_password, db=0, decode_responses=True)
@@ -38,12 +38,16 @@ def get_mongoSE():
     return data
 
 
+def get_StreamB():
+    fromStreamB = r1.xread('streamB')
+    return fromStreamB
+
 
 class siteAPI_GP(Resource):
 
     def get(self):  # Send Results
         time.sleep(2)
-        results = get_mongoSE() #col1.find_one({}, {"_id": 0})        
+        results = get_mongoSE()
         return results, 200
 
     def post(self):  # Reveive Query
