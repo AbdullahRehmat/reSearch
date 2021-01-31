@@ -30,24 +30,36 @@ conn1 = pymongo.MongoClient(
 db1 = conn1["SearchEngineDB"]
 col1 = db1["htmlResults"]
 
-
+"""
 def get_mongoSE():
     for i in col1.find({}, {"_id": 0}):
         data = i["data"]
         data = data[0]
     return data
+"""
+
+def find_MongoSE(identifier):
+    for i in col1.find({}, {"_id": 0}):
+        data = i[identifier]
+        data = data[0]
+    return data
 
 
-def get_StreamB():
-    fromStreamB = r1.xread('streamB')
-    return fromStreamB
-
-
-class siteAPI_GP(Resource):
+class siteAPI(Resource):
 
     def get(self):  # Send Results
-        time.sleep(2)
-        results = get_mongoSE()
+        parser = reqparse.RequestParser()
+        parser.add_argument('identifier', required=True)
+        args = parser.parse_args()
+
+        # Parse Identifier from args
+        identifier = args.get('identifier')
+
+        # Get Results from MongoSe
+        time.sleep(0.07)
+        results = find_MongoSE(identifier=identifier)
+
+        # Return Results
         return results, 200
 
     def post(self):  # Reveive Query
@@ -63,11 +75,23 @@ class siteAPI_GP(Resource):
         r1.xadd('streamA', fields=args)
 
         # Return Data to Site
+        return {'data': args}, 202
+
+
+class testAPI(Resource):
+
+    def post(self):  # Reveive Query
+        parser = reqparse.RequestParser()
+        parser.add_argument('identifier', required=True)
+        args = parser.parse_args()
+
+        # Return Data to Site
         return {'data': args}, 201
 
 
 # Create routes
-api.add_resource(siteAPI_GP, "/query")
+api.add_resource(siteAPI, "/query")
+api.add_resource(testAPI, "/test")
 
 
 # Run the application

@@ -5,11 +5,11 @@ name = "pypi"
 
 [packages]
 flask = "*"
-autopep8 = "*"
 requests = "*"
 flask-wtf = "*"
 
 [dev-packages]
+autopep8 = "*"
 
 [requires]
 python_version = "3.8"

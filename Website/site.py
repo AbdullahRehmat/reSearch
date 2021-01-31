@@ -4,7 +4,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField
 from requests import put, post, get
 from wtforms.validators import DataRequired
-from flask import Flask, render_template, redirect, url_for, jsonify
+from flask import Flask, render_template, redirect, url_for, jsonify, session
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "Password:)"
@@ -18,17 +18,24 @@ def randomword(length):
 class searchEngineAPI():
 
     def getAPI():  # Get Results from Global API
-        api = get('http://global-api/query').json()
-        return api
+        if 'identifier' in session:
+            identifier = session['identifier']
+            api = get('http://global-api/query',
+                      data={"identifier": identifier}).json()
+
+            return api
+        else:
+            return "No Identifier was found...", 400
 
     def postAPI(form):  # Send Query to GlobalAPI
         postQuery = form.query.data
         postQuery = postQuery.title()
-        identifierString = randomword(10)
+        identifier = randomword(10)
+
+        session['identifier'] = identifier
 
         api = post('http://global-api/query',
-                   data={"identifier": identifierString, "query": postQuery}).json()
-
+                   data={"identifier": identifier, "query": postQuery}).json()
         return api
 
 
@@ -49,7 +56,6 @@ def index():
 
 @app.route("/results")
 def results():
-    form = MyForm()
     searchResults = searchEngineAPI.getAPI()
     return render_template('results.html', searchResults=searchResults)
 

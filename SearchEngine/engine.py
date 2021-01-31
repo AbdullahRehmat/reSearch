@@ -34,12 +34,13 @@ while True:
 
     if fromStreamA != {}:
         # Delete Previously Ranked Data
-        db1["htmlResults"].drop()
 
         # Get Query from StreamA as String
         streamContent = fromStreamA[0][1][0][1]
         streamQuery = streamContent["query"]
         streamIdentifier = streamContent["identifier"]
+
+        #db1["htmlResults"].drop()
 
         # Get Titles from DB + Copy to Corpus
         corpus = []
@@ -80,18 +81,15 @@ while True:
             # Add Response to List
             # Add List to Dict
             responseList += [htmlResponse]
-            responseDict["data"] = [responseList]
+            #responseDict["data"] = [responseList]
+            responseDict[streamIdentifier] = [responseList]
 
+            """
             test = json.dumps(responseList)
             testDict = {}
             testDict["test"] = test
-
+            """
     col1.insert_one(responseDict)
 
     # Return Results via Redis StreamB to GlobalAPI
-    r1.xadd('streamB', fields=testDict)
-    while True:
-        fromStreamB = r1.xread({'streamB': 'data'})
-
-        if fromStreamB != {}:
-            print(fromStreamB)
+    #r1.xadd('streamB', fields=testDict)

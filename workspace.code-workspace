@@ -25,12 +25,12 @@
 			"path": "SearchEngine"
 		},
 		{
-			"name": "Test",
-			"path": "Test"
-		},
-		{
 			"name": "Website",
 			"path": "Website"
+		},
+		{
+			"name": "Test",
+			"path": "Test"
 		},
 		{
 			"name": "reSearch",
