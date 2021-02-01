@@ -72,7 +72,7 @@ class siteAPI(Resource):
 
 
 # Create routes
-api.add_resource(siteAPI, "/query")
+api.add_resource(siteAPI, "/api")
 
 
 # Run the application

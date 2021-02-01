@@ -1,7 +1,7 @@
 import redis
 import json
 import pymongo
-from rank_bm25 import BM25Plus, BM25L
+from rank_bm25 import BM25Plus
 
 # Environment Variables
 redis_host = "redis-api"
@@ -53,7 +53,7 @@ while True:
         # BM25 Config
         tokenized_query = query.split(" ")
         tokenized_corpus = [doc.split(" ") for doc in corpus]
-        bm25 = BM25L(tokenized_corpus)
+        bm25 = BM25Plus(tokenized_corpus)
 
         # Return 10 most relavent Titles [n=10]
         rankedResults = bm25.get_top_n(tokenized_query, corpus, n=15)

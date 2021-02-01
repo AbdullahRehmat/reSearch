@@ -20,7 +20,7 @@ class searchEngineAPI():
     def getAPI():  # Get Results from Global API
         if 'identifier' in session:
             identifier = session['identifier']
-            api = get('http://global-api/query',
+            api = get('http://global-api/api',
                       data={"identifier": identifier}).json()
 
             return api
@@ -33,8 +33,9 @@ class searchEngineAPI():
         identifier = randomword(10)
 
         session['identifier'] = identifier
+        session['query'] = postQuery
 
-        api = post('http://global-api/query',
+        api = post('http://global-api/api',
                    data={"identifier": identifier, "query": postQuery}).json()
         return api
 
@@ -56,8 +57,9 @@ def index():
 
 @app.route("/results")
 def results():
+    query = session['query']
     searchResults = searchEngineAPI.getAPI()
-    return render_template('results.html', searchResults=searchResults)
+    return render_template('results.html', searchResults=searchResults, query=query)
 
 
 if __name__ == "__main__":
