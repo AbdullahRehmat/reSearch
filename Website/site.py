@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = "Password:)"
 
 
-def randomword(length):
+def randomword(length):  # Generate Random String
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for i in range(length))
 
@@ -25,7 +25,7 @@ class searchEngineAPI():
 
             return api
         else:
-            return "No Identifier was found...", 400
+            return "No Identifier was found... \n", 400
 
     def postAPI(form):  # Send Query to GlobalAPI
         postQuery = form.query.data
