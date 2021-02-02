@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Lato&family=Roboto&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script type=text/javascript src="{{
       url_for('static', filename='js/main.js') }}"></script>
 
@@ -18,7 +18,9 @@
     {% block body %} {% endblock %}
 
     <div id="theme-toggle">
-      <a onclick="toggleTheme()">D/L</a>
+      <a onclick="toggleTheme()">
+        <i class="fa fa-moon-o"></i>
+      </a>
     </div>
     
   </body>

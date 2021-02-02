@@ -41,7 +41,7 @@ class searchEngineAPI():
 
 
 class MyForm(FlaskForm):
-    query = StringField('Search', validators=[DataRequired()])
+    query = StringField('Search', validators=[DataRequired()], render_kw={"placeholder": "Search..."})
 
 
 @app.route('/', methods=('GET', 'POST'))
