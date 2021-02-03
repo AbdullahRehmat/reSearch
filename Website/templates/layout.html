@@ -3,30 +3,49 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Lato&family=Roboto&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script type=text/javascript src="{{
-      url_for('static', filename='js/main.js') }}"></script>
+
+    <!-- External Dependencies -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato&family=Roboto&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+
+    <!-- Internal Dependencies -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+    <script
+      type="text/javascript"
+      src="{{url_for('static', filename='js/main.js') }}"
+    ></script>
 
     {% block head %} {% endblock %}
     <title>{% block title %} {% endblock %}</title>
   </head>
   <body>
-    {% block body %} {% endblock %}
-
-    <div id="theme-toggle">
-      <a onclick="toggleTheme()">
-        <i class="fa fa-moon-o"></i>
-      </a>
+    <div id="page-container">
+      <div id="content-wrap">{% block body %} {% endblock %}</div>
+      <footer id="footer-index">
+        <div id="theme-toggle">
+          <a onclick="toggleTheme()">
+            <i class="fa fa-moon-o"></i>
+          </a>
+        </div>
+        <div class="item-container">
+          <div class="footer-item">
+            <p>A.Rehmat &copy; 2021</p>
+          </div>
+          <div class="footer-item">
+            <p>reSearch</p>
+          </div>
+        </div>
+      </footer>
     </div>
-    
   </body>
-
-  <footer id="footer-index" >
-    <div id="notice">A.Rehmat &copy; 2021</div>
-  </footer>
-
 </html>

@@ -37,11 +37,13 @@ class searchEngineAPI():
 
         api = post('http://global-api/api',
                    data={"identifier": identifier, "query": postQuery}).json()
+
         return api
 
 
 class MyForm(FlaskForm):
-    query = StringField('Search', validators=[DataRequired()], render_kw={"placeholder": "Search..."})
+    query = StringField('Search', validators=[DataRequired()], render_kw={
+                        "placeholder": "Search..."})
 
 
 @app.route('/', methods=('GET', 'POST'))
