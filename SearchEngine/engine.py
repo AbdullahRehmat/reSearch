@@ -84,13 +84,12 @@ while True:
             #responseDict["data"] = [responseList]
             responseDict[streamIdentifier] = [responseList]
 
-            """
             # Add to Redis StreamB
             test = json.dumps(responseList)
             testDict = {}
             testDict["test"] = test
-            """
+
     col1.insert_one(responseDict)
 
     # Return Results via Redis StreamB to GlobalAPI
-    #r1.xadd('streamB', fields=testDict)
+    r1.xadd('streamB', fields=testDict)

@@ -8,7 +8,7 @@ html {
   --grey-one: #9e9e9e;
   --grey-two: #e0e0e0;
   --fixed-white: #ffffff;
-  --accent-color: #ffc400;
+  --accent-color: #FFB400;
   --primary-text-color: #212121;
   --background-color: #ffffff;
 }
@@ -17,7 +17,7 @@ html {
   --grey-one: #9e9e9e;
   --grey-two: #141414;
   --fixed-white: #ffffff;
-  --accent-color: #ffc400;
+  --accent-color: #FFC107;
   --primary-text-color: #ffffff;
   --background-color: #212121;
 }
@@ -105,12 +105,14 @@ body {
 }
 
 .searchResult:hover {
-  transform: scale(1.05);
-  transform-origin: top left;
-  -o-transform: scale(1.05);
-  -ms-transform: scale(1.05);
-  -moz-transform: scale(1.05);
-  -webkit-transform: scale(1.05);
+  transition: 0.5s;
+  transform: scale(1.07);
+  transform-origin: left;
+  -o-transform: scale(1.07);
+  -ms-transform: scale(1.07);
+  -moz-transform: scale(1.07);
+  -webkit-transform: scale(1.07);
+  color: var(--accent-color);
   background-color: var(--fixed-grey);
 }
 
@@ -118,19 +120,19 @@ body {
   position: fixed;
   top: 0;
   right: 0;
-  padding-right: 1%;
-  padding-top: 1%;
+  padding-right: 1.3%;
+  padding-top: 1.3%;
   font-size: 22px;
   color: var(--grey-one);
 }
 
 #theme-toggle:hover {
-  color: var(--accent-color);
   transition: 0.15s;
   -o-transition: 0.15s;
   -ms-transition: 0.15s;
   -moz-transition: 0.15s;
   -webkit-transition: 0.15s;
+  color: var(--accent-color);
 }
 
 footer {
@@ -154,7 +156,7 @@ footer {
 }
 
 .footer-item {
-  font-size: 10px;
+  font-size: 11px;
   min-width: 20px;
   padding-right: 1em;
   padding-left: 1em;
