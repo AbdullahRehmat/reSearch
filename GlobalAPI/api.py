@@ -37,7 +37,7 @@ def find_MongoSE(identifier):
         return data
 
 
-class siteAPI(Resource):
+class queryAPI(Resource):
 
     def get(self):  # Send Results
         parser = reqparse.RequestParser()
@@ -68,10 +68,16 @@ class siteAPI(Resource):
 
         # Return Data to Site
         return {'data': args}, 202
+   
+class matrix(Resource):
 
+    def get(self):
+        queryCount = col1.estimated_document_count()
+        return queryCount, 200
 
 # Create routes
-api.add_resource(siteAPI, "/api")
+api.add_resource(queryAPI, "/api")
+api.add_resource(matrix, "/matrix")
 
 
 # Run the application

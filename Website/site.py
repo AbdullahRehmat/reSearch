@@ -45,6 +45,14 @@ class MyForm(FlaskForm):
     query = StringField('Search', validators=[DataRequired()], render_kw={
                         "placeholder": "Search..."})
 
+class matrix():
+
+    def getMatrix():
+        api = get('http://global-api/matrix')
+
+        return api
+
+
 
 @app.route('/', methods=('GET', 'POST'))
 def index():
@@ -55,19 +63,22 @@ def index():
         return redirect(url_for('results'))
 
     return render_template('index.html', form=form)
-
-
+ 
+ 
 @app.route("/results")
 def results():
     query = session['query']
     searchResults = searchEngineAPI.getAPI()
 
     return render_template('results.html', searchResults=searchResults, query=query)
-
+ 
 
 @app.route("/admin")
 def admin():
-    return render_template('admin.html')
+    queryCount = matrix.getMatrix()
+    queryCount=queryCount.text
+
+    return render_template('admin.html', queryCount=queryCount)
 
 
 @app.errorhandler(404)
