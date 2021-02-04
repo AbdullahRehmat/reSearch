@@ -8,24 +8,24 @@ html {
   --primary-text-color: #212121;
   --background-color: #ffffff;
   --accent-color: #ffb400;
-  --theme-toggle-color: #9e9e9e;
-  --query-border-color: #9e9e9e;
-  --page-heading-color: #e0e0e0;
-  --admin-item-color: #e0e0e0;
-  --footer-item-color: #9e9e9e;
-  --footer-color: #e0e0e0;
+  --theme-toggle-color: #595959;
+  --query-border-color: #595959;
+  --page-heading-color: #dadce0;
+  --admin-item-color: #dadce0;
+  --footer-item-color: #595959;
+  --footer-color: #dadce0;
 }
 
 .theme-dark {
   --primary-text-color: #ffffff;
-  --background-color: #212121;
+  --background-color: #121212;
   --accent-color: #ffc107;
   --theme-toggle-color: #9e9e9e;
   --query-border-color: #9e9e9e;
-  --page-heading-color: #121212;
-  --admin-item-color: #121212;
+  --page-heading-color: #1e1e1e;
+  --admin-item-color: #1e1e1e;
   --footer-item-color: #9e9e9e;
-  --footer-color: #121212;
+  --footer-color: #1e1e1e;
 }
 
 body {
@@ -83,7 +83,7 @@ body {
   padding-bottom: 2em;
 }
 
-#page-heading {
+.page-heading {
   padding-top: 3vh;
   padding-left: 5rem;
   padding-bottom: 2vh;
@@ -91,7 +91,7 @@ body {
   background-color: var(--page-heading-color);
 }
 
-#page-title {
+.page-title {
   font-size: 35px;
 }
 
@@ -140,15 +140,20 @@ body {
   padding-top: 20px;
   margin-bottom: 10px;
   border-radius: 15px;
+  text-align: center;
   align-self: stretch;
   background-color: var(--admin-item-color);
-  text-align: center;
   box-shadow: 1px 1px 0 var(--accent-color);
 }
 
 .admin-item-title {
   font-size: 23px;
   margin-bottom: 10px;
+}
+
+.admin-item-contents {
+  padding: 27%;
+  font-size: 30px;
 }
 
 #theme-toggle {
@@ -196,4 +201,36 @@ footer {
   padding-right: 1em;
   padding-left: 1em;
   color: var(--footer-item-color);
+}
+
+@media only screen and (max-width: 768px) {
+  .page-heading {
+    padding-left: 1.5rem;
+  }
+
+  .page-title {
+    font-size: 30px;
+  }
+
+  #query {
+    width: 85vw;
+    padding: 10px;
+    font-size: 15px;
+  }
+
+  #results-box {
+    width: 85%;
+    padding-left: 2rem;
+  }
+
+  #theme-toggle {
+    padding-right: 3%;
+    padding-top: 3%;
+    font-size: 20px;
+  }
+
+  .footer-container {
+    height: 2.3rem;
+    padding-left: 1.3rem;
+  }
 }
