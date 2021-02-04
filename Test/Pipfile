@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 rank-bm25 = "*"
+pymongo = "*"
 
 [dev-packages]
 autopep8 = "*"

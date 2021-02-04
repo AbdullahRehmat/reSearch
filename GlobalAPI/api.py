@@ -31,11 +31,12 @@ db1 = conn1["SearchEngineDB"]
 col1 = db1["htmlResults"]
 
 
-def find_MongoSE(identifier):  # Get Result from MongoSE by identifier
-    for i in col1.find({}, {"_id": 0}):
-        data = i[identifier]
+def find_MongoSE(identifier):
+    for i in col1.find({"_id": identifier}):
+        data = i['data']
         data = data[0]
-    return data
+
+        return data
 
 
 class siteAPI(Resource):

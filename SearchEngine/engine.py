@@ -34,13 +34,12 @@ while True:
 
     if fromStreamA != {}:
         # Delete Previously Ranked Data
-        db1["htmlResults"].drop()
+        # db1["htmlResults"].drop()
 
         # Get Query from StreamA as String
         streamContent = fromStreamA[0][1][0][1]
         streamQuery = streamContent["query"]
         streamIdentifier = streamContent["identifier"]
-
 
         # Get Titles from DB + Copy to Corpus
         corpus = []
@@ -79,10 +78,10 @@ while True:
                 title + "</a><br />"
 
             # Add Response to List
-            # Add List to Dict
             responseList += [htmlResponse]
-            #responseDict["data"] = [responseList]
-            responseDict[streamIdentifier] = [responseList]
+            # Add List to Dict
+            responseDict['_id'] = streamIdentifier
+            responseDict['data'] = [responseList]
 
             # Add to Redis StreamB
             test = json.dumps(responseList)

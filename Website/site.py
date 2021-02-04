@@ -61,7 +61,13 @@ def index():
 def results():
     query = session['query']
     searchResults = searchEngineAPI.getAPI()
+
     return render_template('results.html', searchResults=searchResults, query=query)
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 
 if __name__ == "__main__":

@@ -79,7 +79,7 @@ body {
 }
 
 #results-heading {
-  padding-top: 3vh;
+  padding-top: 4vh;
   padding-left: 5rem;
   padding-bottom: 2vh;
   margin-bottom: 4vh;
@@ -96,7 +96,7 @@ body {
 }
 
 .searchResult {
-  font-size: 19px;
+  font-size: 16px;
   display: block;
   padding-top: 0.25em;
   padding-bottom: 0.25em;
