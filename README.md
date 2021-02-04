@@ -1,51 +1,39 @@
 # reSearch
 
-Search Engine and Website Index Service intended for reseach purposes
+Search Engine and Website Index Service
 
 [toc]
 
 ## Steps
 
 - User enters Query
-- Query is sent to API
+- Query is sent to API with Unique Identifier
 - User is redirected to `url_for('results')`
 
--
-
-- API receives Query
+- API receives Query + Identifier
 - API send query to `SearchEngine` via `Redis-StreamA`
 
--
-
 - `SearchEngine` receives Query
-- `SearchEngine` uses `rank-BM25` to rank content from `ContentScraper` database according to Query
-- `SearchEngine` saves list of ranked links to `SEngine.db`
-  - `SearchEngine` alerts `API` about list of links
-
--
-
+- `SearchEngine` uses `rank-BM25` to rank content from `MongoCS` database according to Query
+- `SearchEngine` saves list of ranked links to `MongoSE`
+  
+- `SearchEngine` alerts `API` about list of links
+  
 - `API` pulls list of links from `MongoSE.db`
 - `API` sends list of links to `url_for('results')`
-
--
 
 - `Site` receives list of links
 - `Site` displays list of links at `url_for('results')`
 
--
-
 - `ContentScraper` runs once every 24 hours to look for new URLs to harvest data from
-- Harvested Data is stored in `MongoCS.DB`
 
-
+  
 
 ## Services
 
 ### Website
 
 User Web Interface
-
-- Python + Flask
 
 - User Accessible End-Points
 
@@ -62,9 +50,7 @@ User Web Interface
 
 Handles Communication between Front and Backend
 
-- Python + `Flask-RESTful`
 
-  
 
 ### Redis Stream
 
@@ -76,19 +62,15 @@ Handles Backend Inter-Service Communication
 
 Ranks stored data according to Query and returns results to  `GlobalAPI` via **Stream-B**
 
-- Python + `Rank-BM25`
-
 
 
 ### ContentScraper
 
 Scrapes Sites and collects relevant data
 
-- Python + `scrapy`
 
 
-
-### Stats
+### Metrix
 
 Collects Service & Usage Metrics 
 
@@ -96,11 +78,11 @@ Collects Service & Usage Metrics
 
 ## Docs: GlobalAPI 
 
-Handles communication between Front and Backend services
+Communication between Frontend and Backend Services
 
 
 
-### Route   `/query` 
+### Route   `/api` 
 
 API: siteAPI_GP
 
@@ -115,34 +97,19 @@ All responses have form:
 > }
 
 - **GET**
-  - Returns current Query from DB
+  
+  - Returns Query Result from SearchEngine
 - **POST**
-
-  - Adds a new Query to DB
-
-
-
-### Route   `/results`
-
-
-
- 
-
-### Route   `/test`
-
-API: test_API
-
-- **GET**
-  - Route for Postman testing purposes
-  - **REMOVE BEFORE DEPLOYMENT**
-
-
+  
+  - Send Query to SearchEngine for Processing
+  
+    
 
 ### Database
 
 - RedisJSON: Redis-API
 - Stores Queries from Form
-- Acts a in-memory storage for Redis-Streams
+- Redis Streams storage DB
 
 
 
@@ -167,19 +134,19 @@ API: test_API
 
 
 
-
-
 ## Docs: MongoDB
 
 ### MongoSE
 
-URLs + Titles in Ranked order
+URLs + Titles Ranked by Query
 
 All Records have form:
 
 >{
 >
->​	"id": "0001"
+>​	"global_id": "0001"
+>
+>​	"identifier": random 10 char string
 >
 >​	"URL": "www.example.com/blogpost1"
 >
@@ -191,17 +158,17 @@ All Records have form:
 
 ### MongoCS
 
-URLs + Titles in order of scraping
+URLs + Titles from ContentScraper
 
 All Records have form:
 
 >{
 >
->​	"id": "0001"
->
->​	"URL": "www.example.com/blogpost1"
+>​	"global_id": "0001"
 >
 >​	"title": "First Blog Post"
+>
+>​	"URL": "www.example.com/blogpost1"
 >
 >}
 
@@ -211,56 +178,63 @@ All Records have form:
 
 ### Build: General 
 
-- [ ] Create Databases
+- Set up WSGI
 
-- [x] Connect `forms.query.data` to streams
-
-- [x] Check `SearchEngine` is able to read results
-
-- [ ] Add `/results` to `GlobalAPI`
+- Set up Nginx
 
   
-
-- [ ] For every request spawn new workers
-
-- [ ] Research K8
-
 
 
 ### Build: Content Scraper
 
-- [ ] Runs once every 24 hours
-- [ ] Store Website URLs in persistent storage
-- [ ] Scrapes URLs for Titles `articleTitleList`
-- [ ] Connect to DB
+- [ ] Docker Cron Job
+- [ ] Add Multiple Sites
+- [ ] Save Article Content for ranking
 
 
 
 ### Build: Search Engine Build
 
-- [ ] Access Data from `scraperDB`
+- [ ] Rank by Article Content
 
-- [ ] Connect to  DB
 
-  
 
 
 ### Build: Site
 
-- [ ] Add loading animation while waiting for results
-- [ ] Research JS Frameworks
-- [ ] Tailwind CSS?
+- [ ] Move Response to Sessions to prevent reload issues
 
+  
 
 
 ### Launch
 
-- [ ] Remove `api/test` route
 - [ ] Remove `debug=True` from Flask scripts
+
 - [ ] Research alternative to local `.env` files
-- [ ] Secure Admin Routes
+
 - [ ] Secure Databases
+
+- [ ] Secure Admin Routes
+
 - [ ] Create List of most common Queries to be cached
+
 - [ ] Research Docker Load Balancing
-- [ ] Research Docker Microservice Scaling
-- [ ] Docker Frontend + Backend Networks
+
+  
+
+## Cloud Providers
+
+### Hosting
+
+- AWS
+- Python Anywhere
+- Digital Ocean
+
+### Caching
+
+- Redis Labs
+
+### Databases
+
+- Mongo Atlas
