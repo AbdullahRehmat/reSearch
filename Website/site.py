@@ -65,6 +65,11 @@ def results():
     return render_template('results.html', searchResults=searchResults, query=query)
 
 
+@app.route("/admin")
+def admin():
+    return render_template('admin.html')
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404

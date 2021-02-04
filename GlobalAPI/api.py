@@ -33,9 +33,7 @@ col1 = db1["htmlResults"]
 
 def find_MongoSE(identifier):
     for i in col1.find({"_id": identifier}):
-        data = i['data']
-        data = data[0]
-
+        data = i['data'][0]
         return data
 
 
