@@ -33,8 +33,6 @@ while True:
     fromStreamA = r1.xread({'streamA': "$"}, count=1, block=0)
 
     if fromStreamA != {}:
-        # Delete Previously Ranked Data
-        # db1["htmlResults"].drop()
 
         # Get Query from StreamA as String
         streamContent = fromStreamA[0][1][0][1]

@@ -4,7 +4,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField
 from requests import put, post, get
 from wtforms.validators import DataRequired
-from flask import Flask, render_template, redirect, url_for, jsonify, session
+from flask import Flask, render_template, redirect, url_for, jsonify, session, request
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "Password:)"
@@ -45,13 +45,13 @@ class MyForm(FlaskForm):
     query = StringField('Search', validators=[DataRequired()], render_kw={
                         "placeholder": "Search..."})
 
+
 class matrix():
 
     def getMatrix():
         api = get('http://global-api/matrix')
 
         return api
-
 
 
 @app.route('/', methods=('GET', 'POST'))
@@ -63,20 +63,20 @@ def index():
         return redirect(url_for('results'))
 
     return render_template('index.html', form=form)
- 
- 
+
+
 @app.route("/results")
 def results():
     query = session['query']
     searchResults = searchEngineAPI.getAPI()
 
     return render_template('results.html', searchResults=searchResults, query=query)
- 
+
 
 @app.route("/admin")
 def admin():
     queryCount = matrix.getMatrix()
-    queryCount=queryCount.text
+    queryCount = queryCount.text
 
     return render_template('admin.html', queryCount=queryCount)
 
