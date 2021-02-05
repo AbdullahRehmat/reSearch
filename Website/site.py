@@ -5,9 +5,12 @@ from wtforms import StringField
 from requests import put, post, get
 from wtforms.validators import DataRequired
 from flask import Flask, render_template, redirect, url_for, jsonify, session, request
+import os
+from dotenv import load_dotenv
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = "Password:)"
+load_dotenv()
+app.config['SECRET_KEY'] = os.getenv("FLASK_SECRET_KEY")
 
 
 def randomword(length):  # Generate Random String
@@ -42,15 +45,14 @@ class searchEngineAPI():
 
 
 class MyForm(FlaskForm):
-    query = StringField('Search', validators=[DataRequired()], render_kw={
-                        "placeholder": "Search..."})
+    query = StringField('Search', validators=[DataRequired()],
+                        render_kw={"placeholder": "Search..."})
 
 
 class matrix():
 
     def getMatrix():
         api = get('http://global-api/matrix')
-
         return api
 
 
@@ -69,7 +71,6 @@ def index():
 def results():
     query = session['query']
     searchResults = searchEngineAPI.getAPI()
-
     return render_template('results.html', searchResults=searchResults, query=query)
 
 
@@ -77,7 +78,6 @@ def results():
 def admin():
     queryCount = matrix.getMatrix()
     queryCount = queryCount.text
-
     return render_template('admin.html', queryCount=queryCount)
 
 

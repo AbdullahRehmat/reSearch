@@ -2,6 +2,10 @@ import redis
 import json
 import pymongo
 from rank_bm25 import BM25Plus
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Environment Variables
 redis_host = "redis-api"
@@ -12,6 +16,25 @@ mongo_host_1 = "mongo-se"
 mongo_host_2 = "mongo-cs"
 mongo_port = 27017
 
+
+# Redis .env Variable
+redis_host = os.getenv("REDIS_HOST")
+redis_port = os.getenv("REDIS_PORT")
+redis_password = os.getenv("REDIS_PASSWORD")
+
+# MongoDB General Settings
+mongo_port = os.getenv("MONGO_PORT")
+
+# MongoDB DB1 .env Variables
+mongo_host_1 = os.getenv("MONGO_HOST_1")
+mongo_db_1 = os.getenv("MONGO_DB_1")
+mongo_col_1 = os.getenv("MONGO_COL_1")
+
+# MongoDB DB2 .env Variables
+mongo_host_2 = os.getenv("MONGO_HOST_2")
+mongo_db_2 = os.getenv("MONGO_DB_2")
+mongo_col_2 = os.getenv("MONGO_COL_2")
+
 # Connect to Redis Streams
 r1 = redis.Redis(host=redis_host, port=redis_port,
                  password=redis_password, db=1, decode_responses=True)
@@ -19,14 +42,14 @@ r1 = redis.Redis(host=redis_host, port=redis_port,
 # Connect to MongoSE Database
 conn1 = pymongo.MongoClient(
     host='mongodb://' + mongo_host_1 + ':' + str(mongo_port) + '/')
-db1 = conn1["SearchEngineDB"]
-col1 = db1["htmlResults"]
+db1 = conn1[mongo_db_1]
+col1 = db1[mongo_col_1]
 
 # Connect to MongoCS Database
 conn2 = pymongo.MongoClient(
     host='mongodb://' + mongo_host_2 + ':' + str(mongo_port) + '/')
-db2 = conn2["ContentScraperDB"]
-col2 = db2["ScrapedDataS1"]
+db2 = conn2[mongo_db_2]
+col2 = db2[mongo_col_2]
 
 # Redis Streams
 while True:

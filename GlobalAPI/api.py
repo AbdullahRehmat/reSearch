@@ -1,20 +1,29 @@
 import json
+import time
 import redis
+import pymongo
 import requests
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
-import pymongo
-import time
+import os
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 api = Api(app)
+load_dotenv()
 
-redis_host = "redis-api"
-redis_port = 6379
-redis_password = "Password:)"
+# Redis .env Variable
+redis_host = os.getenv("REDIS_HOST")
+redis_port = os.getenv("REDIS_PORT")
+redis_password = os.getenv("REDIS_PASSWORD")
 
-mongo_host_1 = "mongo-se"
-mongo_port = 27017
+# MongoDB General Settings
+mongo_port = os.getenv("MONGO_PORT")
+
+# MongoDB DB1 .env Variables
+mongo_host_1 = os.getenv("MONGO_HOST_1")
+mongo_db_1 = os.getenv("MONGO_DB_1")
+mongo_col_1 = os.getenv("MONGO_COL_1")
 
 # Redis Database
 r0 = redis.Redis(host=redis_host, port=redis_port,
@@ -27,8 +36,8 @@ r1 = redis.Redis(host=redis_host, port=redis_port,
 # Connect to MongoSE Database
 conn1 = pymongo.MongoClient(
     host='mongodb://' + mongo_host_1 + ':' + str(mongo_port) + '/')
-db1 = conn1["SearchEngineDB"]
-col1 = db1["htmlResults"]
+db1 = conn1[mongo_db_1]
+col1 = db1[mongo_col_1]
 
 
 def find_MongoSE(identifier):
@@ -68,12 +77,14 @@ class queryAPI(Resource):
 
         # Return Data to Site
         return {'data': args}, 202
-   
+
+
 class matrix(Resource):
 
     def get(self):
         queryCount = col1.estimated_document_count()
         return queryCount, 200
+
 
 # Create routes
 api.add_resource(queryAPI, "/api")
