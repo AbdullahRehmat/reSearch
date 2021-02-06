@@ -1,12 +1,12 @@
+import os
 import json
 import time
 import redis
 import pymongo
 import requests
+from dotenv import load_dotenv
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
-import os
-from dotenv import load_dotenv
 
 app = Flask(__name__)
 api = Api(app)

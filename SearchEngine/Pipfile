@@ -7,7 +7,6 @@ name = "pypi"
 redis = "*"
 rank-bm25 = "*"
 pymongo = "*"
-mongoengine = "*"
 python-dotenv = "*"
 
 [dev-packages]

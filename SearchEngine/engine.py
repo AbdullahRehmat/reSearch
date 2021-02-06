@@ -1,8 +1,8 @@
+import os
 import redis
 import json
 import pymongo
 from rank_bm25 import BM25Plus
-import os
 from dotenv import load_dotenv
 
 load_dotenv()

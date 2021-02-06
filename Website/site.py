@@ -1,12 +1,12 @@
+import os
 import random
 import string
+from dotenv import load_dotenv
 from flask_wtf import FlaskForm
 from wtforms import StringField
 from requests import put, post, get
 from wtforms.validators import DataRequired
 from flask import Flask, render_template, redirect, url_for, jsonify, session, request
-import os
-from dotenv import load_dotenv
 
 app = Flask(__name__)
 load_dotenv()
