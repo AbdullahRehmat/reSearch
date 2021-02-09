@@ -221,6 +221,7 @@ All Records have form:
 ### Build: Search Engine Build
 
 - [ ] Rank by Article Content
+- [ ] Check if single SearchEngine is bottleneck
 
 
 
