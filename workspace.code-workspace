@@ -33,6 +33,10 @@
 			"path": "Website"
 		},
 		{
+			"name": "Documentation",
+			"path": "Documentation"
+		},
+		{
 			"name": "Test",
 			"path": "Test"
 		},
