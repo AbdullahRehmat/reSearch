@@ -204,6 +204,23 @@ footer {
   color: var(--footer-item-color);
 }
 
+.footer-item-link {
+  text-decoration: none;
+  color: var(--footer-item-color);
+}
+
+.footer-item-link:hover {
+  transition: 0.5s;
+  transform: scale(1.07);
+  transform-origin: left;
+  -o-transform: scale(1.07);
+  -ms-transform: scale(1.07);
+  -moz-transform: scale(1.07);
+  -webkit-transform: scale(1.07);
+  color: var(--accent-color);
+  background-color: var(--fixed-grey); /* ISSUE */
+}
+
 @media only screen and (max-width: 768px) {
   .page-heading {
     padding-left: 1.5rem;
