@@ -21,8 +21,8 @@ services:
     networks:
       - frontend
       - backend
-    ports:
-      - 5001:80
+    #ports:
+    #  - 5001:80
     depends_on:
       - redis-api
 
@@ -36,7 +36,7 @@ services:
     networks:
       - backend
     ports:
-      - 27019:27017
+      - 27018:27017
 
   mongo-cs:
     image: mongo
@@ -48,18 +48,18 @@ services:
     networks:
       - backend
     ports:
-      - 27018:27017
+      - 27019:27017
 
-#  content-scraper:
-#    hostname: content-scraper
-#    container_name: ContentScraper
-#    build: ./ContentScraper
-#    volumes:
-#      - ./ContentScraper:/usr/src/app
-#    networks:
-#      - backend
-#    depends_on:
-#      - mongo-cs
+  #  content-scraper:
+  #    hostname: content-scraper
+  #    container_name: ContentScraper
+  #    build: ./ContentScraper
+  #    volumes:
+  #      - ./ContentScraper:/usr/src/app
+  #    networks:
+  #      - backend
+  #    depends_on:
+  #      - mongo-cs
 
   search-engine:
     hostname: search-engine
@@ -77,16 +77,25 @@ services:
   website:
     hostname: website
     container_name: Website
+    restart: always
     build: ./Website
-    volumes:
-      - ./Website:/usr/src/app
-    restart: unless-stopped
     networks:
       - frontend
     ports:
-      - 5000:80
+      - "8000:8000"
+
+  nginx:
+    hostname: nginx
+    container_name: Nginx
+    restart: always
+    build: ./Nginx
+    networks:
+      - frontend
+    ports:
+      - "80:80"
     depends_on:
       - global-api
+      - website
 
 networks:
   frontend:

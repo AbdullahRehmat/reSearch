@@ -8,6 +8,7 @@ flask = "*"
 requests = "*"
 flask-wtf = "*"
 python-dotenv = "*"
+gunicorn = "*"
 
 [dev-packages]
 autopep8 = "*"

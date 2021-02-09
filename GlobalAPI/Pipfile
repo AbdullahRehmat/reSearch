@@ -11,6 +11,7 @@ rejson = "*"
 pymongo = "*"
 requests = "*"
 python-dotenv = "*"
+gunicorn = "*"
 
 [dev-packages]
 autopep8 = "*"

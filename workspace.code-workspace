@@ -17,6 +17,10 @@
 			"path": "MongoSE"
 		},
 		{
+			"name": "Nginx",
+			"path": "Nginx"
+		},
+		{
 			"name": "RedisAPI",
 			"path": "RedisAPI"
 		},
