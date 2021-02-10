@@ -1,0 +1,5 @@
+MongoSE/
+MongoCS/
+Test/
+*.vscode/
+!.gitignore
