@@ -1,0 +1,105 @@
+version: "3"
+
+services:
+  redis-api:
+    hostname: redis-api
+    container_name: RedisAPI
+    build: ./RedisAPI
+    restart: unless-stopped
+    networks:
+      - backend
+    expose: 
+     - "6379"
+
+  global-api:
+    hostname: global-api
+    container_name: GlobalAPI
+    build: ./GlobalAPI
+    restart: unless-stopped
+    volumes:
+      - ./GlobalAPI:/usr/src/app
+    networks:
+      - frontend
+      - backend
+    expose: 
+        - "80"
+    depends_on:
+      - redis-api
+
+  mongo-se:
+    image: mongo
+    hostname: mongo-se
+    container_name: MongoSE
+    restart: unless-stopped
+    volumes:
+      - ./MongoSE:/data/db
+    networks:
+      - backend
+    expose: 
+      - "27017"
+
+  mongo-cs:
+    image: mongo
+    hostname: mongo-cs
+    container_name: MongoCS
+    restart: unless-stopped
+    volumes:
+      - ./MongoCS:/data/db
+    networks:
+      - backend
+    expose: 
+      - "27017"
+
+  #  content-scraper:
+  #    hostname: content-scraper
+  #    container_name: ContentScraper
+  #    build: ./ContentScraper
+  #    volumes:
+  #      - ./ContentScraper:/usr/src/app
+  #    networks:
+  #      - backend
+  #    depends_on:
+  #      - mongo-cs
+
+  search-engine:
+    hostname: search-engine
+    container_name: SearchEngine
+    build: ./SearchEngine
+    restart: unless-stopped
+    networks:
+      - backend
+    depends_on:
+      - redis-api
+      - global-api
+      - mongo-se
+      - mongo-cs
+
+  website:
+    hostname: website
+    container_name: Website
+    restart: always
+    build: ./Website
+    networks:
+      - frontend
+    expose: 
+      - "8000"
+
+  nginx:
+    hostname: nginx
+    container_name: Nginx
+    restart: always
+    build: ./Nginx
+    networks:
+      - frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - global-api
+      - website
+
+networks:
+  frontend:
+    driver: bridge
+
+  backend:
+    driver: bridge

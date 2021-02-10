@@ -1,0 +1,14 @@
+{% extends "layout.html" %} {% block head %} {% endblock %} {% block title %}
+{{query}} - reSearch {% endblock %} {% block body %}
+
+<section id="results-section">
+  <div class="page-heading">
+    <div class="page-title">Results</div>
+  </div>
+
+  <div id="results-box">
+    {% for i in searchResults %} {{ i | safe}} {% endfor %}
+  </div>
+</section>
+
+{% endblock %}
