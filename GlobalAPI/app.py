@@ -8,6 +8,10 @@ from dotenv import load_dotenv
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
 
+# TEST
+from datetime import datetime
+
+
 app = Flask(__name__)
 api = Api(app)
 load_dotenv()
@@ -56,12 +60,15 @@ class queryAPI(Resource):
         # Parse Identifier from args
         identifier = args.get('identifier')
 
-        # Get Results from MongoSe
-        time.sleep(0.07)
+        # Get Results from MongoSE
+        time.sleep(0.1)
+
+        startTime = datetime.now()
         results = find_MongoSE(identifier=identifier)
+        timeTaken = datetime.now() - startTime
 
         # Return Results
-        return results, 200
+        return str(timeTaken), 200
 
     def post(self):  # Reveive Query
         parser = reqparse.RequestParser()

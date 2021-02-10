@@ -75,7 +75,7 @@ while True:
         tokenized_corpus = [doc.split(" ") for doc in corpus]
         bm25 = BM25Plus(tokenized_corpus)
 
-        # Return 10 most relavent Titles [n=10]
+        # Return 15 most relavent Titles [n=15]
         rankedResults = bm25.get_top_n(tokenized_query, corpus, n=15)
 
         # HTML + Title + URL List
@@ -98,6 +98,7 @@ while True:
 
             # Add Response to List
             responseList += [htmlResponse]
+
             # Add List to Dict
             responseDict['_id'] = streamIdentifier
             responseDict['data'] = [responseList]
