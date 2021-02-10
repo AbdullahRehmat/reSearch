@@ -8,8 +8,8 @@ services:
     restart: unless-stopped
     networks:
       - backend
-    expose: 
-     - "6379"
+    expose:
+      - "6379"
 
   global-api:
     hostname: global-api
@@ -21,8 +21,8 @@ services:
     networks:
       - frontend
       - backend
-    expose: 
-        - "80"
+    expose:
+      - "80"
     depends_on:
       - redis-api
 
@@ -35,7 +35,7 @@ services:
       - ./MongoSE:/data/db
     networks:
       - backend
-    expose: 
+    expose:
       - "27017"
 
   mongo-cs:
@@ -47,19 +47,19 @@ services:
       - ./MongoCS:/data/db
     networks:
       - backend
-    expose: 
+    expose:
       - "27017"
 
-  #  content-scraper:
-  #    hostname: content-scraper
-  #    container_name: ContentScraper
-  #    build: ./ContentScraper
-  #    volumes:
-  #      - ./ContentScraper:/usr/src/app
-  #    networks:
-  #      - backend
-  #    depends_on:
-  #      - mongo-cs
+  content-scraper:
+    hostname: content-scraper
+    container_name: ContentScraper
+    build: ./ContentScraper
+    volumes:
+      - ./ContentScraper:/usr/src/app
+    networks:
+      - backend
+    depends_on:
+      - mongo-cs
 
   search-engine:
     hostname: search-engine
@@ -81,7 +81,7 @@ services:
     build: ./Website
     networks:
       - frontend
-    expose: 
+    expose:
       - "8000"
 
   nginx:

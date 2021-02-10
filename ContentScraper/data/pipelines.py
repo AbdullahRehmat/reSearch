@@ -7,7 +7,6 @@
 # useful for handling different item types with a single interface
 import logging
 import pymongo
-
 from itemadapter import ItemAdapter
 
 
