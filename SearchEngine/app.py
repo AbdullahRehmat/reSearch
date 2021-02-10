@@ -94,9 +94,7 @@ while True:
             url = url["url"]
 
             # Format Results with HTML tags
-            htmlResponse = "<a href=\"" + url + \
-                "\" class=\"searchResult\" target=\"_blank\" rel=\"noopener noreferrer\">" + \
-                title + "</a><br />"
+            htmlResponse = f"<a href=\" {url} \" class=\"searchResult\" target=\"_blank\" rel=\"noopener noreferrer\"> {title} </a><br />"
 
             # Add Response to List
             responseList += [htmlResponse]
