@@ -51,6 +51,13 @@ conn2 = pymongo.MongoClient(
 db2 = conn2[mongo_db_2]
 col2 = db2[mongo_col_2]
 
+
+# Get Titles from DB + Copy to Corpus
+corpus = []
+for data in col2.find():
+    corpus += data["title"]
+
+
 # Redis Streams
 while True:
     fromStreamA = r1.xread({'streamA': "$"}, count=1, block=0)
@@ -61,11 +68,6 @@ while True:
         streamContent = fromStreamA[0][1][0][1]
         streamQuery = streamContent["query"]
         streamIdentifier = streamContent["identifier"]
-
-        # Get Titles from DB + Copy to Corpus
-        corpus = []
-        for data in col2.find():
-            corpus += data["title"]
 
         # Move Query from StreamA to BM25
         query = str(streamQuery)
