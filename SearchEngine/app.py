@@ -4,7 +4,6 @@ import json
 import pymongo
 from rank_bm25 import BM25Plus
 from dotenv import load_dotenv
-from time import time
 load_dotenv()
 
 # Environment Variables
