@@ -13,11 +13,10 @@
 
 - `SearchEngine` receives Query + Identifier
 - `SearchEngine` uses `rank-BM25` to rank content from `MongoCS` database according to Query
-- `SearchEngine` saves list of ranked links to `MongoSE`
+- `SearchEngine` adds list of ranked results to `RedisAPI DB0`
   
-- `SearchEngine` alerts `GlobalAPI` that ranking is complete
+- `GlobalAPI`  fetches list of ranked results from `RedisAPI DB0`
   
-- `GlobalAPI` pulls list of links from `MongoSE.db`
 - `GlobalAPI` sends list of links to `url_for('results')`
 
 - `Website` receives list of links
@@ -33,7 +32,7 @@
 
 NGINX + Gunicorn
 
-HTTPS + Production grade WSGI Server
+HTTP + Production grade WSGI Server
 
 
 
@@ -111,43 +110,25 @@ All responses have form:
 
 ### DB 0
 
-- Put / Get
-  - Stores Query from Site
-  - Returns Query to Site via GlobalAPI
-
-
-
-### DB 1
-
 **Stream A**
 
 - Messages:  GlobalAPI ->  SearchEngine
 
 **Stream B**
 
-- Messages:  SearchEngine -> GlobalAPI
+- Results:  SearchEngine -> GlobalAPI
+
+
+
+### DB 1
+
+**Set/Get**
+
+- Results: SearchEngine -> GlobalAPI
 
 
 
 ## Docs: MongoDB
-
-### MongoSE
-
-URLs + Titles Ranked by Query
-
-All Records have form:
-
->{
->
->​	"global_id": identifier 10 Char String
->
->​	"title": "First Blog Post"
->
->​	"URL": "www.example.com/blogpost1"
->
->}
-
-
 
 ### MongoCS
 
@@ -158,6 +139,24 @@ All Records have form:
 >{
 >
 >​	"global_id": "000112312334"
+>
+>​	"title": "First Blog Post"
+>
+>​	"URL": "www.example.com/blogpost1"
+>
+>}
+
+
+
+### MongoSE
+
+URLs + Titles Ranked by Query
+
+All Records have form:
+
+>{
+>
+>​	"global_id": identifier 10 Char String
 >
 >​	"title": "First Blog Post"
 >

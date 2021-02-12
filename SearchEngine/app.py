@@ -4,6 +4,7 @@ import json
 import pymongo
 from rank_bm25 import BM25Plus
 from dotenv import load_dotenv
+
 load_dotenv()
 
 # Environment Variables
@@ -35,6 +36,9 @@ mongo_db_2 = os.getenv("MONGO_DB_2")
 mongo_col_2 = os.getenv("MONGO_COL_2")
 
 # Connect to Redis Streams
+r0 = redis.Redis(host=redis_host, port=redis_port,
+                 password=redis_password, db=0, decode_responses=True)
+
 r1 = redis.Redis(host=redis_host, port=redis_port,
                  password=redis_password, db=1, decode_responses=True)
 
@@ -59,7 +63,7 @@ for data in col2.find():
 
 # Redis Streams
 while True:
-    fromStreamA = r1.xread({'streamA': "$"}, count=1, block=0)
+    fromStreamA = r0.xread({'streamA': "$"}, count=1, block=0)
 
     if fromStreamA != {}:
 
@@ -81,7 +85,6 @@ while True:
 
         # HTML + Title + URL List
         responseList = []
-        responseDict = {}
 
         # For List of ranked Titles:
         for result in rankedResults:
@@ -100,16 +103,5 @@ while True:
             # Add Response to List
             responseList += [htmlResponse]
 
-            # Add List to Dict
-            responseDict['_id'] = streamIdentifier
-            responseDict['data'] = [responseList]
-
-            # Add to Redis StreamB
-            test = json.dumps(responseList)
-            testDict = {}
-            testDict["test"] = test
-
-    col1.insert_one(responseDict)
-
-    # Return Results via Redis StreamB to GlobalAPI
-    r1.xadd('streamB', fields=testDict)
+    # Return Results via Redis DB1 to GlobalAPI
+    r1.set(streamIdentifier, str(responseList), ex=100)

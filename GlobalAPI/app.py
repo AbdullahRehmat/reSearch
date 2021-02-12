@@ -4,6 +4,7 @@ import time
 import redis
 import pymongo
 import requests
+from ast import literal_eval
 from dotenv import load_dotenv
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
@@ -26,11 +27,10 @@ mongo_host_1 = os.getenv("MONGO_HOST_1")
 mongo_db_1 = os.getenv("MONGO_DB_1")
 mongo_col_1 = os.getenv("MONGO_COL_1")
 
-# Redis Database
+# Redis Streams
 r0 = redis.Redis(host=redis_host, port=redis_port,
                  password=redis_password, db=0, decode_responses=True)
 
-# Redis Streams
 r1 = redis.Redis(host=redis_host, port=redis_port,
                  password=redis_password, db=1, decode_responses=True)
 
@@ -47,6 +47,13 @@ def find_MongoSE(identifier):
         return data
 
 
+def find_RedisDB1(identifier):
+    pass
+    data = r1.get(identifier)
+    data = literal_eval(data)
+    return data
+
+
 class queryAPI(Resource):
 
     def get(self):  # Send Results
@@ -57,10 +64,11 @@ class queryAPI(Resource):
         # Parse Identifier from args
         identifier = args.get('identifier')
 
-        # Get Results from MongoSE
+        # Get Results from Redis DB0
         time.sleep(0.1)
-
-        results = find_MongoSE(identifier=identifier)
+        
+        #results = find_MongoSE(identifier=identifier)
+        results = find_RedisDB1(identifier=identifier)
 
         # Return Results
         return results, 200
@@ -71,11 +79,8 @@ class queryAPI(Resource):
         parser.add_argument('query', required=True)
         args = parser.parse_args()
 
-        # Save Query to RedisDB
-        r0.set('queryDB', str(args))
-
         # Add message to Stream
-        r1.xadd('streamA', fields=args)
+        r0.xadd('streamA', fields=args)
 
         # Return Data to Site
         return {'data': args}, 202
