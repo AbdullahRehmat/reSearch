@@ -20,7 +20,7 @@ def randomword(length):  # Generate Random String
 
 class searchEngineAPI():
 
-    def getAPI():  # Get Results from Global API
+    def getAPI():  # Get Results
         if 'identifier' in session:
             identifier = session['identifier']
             api = get('http://global-api/api',
@@ -30,7 +30,7 @@ class searchEngineAPI():
         else:
             return "No Identifier was found... \n", 400
 
-    def postAPI(form):  # Send Query to GlobalAPI
+    def postAPI(form):  # Send Query
         postQuery = form.query.data
         postQuery = postQuery.title()
         identifier = randomword(10)
@@ -51,7 +51,7 @@ class MyForm(FlaskForm):
 
 class matrix():
 
-    def getMatrix():
+    def queryCount():
         api = get('http://global-api/matrix')
         return api
 
@@ -76,7 +76,7 @@ def results():
 
 @app.route("/admin")
 def admin():
-    queryCount = matrix.getMatrix()
+    queryCount = matrix.queryCount()
     queryCount = queryCount.text
     return render_template('admin.html', queryCount=queryCount)
 

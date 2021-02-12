@@ -7,17 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Environment Variables
-redis_host = "redis-api"
-redis_port = 6379
-redis_password = "Password:)"
-
-mongo_host_1 = "mongo-se"
-mongo_host_2 = "mongo-cs"
-mongo_port = 27017
-
-
-# Redis .env Variable
+# Redis .env Variables
 redis_host = os.getenv("REDIS_HOST")
 redis_port = os.getenv("REDIS_PORT")
 redis_password = os.getenv("REDIS_PASSWORD")

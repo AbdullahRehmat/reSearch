@@ -14,7 +14,7 @@ app = Flask(__name__)
 api = Api(app)
 load_dotenv()
 
-# Redis .env Variable
+# Redis .env Variables
 redis_host = os.getenv("REDIS_HOST")
 redis_port = os.getenv("REDIS_PORT")
 redis_password = os.getenv("REDIS_PASSWORD")
@@ -47,7 +47,7 @@ def find_MongoSE(identifier):
         return data
 
 
-def find_RedisDB1(identifier):
+def getResults(identifier):
     pass
     data = r1.get(identifier)
     data = literal_eval(data)
@@ -66,9 +66,9 @@ class queryAPI(Resource):
 
         # Get Results from Redis DB0
         time.sleep(0.1)
-        
+
         #results = find_MongoSE(identifier=identifier)
-        results = find_RedisDB1(identifier=identifier)
+        results = getResults(identifier=identifier)
 
         # Return Results
         return results, 200
