@@ -7,6 +7,7 @@ from wtforms import StringField
 from requests import put, post, get
 from wtforms.validators import DataRequired
 from flask import Flask, render_template, redirect, url_for, jsonify, session, request
+from ast import literal_eval
 
 app = Flask(__name__)
 load_dotenv()
@@ -51,7 +52,7 @@ class MyForm(FlaskForm):
 
 class matrix():
 
-    def queryCount():
+    def stats():
         api = get('http://global-api/matrix')
         return api
 
@@ -76,9 +77,11 @@ def results():
 
 @app.route("/admin")
 def admin():
-    queryCount = matrix.queryCount()
-    queryCount = queryCount.text
-    return render_template('admin.html', queryCount=queryCount)
+    matrixStats = matrix.stats().text
+    matrixStats = literal_eval(matrixStats)
+    matrixMongo = matrixStats[0]
+    matrixRedis = matrixStats[1]
+    return render_template('admin.html', matrixMongo=matrixMongo, matrixRedis=matrixRedis)
 
 
 @app.errorhandler(404)

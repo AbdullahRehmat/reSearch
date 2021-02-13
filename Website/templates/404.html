@@ -1,11 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404</title>
-</head>
-<body>
-    404 Error
-</body>
-</html>
+{% extends "layout.html" %} {% block head %} {% endblock %} {% block title %}
+reSearch {% endblock %} {% block body %}
+
+<div id="errorPage">
+  404 Error <br />
+  The page you are looking for does not exist! <br />
+</div>
+
+{% endblock %}

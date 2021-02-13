@@ -45,7 +45,7 @@ db2 = conn2[mongo_db_2]
 col2 = db2[mongo_col_2]
 
 
-# Get Titles from DB + Copy to Corpus
+# Get Titles from MongoCS + Copy to Corpus
 corpus = []
 for data in col2.find():
     corpus += data["title"]
@@ -75,6 +75,7 @@ while True:
 
         # HTML + Title + URL List
         responseList = []
+        responseDict = {}
 
         # For List of ranked Titles:
         for result in rankedResults:
@@ -90,8 +91,15 @@ while True:
             # Format Results with HTML tags
             htmlResponse = f"<a href=\" {url} \" class=\"searchResult\" target=\"_blank\" rel=\"noopener noreferrer\"> {title} </a><br />"
 
-            # Add Response to List
+            # Add Response to List <- Redis Set Get
             responseList += [htmlResponse]
+
+            # Add List to Dict <- MongoDb Col1
+            responseDict['_id'] = streamIdentifier
+            responseDict['data'] = [responseList]
+
+    # Add Results to MongoDB Col1
+    col1.insert_one(responseDict)
 
     # Return Results via Redis DB1 to GlobalAPI
     r1.set(streamIdentifier, str(responseList), ex=100)

@@ -11,5 +11,4 @@ RUN pipenv lock --requirements > requirements.txt
 RUN pip install -r requirements.txt
 
 COPY . .
-#CMD [ "python", "-u",  "app.py" ]
 CMD ["gunicorn", "-w", "2", "-b", ":80", "--reload", "wsgi:app"]

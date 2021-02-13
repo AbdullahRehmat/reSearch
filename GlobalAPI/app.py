@@ -41,13 +41,13 @@ db1 = conn1[mongo_db_1]
 col1 = db1[mongo_col_1]
 
 
-def find_MongoSE(identifier):
+def getResultsMongoDB(identifier):
     for i in col1.find({"_id": identifier}):
         data = i['data'][0]
         return data
 
 
-def getResults(identifier):
+def getResultsRedis(identifier):
     pass
     data = r1.get(identifier)
     data = literal_eval(data)
@@ -67,8 +67,8 @@ class queryAPI(Resource):
         # Get Results from Redis DB0
         time.sleep(0.1)
 
-        #results = find_MongoSE(identifier=identifier)
-        results = getResults(identifier=identifier)
+        #results = getResultsMongoDB(identifier=identifier)
+        results = getResultsRedis(identifier=identifier)
 
         # Return Results
         return results, 200
@@ -89,8 +89,12 @@ class queryAPI(Resource):
 class matrix(Resource):
 
     def get(self):
-        queryCount = col1.estimated_document_count()
-        return queryCount, 200
+        response = []
+        mongoCount = col1.estimated_document_count()
+        redisCount = r1.dbsize()
+        response += [mongoCount]
+        response += [redisCount]
+        return response, 200
 
 
 # Create routes
