@@ -83,7 +83,7 @@ def admin():
     matrixRedis = matrixStats[1]
     matrixMongoSE = matrixStats[2]
 
-    return render_template('admin.html', matrixMongoCS=matrixMongoCS, matrixRedis=matrixRedis, matrixMongoSE=matrixMongoSE)
+    return render_template('admin.html', matrixMCS=matrixMongoCS, matrixRedis=matrixRedis, matrixMSE=matrixMongoSE)
 
 
 @app.errorhandler(404)
