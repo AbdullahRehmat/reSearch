@@ -9,6 +9,7 @@ requests = "*"
 flask-wtf = "*"
 python-dotenv = "*"
 gunicorn = "*"
+flask-login = "*"
 
 [dev-packages]
 autopep8 = "*"

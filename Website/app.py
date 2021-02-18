@@ -11,6 +11,7 @@ from flask import Flask, render_template, redirect, url_for, jsonify, session, r
 
 app = Flask(__name__)
 load_dotenv()
+
 app.config['SECRET_KEY'] = os.getenv("FLASK_SECRET_KEY")
 
 
