@@ -190,15 +190,8 @@ All Records have form:
 
 ### Build: General 
 
-- [x] Set up Nginx
-
-- [x] Set up Gunicorn
-
-- [ ] Log Aggregator
-
-- [ ] Docker-Compose Resource Limits ?
-
-  
+- [ ] Log Aggregation
+- [ ] Secure Databases
 
 
 ### Build: Website
@@ -211,7 +204,7 @@ All Records have form:
 
 ### Build: Content Scraper
 
-- [ ] Docker Cron Job
+- [ ] Python Cron Job - Every 7 days
 - [ ] Add Multiple Sites
 - [ ] Save Article Content for ranking
 
@@ -220,23 +213,3 @@ All Records have form:
 ### Build: Search Engine Build
 
 - [ ] Rank by Article Content
-- [ ] Check if single SearchEngine is bottleneck
-
-
-
-
-### Launch
-
-- [ ] Update README
-
-- [ ] Add Docs to Documentation Directory 
-
-- [x] Remove `debug=True` from Flask scripts
-
-- [x] Research alternative to local `.env` files
-
-- [x] Secure Databases
-
-- [ ] Fork - SalafiSearch
-
-  
