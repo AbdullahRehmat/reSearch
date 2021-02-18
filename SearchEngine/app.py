@@ -98,8 +98,8 @@ while True:
             responseDict['_id'] = streamIdentifier
             responseDict['data'] = [responseList]
 
-    # Add Results to MongoDB Col1
-    col1.insert_one(responseDict)
-
     # Return Results via Redis DB1 to GlobalAPI
     r1.set(streamIdentifier, str(responseList), ex=100)
+
+    # Add Results to MongoDB Col1
+    col1.insert_one(responseDict)
