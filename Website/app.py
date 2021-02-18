@@ -79,9 +79,11 @@ def results():
 def admin():
     matrixStats = matrix.stats().text
     matrixStats = literal_eval(matrixStats)
-    matrixMongo = matrixStats[0]
+    matrixMongoCS = matrixStats[0]
     matrixRedis = matrixStats[1]
-    return render_template('admin.html', matrixMongo=matrixMongo, matrixRedis=matrixRedis)
+    matrixMongoSE = matrixStats[2]
+
+    return render_template('admin.html', matrixMongoCS=matrixMongoCS, matrixRedis=matrixRedis, matrixMongoSE=matrixMongoSE)
 
 
 @app.errorhandler(404)

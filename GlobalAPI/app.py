@@ -27,6 +27,11 @@ mongo_host_1 = os.getenv("MONGO_HOST_1")
 mongo_db_1 = os.getenv("MONGO_DB_1")
 mongo_col_1 = os.getenv("MONGO_COL_1")
 
+# MongoDB DB2 .env Variables
+mongo_host_2 = os.getenv("MONGO_HOST_2")
+mongo_db_2 = os.getenv("MONGO_DB_2")
+mongo_col_2 = os.getenv("MONGO_COL_2")
+
 # Redis Streams
 r0 = redis.Redis(host=redis_host, port=redis_port,
                  password=redis_password, db=0, decode_responses=True)
@@ -39,6 +44,11 @@ conn1 = pymongo.MongoClient(
     host='mongodb://' + mongo_host_1 + ':' + str(mongo_port) + '/')
 db1 = conn1[mongo_db_1]
 col1 = db1[mongo_col_1]
+
+conn2 = pymongo.MongoClient(
+    host='mongodb://' + mongo_host_2 + ':' + str(mongo_port) + '/')
+db2 = conn2[mongo_db_2]
+col2 = db2[mongo_col_2]
 
 
 def getResultsMongoDB(identifier):
@@ -90,10 +100,12 @@ class matrix(Resource):
 
     def get(self):
         response = []
-        mongoCount = col1.estimated_document_count()
+        mongoCSCount = col1.estimated_document_count()
+        mongoSECount = col2.estimated_document_count()
         redisCount = r1.dbsize()
-        response += [mongoCount]
+        response += [mongoCSCount]
         response += [redisCount]
+        response += [mongoSECount]
         return response, 200
 
 
