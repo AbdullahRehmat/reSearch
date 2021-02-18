@@ -34,7 +34,7 @@ class searchEngineAPI():
     def postAPI(form):  # Send Query
         postQuery = form.query.data
         postQuery = postQuery.title()
-        identifier = randomword(10)
+        identifier = randomword(16)
 
         session['identifier'] = identifier
         session['query'] = postQuery
