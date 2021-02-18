@@ -1,13 +1,13 @@
 import os
 import random
 import string
+from ast import literal_eval
 from dotenv import load_dotenv
 from flask_wtf import FlaskForm
 from wtforms import StringField
 from requests import put, post, get
 from wtforms.validators import DataRequired
-from flask import Flask, render_template, redirect, url_for, jsonify, session, request
-from ast import literal_eval
+from flask import Flask, render_template, redirect, url_for, jsonify, session, request, Response
 
 app = Flask(__name__)
 load_dotenv()
@@ -23,7 +23,8 @@ class searchEngineAPI():
 
     def getAPI():  # Get Results
         if 'identifier' in session:
-            identifier = session['identifier']
+            #identifier = session['identifier']
+            identifier = request.cookies.get("id")
             api = get('http://global-api/api',
                       data={"identifier": identifier}).json()
 
@@ -36,7 +37,8 @@ class searchEngineAPI():
         postQuery = postQuery.title()
         identifier = randomword(16)
 
-        session['identifier'] = identifier
+        #session['identifier'] = identifier
+        Response.set_cookie("id", identifier)
         session['query'] = postQuery
 
         api = post('http://global-api/api',
