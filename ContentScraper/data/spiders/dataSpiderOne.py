@@ -22,6 +22,11 @@ class DataSpiderOne(Spider):
         "www.islamjesus.ws",
         "www.ibntaymiyyah.com",
         "www.wahhabis.com",
+        "www.aqidah.com",
+        "www.dajjaal.com",
+        "www.abovethethrone.com",
+        "www.themadkhalis.com",
+        "www.maturidis.com",
     ]
 
     start_urls = [
@@ -178,6 +183,23 @@ class DataSpiderOne(Spider):
         "http://www.piousmuslim.com/archives/2013/11/index.cfm",
         "http://www.piousmuslim.com/archives/2013/10/index.cfm",
         "http://www.piousmuslim.com/archives/2013/09/index.cfm",
+        "https://www.aqidah.com/creed/archives/2020/03/",
+        "https://www.aqidah.com/creed/archives/2019/06/",
+        "https://www.aqidah.com/creed/archives/2019/07/",
+        "https://www.aqidah.com/creed/archives/2016/08/",
+        "https://www.aqidah.com/creed/archives/2013/09/",
+        "https://www.aqidah.com/creed/archives/2013/08/", # May have issues
+        "https://www.aqidah.com/creed/archives/2012/11/",
+        "https://www.tawhidfirst.com/monotheism/archives/2013/04/",
+        "https://www.tawhidfirst.com/monotheism/archives/2013/07/",
+        "https://www.tawhidfirst.com/monotheism/archives/2019/08/",
+        "https://www.tawhidfirst.com/monotheism/archives/2020/03/",
+        "https://www.dajjaal.com/liar/archives/2020/06/",
+        "https://www.dajjaal.com/liar/archives/2012/11/",
+        "https://www.abovethethrone.com/arsh/authors/AboveTheThrone.cfm",
+        "https://www.themadkhalis.com/md/authors/Admin.cfm",
+        "https://www.manhaj.com/manhaj/authors/Abu.Iyaad.cfm",
+        "https://www.maturidis.com/maturidi/authors/Maturidis.Com.cfm",
     ]
 
     def parse(self, response):

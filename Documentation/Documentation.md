@@ -197,7 +197,7 @@ All Records have form:
 ### Build: Website
 
 - [ ] Add Flask-Login
-- [ ] Collect Metrix and Stats
+- [x] Collect Metrix and Stats
 
 
 

@@ -25,6 +25,11 @@ List of Sites either scraped by ContentScraper or to be scraped
 - www.wahhabis.com
 - www.salafis.com
 - www.PiousMuslim.com
+- www.aqidah.com 
+  - May have Archive issues
+- www.TawhidFirst.com     
+- www.Dajjaal.com  
+- www.AboveTheThrone.com
 
 
 
@@ -40,14 +45,14 @@ List of Sites either scraped by ContentScraper or to be scraped
 
 ## Issues
 
-- www.AboveTheThrone.com            Not Online
-- www.Dajjaal.com                                 Archive Unavailable
-- www.TawhidFirst.com                       Archive Unavailable
-- www.Aqidah.com                                Archive Unavailable
 - www.TheMadkhalis.com                   Archive Unavailable
 - www.Manhaj.com                               Archive Unavailable
-- www.Salaf.com                                    Archive Unavailable
+
 - www.Maturidis.com                           Archive Unavailable
+
+  
+
+- www.Salaf.com                                    Requires Different Scraper
 - www.SayyidQutb.com                       Not Able To Scrape - Single Page
 - www.Alhajuri.com                               Not Able To Scrape - Single Page
 - www.AbuKhadeejah.com                  Requires Different Scraper
