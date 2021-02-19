@@ -27,6 +27,7 @@ class DataSpiderOne(Spider):
         "www.abovethethrone.com",
         "www.themadkhalis.com",
         "www.maturidis.com",
+        "www.manhaj.com",
     ]
 
     start_urls = [
@@ -70,6 +71,8 @@ class DataSpiderOne(Spider):
         "https://www.themadkhalis.com/md/authors/Admin.cfm",
         "https://www.maturidis.com/maturidi/authors/Maturidis.Com.cfm",
         "https://www.maturidis.com/maturidi/authors/Admin.cfm",
+        "https://www.manhaj.com/manhaj/authors/Abu.Iyaad.cfm",
+        "https://www.manhaj.com/manhaj/authors/admin.cfm",
     ]
 
     def parse(self, response):
