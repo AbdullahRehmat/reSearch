@@ -1,5 +1,6 @@
 MongoSE/
 MongoCS/
 Test/
+*__pycache__/
 *.vscode/
 !.gitignore
