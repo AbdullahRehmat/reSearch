@@ -37,8 +37,10 @@ services:
       - ./MongoSE:/data/db
     networks:
       - backend
-    expose:
-      - "27017"
+    #expose:
+    #  - "27017"
+    ports: 
+      - 27018:27017
 
   mongo-cs:
     image: mongo
@@ -49,19 +51,21 @@ services:
       - ./MongoCS:/data/db
     networks:
       - backend
-    expose:
-      - "27017"
+    #expose:
+    #  - "27017"
+    ports: 
+      - 27019:27017
 
-  #  content-scraper:
-  #    hostname: content-scraper
-  #    container_name: ContentScraper
-  #    build: ./ContentScraper
-  #    volumes:
-  #      - ./ContentScraper:/usr/src/app
-  #    networks:
-  #      - backend
-  #    depends_on:
-  #      - mongo-cs
+  content-scraper:
+    hostname: content-scraper
+    container_name: ContentScraper
+    build: ./ContentScraper
+    volumes:
+      - ./ContentScraper:/usr/src/app
+    networks:
+      - backend
+    depends_on:
+      - mongo-cs
 
   search-engine:
     hostname: search-engine

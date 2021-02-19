@@ -188,7 +188,7 @@ class DataSpiderOne(Spider):
         "https://www.aqidah.com/creed/archives/2019/07/",
         "https://www.aqidah.com/creed/archives/2016/08/",
         "https://www.aqidah.com/creed/archives/2013/09/",
-        "https://www.aqidah.com/creed/archives/2013/08/", # May have issues
+        "https://www.aqidah.com/creed/archives/2013/08/",  # May have issues
         "https://www.aqidah.com/creed/archives/2012/11/",
         "https://www.tawhidfirst.com/monotheism/archives/2013/04/",
         "https://www.tawhidfirst.com/monotheism/archives/2013/07/",

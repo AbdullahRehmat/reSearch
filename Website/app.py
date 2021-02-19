@@ -7,7 +7,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField
 from requests import put, post, get
 from wtforms.validators import DataRequired
-from flask import Flask, render_template, redirect, url_for, jsonify, session, request, Response
+from flask import Flask, render_template, redirect, url_for, jsonify, session, request
 
 app = Flask(__name__)
 load_dotenv()
@@ -24,8 +24,7 @@ class searchEngineAPI():
 
     def getAPI():  # Get Results
         if 'identifier' in session:
-            #identifier = session['identifier']
-            identifier = request.cookies.get("id")
+            identifier = session['identifier']
             api = get('http://global-api/api',
                       data={"identifier": identifier}).json()
 
@@ -36,10 +35,9 @@ class searchEngineAPI():
     def postAPI(form):  # Send Query
         postQuery = form.query.data
         postQuery = postQuery.title()
-        identifier = randomword(16)
+        identifier = randomword(10)
 
-        #session['identifier'] = identifier
-        Response.set_cookie("id", identifier)
+        session['identifier'] = identifier
         session['query'] = postQuery
 
         api = post('http://global-api/api',

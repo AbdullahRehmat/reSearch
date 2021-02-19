@@ -53,7 +53,8 @@ List of Sites either scraped by ContentScraper or to be scraped
   
 
 - www.Salaf.com                                    Requires Different Scraper
-- www.SayyidQutb.com                       Not Able To Scrape - Single Page
+- www.SayyidQutb.com                       Links to other already scraped sites -> Redundant
 - www.Alhajuri.com                               Not Able To Scrape - Single Page
 - www.AbuKhadeejah.com                  Requires Different Scraper
 - www.FatwaIslam.com                         Requires Different Scraper  
+
