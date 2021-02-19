@@ -46,10 +46,9 @@ col2 = db2[mongo_col_2]
 
 
 # Get Titles from MongoCS + Copy to Corpus
-corpus = []
-for data in col2.find():
-    corpus += data["title"]
-
+#corpus = []
+#for data in col2.find():
+#    corpus += data["title"]
 
 # Redis Streams
 while True:
@@ -64,6 +63,11 @@ while True:
 
         # Move Query from StreamA to BM25
         query = str(streamQuery)
+
+        # Get Titles from MongoCS + Copy to Corpus
+        corpus = []
+        for data in col2.find():
+            corpus += data["title"]
 
         # BM25 Config
         tokenized_query = query.split(" ")

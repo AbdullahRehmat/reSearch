@@ -36,6 +36,8 @@ List of Sites either scraped by ContentScraper or to be scraped
 ### Salafi Publications
 
 - www.salafipubs.com
+- www.SalafiSounds.com
+  - Partially Working
 
 
 
