@@ -2,7 +2,7 @@ import os
 import redis
 import json
 import pymongo
-from rank_bm25 import BM25Plus
+from rank_bm25 import BM25Plus, BM25Okapi
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -45,11 +45,6 @@ db2 = conn2[mongo_db_2]
 col2 = db2[mongo_col_2]
 
 
-# Get Titles from MongoCS + Copy to Corpus
-#corpus = []
-#for data in col2.find():
-#    corpus += data["title"]
-
 # Redis Streams
 while True:
     fromStreamA = r0.xread({'streamA': "$"}, count=1, block=0)
@@ -72,10 +67,10 @@ while True:
         # BM25 Config
         tokenized_query = query.split(" ")
         tokenized_corpus = [doc.split(" ") for doc in corpus]
-        bm25 = BM25Plus(tokenized_corpus)
+        bm25 = BM25Okapi(tokenized_corpus)
 
         # Return 15 most relavent Titles [n=15]
-        rankedResults = bm25.get_top_n(tokenized_query, corpus, n=15)
+        rankedResults = bm25.get_top_n(tokenized_query, corpus, n=20)
 
         # HTML + Title + URL List
         responseList = []

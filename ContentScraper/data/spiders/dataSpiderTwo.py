@@ -19,6 +19,6 @@ class DataSpiderTwo(Spider):
 
         for data in scrapedData:
             item = DataItem()
-            item['title'] = data.css('a.uk-link-reset::text').get(),
+            item['title'] = data.css('a.uk-link-reset::text').get() + " - Salafi Publications",
             item['url'] =  "https://www.salafipubs.com/" + data.css('a.uk-link-reset::attr(href)').get()
             yield item
