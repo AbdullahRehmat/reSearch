@@ -80,6 +80,6 @@ class DataSpiderOne(Spider):
 
         for data in scrapedData:
             item = DataItem()
-            item['title'] = data.css('a.articleTitleListSmall::attr(title').get() + " - Article",
+            item['title'] = data.css('a.articleTitleListSmall::text').get() + " - Article",
             item['url'] = data.css('a.articleTitleListSmall::attr(href)').get()
             yield item
