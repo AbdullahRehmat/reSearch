@@ -56,9 +56,8 @@ def getResultsMongoDB(identifier):
         data = i['data'][0]
         return data
 
-
+ 
 def getResultsRedis(identifier):
-    pass
     data = r1.get(identifier)
     data = literal_eval(data)
     return data
