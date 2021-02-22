@@ -45,6 +45,14 @@ db2 = conn2[mongo_db_2]
 col2 = db2[mongo_col_2]
 
 
+def createCorpus():
+    # Get Titles from MongoCS + Copy to Corpus
+    corpus = []
+    for data in col2.find():
+        corpus += data["title"]
+    return corpus
+
+
 # Redis Streams
 while True:
     fromStreamA = r0.xread({'streamA': "$"}, count=1, block=0)
@@ -60,9 +68,7 @@ while True:
         query = str(streamQuery)
 
         # Get Titles from MongoCS + Copy to Corpus
-        corpus = []
-        for data in col2.find():
-            corpus += data["title"]
+        corpus = createCorpus()
 
         # BM25 Config
         tokenized_query = query.split(" ")

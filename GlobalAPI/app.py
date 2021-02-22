@@ -74,7 +74,7 @@ class queryAPI(Resource):
         identifier = args.get('identifier')
 
         # Get Results from Redis DB0
-        time.sleep(0.1)
+        time.sleep(0.5)
 
         #results = getResultsMongoDB(identifier=identifier)
         results = getResultsRedis(identifier=identifier)
