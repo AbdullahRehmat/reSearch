@@ -7,7 +7,7 @@ html {
 .theme-light {
   --primary-text-color: #212121;
   --background-color: #ffffff;
-  --accent-color: #ffb400;
+  --accent-color: #2c528c;
   --theme-toggle-color: #595959;
   --query-border-color: #595959;
   --page-heading-color: #dadce0;
@@ -78,11 +78,6 @@ body {
   visibility: hidden;
 }
 
-#results-section {
-  margin: auto;
-  padding-bottom: 2em;
-}
-
 .page-heading {
   padding-top: 3vh;
   padding-left: 5rem;
@@ -95,17 +90,22 @@ body {
   font-size: 35px;
 }
 
+#results-section {
+  margin: auto;
+  padding-bottom: 2em;
+}
+
 #results-box {
   width: 75%;
   padding-left: 5rem;
 }
 
 .searchResult {
-  font-size: 16px;
   display: block;
   padding-top: 0.25em;
   padding-bottom: 0.25em;
   text-decoration: none;
+  font-size: 16px;
   color: var(--primary-text-color);
 }
 
@@ -118,7 +118,19 @@ body {
   -moz-transform: scale(1.07);
   -webkit-transform: scale(1.07);
   color: var(--accent-color);
-  background-color: var(--fixed-grey); /* ISSUE */
+}
+
+.resultSource {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  font-style: italic;
+  color: var(--primary-text-color);
+}
+
+.searchResult:hover > .resultSource {
+  transition: 0.5s;
+  color: var(--accent-color);
 }
 
 .admin-container {

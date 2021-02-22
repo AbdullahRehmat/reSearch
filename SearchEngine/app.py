@@ -90,11 +90,13 @@ while True:
             # Get Title
             title = result
             # Get Title's URL
-            url = col2.find_one(queryDict, {"_id": 0, "url": 1})
-            url = url["url"]
+            dbResponse = col2.find_one(
+                queryDict, {"_id": 0, "url": 1, "source": 1})
+            url = dbResponse["url"]
+            source = dbResponse["source"][0]
 
             # Format Results with HTML tags
-            htmlResponse = f"<a href=\" {url} \" class=\"searchResult\" target=\"_blank\" rel=\"noopener noreferrer\"> {title} </a><br />"
+            htmlResponse = f"<a href=\" {url} \" class=\"searchResult\" target=\"_blank\" rel=\"noopener noreferrer\"> {title} <br/> <p class=\"resultSource\"> {source} </p> </a><br />"
 
             # Add Response to List <- Redis Set Get
             responseList += [htmlResponse]

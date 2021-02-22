@@ -3,7 +3,7 @@ from scrapy.selector import Selector
 from data.items import DataItem
 
 
-class DataSpiderThree(Spider):
+class SpiderTwentyThree(Spider):
     name = "data"
 
     allowed_domains = [
@@ -185,6 +185,7 @@ class DataSpiderThree(Spider):
         for data in scrapedData:
             item = DataItem()
             #item['title'] = data.css('h3.mh-posts-list-title > a::text').get(),
-            item['title'] = data.css('h3.mh-posts-list-title > a::attr(title)').get() + " - SalafiSounds",
+            item['title'] = data.css('h3.mh-posts-list-title > a::attr(title)').get(),
+            item['source'] = 'Salafi Sounds - Audio',
             item['url'] = data.css('h3.mh-posts-list-title > a::attr(href)').get()
             yield item
