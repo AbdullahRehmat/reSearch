@@ -24,6 +24,7 @@ from data.spiders.Spider20 import SpiderTwenty
 from data.spiders.Spider21 import SpiderTwentyOne
 from data.spiders.Spider22 import SpiderTwentyTwo
 from data.spiders.Spider23 import SpiderTwentyThree
+from data.spiders.Spider24 import SpiderTwentyFour
 
 
 process = CrawlerProcess(get_project_settings())
@@ -51,5 +52,6 @@ process.crawl(SpiderTwenty)
 process.crawl(SpiderTwentyOne)
 process.crawl(SpiderTwentyTwo)
 process.crawl(SpiderTwentyThree)
+process.crawl(SpiderTwentyFour)
 
 process.start()
