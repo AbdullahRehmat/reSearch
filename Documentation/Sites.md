@@ -51,10 +51,15 @@ N/A
 ## Issues
 
 - www.Salaf.com                                    Requires Different Scraper
-- www.SayyidQutb.com                       Links to other already scraped sites -> Redundant
+
 - www.Alhajuri.com                               Not Able To Scrape - Single Page
+
 - www.FatwaIslam.com                         Requires Different Scraper  
 
+- www.SayyidQutb.com                       Links to other already scraped sites -> Redundant
 
+  
 
-- www.AbuKhadeejah.com                  Requires Different Scraper
+- www.wrightstreetmosque.com     Protection enabled
+
+- www.AbuKhadeejah.com                 Protection enabled
