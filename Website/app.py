@@ -92,6 +92,9 @@ def admin():
 
     return render_template('admin.html', matrixMCS=matrixMongoCS, matrixRedis=matrixRedis, matrixMSE=matrixMongoSE)
 
+@app.route("/legal")
+def legal():
+    return render_template('legal.html')
 
 @app.route("/robots.txt")
 def robotstxt():
