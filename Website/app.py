@@ -59,6 +59,7 @@ class matrix():
 
 
 @app.route('/', methods=('GET', 'POST'))
+@app.route('/index', methods=('GET', 'POST'))
 def index():
     form = MyForm()
     if form.validate_on_submit():
@@ -75,6 +76,9 @@ def results():
     searchResults = searchEngineAPI.getAPI()
     return render_template('results.html', searchResults=searchResults, query=query)
 
+@app.route("/sources")
+def sources():
+    return render_template('sources.html')
 
 @app.route("/admin")
 def admin():
