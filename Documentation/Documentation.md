@@ -191,21 +191,25 @@ All Records have form:
 ### Build: General 
 
 - [ ] Log Aggregation
+
 - [ ] Secure Databases
+
+- [ ] Make sure API is using JSON
+
+- [ ] Add Sources Page
+
+  
 
 
 ### Build: Website
 
 - [ ] Add Flask-Login
-- [x] Collect Metrix and Stats
 
-
+  
 
 
 ### Build: Content Scraper
 
-- [ ] Python Cron Job - Every 7 days
-- [ ] Add Multiple Sites
 - [ ] Save Article Content for ranking
 
 

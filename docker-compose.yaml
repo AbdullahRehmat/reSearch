@@ -37,10 +37,8 @@ services:
       - ./MongoSE:/data/db
     networks:
       - backend
-    #expose:
-    #  - "27017"
-    ports:
-      - 27018:27017
+    expose:
+      - "27017"
 
   mongo-cs:
     image: mongo
@@ -51,10 +49,8 @@ services:
       - ./MongoCS:/data/db
     networks:
       - backend
-    #expose:
-    #  - "27017"
-    ports:
-      - 27019:27017
+    expose:
+      - "27017"
 
   #content-scraper:
   #  hostname: content-scraper

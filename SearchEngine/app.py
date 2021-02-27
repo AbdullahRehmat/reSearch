@@ -2,7 +2,7 @@ import os
 import redis
 import json
 import pymongo
-from rank_bm25 import BM25Plus, BM25Okapi
+from rank_bm25 import BM25Plus
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -73,7 +73,7 @@ while True:
         # BM25 Config
         tokenized_query = query.split(" ")
         tokenized_corpus = [doc.split(" ") for doc in corpus]
-        bm25 = BM25Okapi(tokenized_corpus)
+        bm25 = BM25Plus(tokenized_corpus)
 
         # Return 15 most relavent Titles [n=15]
         rankedResults = bm25.get_top_n(tokenized_query, corpus, n=20)
@@ -106,7 +106,7 @@ while True:
             responseDict['data'] = [responseList]
 
     # Return Results via Redis DB1 to GlobalAPI
-    r1.set(streamIdentifier, str(responseList), ex=100)
+    r1.set(streamIdentifier, str(responseList), ex=150)
 
     # Add Results to MongoDB Col1
     col1.insert_one(responseDict)
