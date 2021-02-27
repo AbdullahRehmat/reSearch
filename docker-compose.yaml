@@ -83,23 +83,21 @@ services:
     build: ./Website
     networks:
       - frontend
-    #expose:
-    #  - "8000"
-    ports: 
-      - 80:8000
+    expose:
+      - "8000"
 
-  #nginx:
-  #  hostname: nginx
-  #  container_name: Nginx
-  #  restart: always
-  #  build: ./Nginx
-  #  networks:
-  #    - frontend
-  #  ports:
-  #    - "80:80"
-  #  depends_on:
-  #    - global-api
-  #    - website
+  nginx:
+    hostname: nginx
+    container_name: Nginx
+    restart: always
+    build: ./Nginx
+    networks:
+      - frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - global-api
+      - website
 
 networks:
   frontend:

@@ -7,7 +7,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField
 from requests import put, post, get
 from wtforms.validators import DataRequired
-from flask import Flask, render_template, redirect, url_for, jsonify, session, request
+from flask import Flask, render_template, redirect, url_for, jsonify, session, request, Response
 
 app = Flask(__name__)
 load_dotenv()
@@ -76,9 +76,11 @@ def results():
     searchResults = searchEngineAPI.getAPI()
     return render_template('results.html', searchResults=searchResults, query=query)
 
+
 @app.route("/sources")
 def sources():
     return render_template('sources.html')
+
 
 @app.route("/admin")
 def admin():
@@ -89,6 +91,13 @@ def admin():
     matrixMongoSE = matrixStats[2]
 
     return render_template('admin.html', matrixMCS=matrixMongoCS, matrixRedis=matrixRedis, matrixMSE=matrixMongoSE)
+
+
+@app.route("/robots.txt")
+def robotstxt():
+    r = Response(response="User-Agent: * \nAllow: /index")
+    r.headers["Content-Type"] = "text/plain; charset=utf-8"
+    return r
 
 
 @app.errorhandler(404)
