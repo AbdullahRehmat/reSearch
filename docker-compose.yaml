@@ -1,6 +1,29 @@
 version: "3"
 
 services:
+  #content-scraper:
+  #  hostname: content-scraper
+  #  container_name: ContentScraper
+  #  build: ./ContentScraper
+  #  volumes:
+  #    - ./ContentScraper:/usr/src/app
+  #  networks:
+  #    - backend
+  #  depends_on:
+  #    - mongo-cs
+
+  mongo-cs:
+    image: mongo
+    hostname: mongo-cs
+    container_name: MongoCS
+    restart: unless-stopped
+    volumes:
+      - ./MongoCS:/data/db
+    networks:
+      - backend
+    expose:
+      - "27017"
+
   redis-api:
     hostname: redis-api
     container_name: RedisAPI
@@ -8,8 +31,8 @@ services:
     restart: unless-stopped
     networks:
       - backend
-    expose:
-      - "6379"
+    #expose:
+    #  - "6379"
     ports:
       - 6379:6379
 
@@ -39,29 +62,6 @@ services:
       - backend
     expose:
       - "27017"
-
-  mongo-cs:
-    image: mongo
-    hostname: mongo-cs
-    container_name: MongoCS
-    restart: unless-stopped
-    volumes:
-      - ./MongoCS:/data/db
-    networks:
-      - backend
-    expose:
-      - "27017"
-
-  #content-scraper:
-  #  hostname: content-scraper
-  #  container_name: ContentScraper
-  #  build: ./ContentScraper
-  #  volumes:
-  #    - ./ContentScraper:/usr/src/app
-  #  networks:
-  #    - backend
-  #  depends_on:
-  #    - mongo-cs
 
   search-engine:
     hostname: search-engine
