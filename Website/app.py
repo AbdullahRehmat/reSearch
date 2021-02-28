@@ -20,19 +20,9 @@ def randomword(length):  # Generate Random String
     return ''.join(random.choice(letters) for i in range(length))
 
 
-class searchEngineAPI():
+class globalAPI():
 
-    def getAPI():  # Get Results
-        if 'identifier' in session:
-            identifier = session['identifier']
-            api = get('http://global-api/api',
-                      data={"identifier": identifier}).json()
-
-            return api
-        else:
-            return "No Identifier was found... \n", 400
-
-    def postAPI(form):  # Send Query
+    def postQuery(form):  # Send Query
         postQuery = form.query.data
         postQuery = postQuery.title()
         identifier = randomword(10)
@@ -40,13 +30,25 @@ class searchEngineAPI():
         session['identifier'] = identifier
         session['query'] = postQuery
 
-        api = post('http://global-api/api',
+        api = post('http://global-api/api/query',
                    data={"identifier": identifier, "query": postQuery}).json()
 
         return api
 
+    def getResults():  # Get Results from GlobalAPI
+        if 'identifier' in session:
+            identifier = session['identifier']
+            url = str('http://global-api/api/') + identifier
+            api = get(url).json()
+
+            return api
+
+        else:
+            return "No Identifier was found... \n", 400
+
 
 class MyForm(FlaskForm):
+
     query = StringField('Search', validators=[DataRequired()],
                         render_kw={"placeholder": "Search..."})
 
@@ -64,7 +66,7 @@ def index():
     form = MyForm()
     if form.validate_on_submit():
 
-        searchEngineAPI.postAPI(form)
+        globalAPI.postQuery(form)
         return redirect(url_for('results'))
 
     return render_template('index.html', form=form)
@@ -73,7 +75,7 @@ def index():
 @app.route("/results")
 def results():
     query = session['query']
-    searchResults = searchEngineAPI.getAPI()
+    searchResults = globalAPI.getResults()
     return render_template('results.html', searchResults=searchResults, query=query)
 
 
@@ -92,9 +94,11 @@ def admin():
 
     return render_template('admin.html', matrixMCS=matrixMongoCS, matrixRedis=matrixRedis, matrixMSE=matrixMongoSE)
 
+
 @app.route("/legal")
 def legal():
     return render_template('legal.html')
+
 
 @app.route("/robots.txt")
 def robotstxt():

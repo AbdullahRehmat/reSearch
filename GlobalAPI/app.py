@@ -56,7 +56,7 @@ def getResultsMongoDB(identifier):
         data = i['data'][0]
         return data
 
- 
+
 def getResultsRedis(identifier):
     data = r1.get(identifier)
     data = literal_eval(data)
@@ -64,23 +64,6 @@ def getResultsRedis(identifier):
 
 
 class queryAPI(Resource):
-
-    def get(self):  # Send Results
-        parser = reqparse.RequestParser()
-        parser.add_argument('identifier', required=True)
-        args = parser.parse_args()
-
-        # Parse Identifier from args
-        identifier = args.get('identifier')
-
-        # Get Results from Redis DB0
-        time.sleep(0.5)
-
-        #results = getResultsMongoDB(identifier=identifier)
-        results = getResultsRedis(identifier=identifier)
-
-        # Return Results
-        return results, 200
 
     def post(self):  # Reveive Query
         parser = reqparse.RequestParser()
@@ -93,6 +76,19 @@ class queryAPI(Resource):
 
         # Return Data to Site
         return {'data': args}, 202
+
+
+class resultsAPI(Resource):
+
+    def get(self, identifier):  # Send Results
+        time.sleep(0.5)
+        # Get Results from MongoDB
+        #results = getResultsMongoDB(identifier=identifier)
+        # Get Results from Redis DB0
+        results = getResultsRedis(identifier=identifier)
+
+        # Return Results
+        return results, 200
 
 
 class matrix(Resource):
@@ -109,5 +105,6 @@ class matrix(Resource):
 
 
 # Create routes
-api.add_resource(queryAPI, "/api")
+api.add_resource(queryAPI, "/api/query")
+api.add_resource(resultsAPI, "/api/<identifier>")
 api.add_resource(matrix, "/matrix")
