@@ -65,7 +65,7 @@ while True:
         streamIdentifier = streamContent["identifier"]
 
         # Move Query from StreamA to BM25
-        query = str(streamQuery)
+        query = str(streamQuery).title()
 
         # Get Titles from MongoCS + Copy to Corpus
         corpus = createCorpus()

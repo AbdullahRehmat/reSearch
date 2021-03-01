@@ -23,15 +23,15 @@ def generateIdentifier(length):  # Generate Random String
 class globalAPI():
 
     def postQuery(form):  # Send Query
-        searchQuery = form.query.data
-        searchQuery = searchQuery.title()
+        query = form.query.data
+        query = query.title()
         identifier = generateIdentifier(10)
 
         session['identifier'] = identifier
-        session['query'] = searchQuery
+        session['query'] = query
 
         api = post('http://global-api/api/query',
-                   data={"identifier": identifier, "query": searchQuery}).json()
+                   data={"identifier": identifier, "query": query}).json()
 
         return api
 
