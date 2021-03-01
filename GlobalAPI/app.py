@@ -75,8 +75,7 @@ class queryAPI(Resource):
         r0.xadd('streamA', fields=args)
 
         # Return Data to Site
-        return {'data': args}, 202
-
+        return {'message': 'Success', 'data': args}, 202
 
 class resultsAPI(Resource):
 

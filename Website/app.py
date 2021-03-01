@@ -15,7 +15,7 @@ load_dotenv()
 app.config['SECRET_KEY'] = os.getenv("FLASK_SECRET_KEY")
 
 
-def randomword(length):  # Generate Random String
+def generateIdentifier(length):  # Generate Random String
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for i in range(length))
 
@@ -23,15 +23,15 @@ def randomword(length):  # Generate Random String
 class globalAPI():
 
     def postQuery(form):  # Send Query
-        postQuery = form.query.data
-        postQuery = postQuery.title()
-        identifier = randomword(10)
+        searchQuery = form.query.data
+        searchQuery = searchQuery.title()
+        identifier = generateIdentifier(10)
 
         session['identifier'] = identifier
-        session['query'] = postQuery
+        session['query'] = searchQuery
 
         api = post('http://global-api/api/query',
-                   data={"identifier": identifier, "query": postQuery}).json()
+                   data={"identifier": identifier, "query": searchQuery}).json()
 
         return api
 
