@@ -55,7 +55,7 @@ def createCorpus():
 
 # Outputs Title formatted with HTML + Other relavent information
 def htmlResponse(title, col2):
-    # Get Title's URL
+    # Get Title's URL + Source
     dbResponse = col2.find_one(
         {"title": title}, {"_id": 0, "url": 1, "source": 1})
     url = dbResponse["url"][0]
@@ -90,7 +90,7 @@ while True:
         tokenized_corpus = [doc.split(" ") for doc in corpus]
         bm25 = BM25Okapi(tokenized_corpus)
 
-        # Return 15 most relavent Titles [n=15]
+        # Return n most relavent Titles
         rankedTitles = bm25.get_top_n(tokenized_query, corpus, n=15)
 
         # HTML + Title + URL List
