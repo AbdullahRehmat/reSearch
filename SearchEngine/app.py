@@ -2,8 +2,8 @@ import os
 import redis
 import json
 import pymongo
-from rank_bm25 import BM25Okapi
 from dotenv import load_dotenv
+from rank_bm25 import BM25Okapi
 
 load_dotenv()
 
@@ -45,15 +45,30 @@ db2 = conn2[mongo_db_2]
 col2 = db2[mongo_col_2]
 
 
+# Get Titles from MongoCS + Return as Corpus
 def createCorpus():
-    # Get Titles from MongoCS + Return as Corpus
     corpus = []
     for data in col2.find():
         corpus += data["title"]
     return corpus
 
-# Run at Start of Script to decrease Search time + DB Calls
+
+# Outputs Title formatted with HTML + Other relavent information
+def htmlResponse(title, col2):
+    # Get Title's URL
+    dbResponse = col2.find_one(
+        {"title": title}, {"_id": 0, "url": 1, "source": 1})
+    url = dbResponse["url"][0]
+    source = dbResponse["source"][0]
+
+    # Format Results with HTML tags
+    htmlResponse = f"<a href=\" {url} \" class=\"searchResult\" target=\"_blank\" rel=\"noopener noreferrer\"> {title} <br/> <p class=\"resultSource\"> {source} </p> </a><br />"
+    return htmlResponse
+
+
+# Runs at Start of Script to decrease Search time + DB Calls
 corpus = createCorpus()
+
 
 # Redis Streams
 while True:
@@ -67,6 +82,7 @@ while True:
         streamIdentifier = streamContent["identifier"]
 
         # Move Query from StreamA to BM25
+        # Converts Query to Uppercase to improve search results
         query = str(streamQuery).title()
 
         # BM25 Config
@@ -75,30 +91,17 @@ while True:
         bm25 = BM25Okapi(tokenized_corpus)
 
         # Return 15 most relavent Titles [n=15]
-        rankedResults = bm25.get_top_n(tokenized_query, corpus, n=15)
+        rankedTitles = bm25.get_top_n(tokenized_query, corpus, n=15)
 
         # HTML + Title + URL List
         responseList = []
         responseDict = {}
 
         # For List of ranked Titles:
-        for result in rankedResults:
+        for title in rankedTitles:
 
-            # Find Title in DB
-            queryDict = {"title": result}
-            # Get Title
-            title = result
-            # Get Title's URL
-            dbResponse = col2.find_one(
-                queryDict, {"_id": 0, "url": 1, "source": 1})
-            url = dbResponse["url"]
-            source = dbResponse["source"][0]
-
-            # Format Results with HTML tags
-            htmlResponse = f"<a href=\" {url} \" class=\"searchResult\" target=\"_blank\" rel=\"noopener noreferrer\"> {title} <br/> <p class=\"resultSource\"> {source} </p> </a><br />"
-
-            # Add Response to List <- Redis Set Get
-            responseList += [htmlResponse]
+            response = htmlResponse(title, col2)
+            responseList += [response]
 
             # Add List to Dict <- MongoDb Col1
             responseDict['_id'] = streamIdentifier
@@ -108,4 +111,5 @@ while True:
     r1.set(streamIdentifier, str(responseList), ex=150)
 
     # Add Results to MongoDB Col1
+    # Currently used by MetriX Service Only
     col1.insert_one(responseDict)
