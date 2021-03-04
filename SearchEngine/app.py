@@ -46,12 +46,14 @@ col2 = db2[mongo_col_2]
 
 
 def createCorpus():
-    # Get Titles from MongoCS + Copy to Corpus
+    # Get Titles from MongoCS + Return as Corpus
     corpus = []
     for data in col2.find():
         corpus += data["title"]
     return corpus
 
+# Run at Start of Script to decrease Search time + DB Calls
+corpus = createCorpus()
 
 # Redis Streams
 while True:
@@ -67,16 +69,13 @@ while True:
         # Move Query from StreamA to BM25
         query = str(streamQuery).title()
 
-        # Get Titles from MongoCS + Copy to Corpus
-        corpus = createCorpus()
-
         # BM25 Config
         tokenized_query = query.split(" ")
         tokenized_corpus = [doc.split(" ") for doc in corpus]
         bm25 = BM25Okapi(tokenized_corpus)
 
         # Return 15 most relavent Titles [n=15]
-        rankedResults = bm25.get_top_n(tokenized_query, corpus, n=20)
+        rankedResults = bm25.get_top_n(tokenized_query, corpus, n=15)
 
         # HTML + Title + URL List
         responseList = []

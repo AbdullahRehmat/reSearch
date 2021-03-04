@@ -51,16 +51,16 @@ db2 = conn2[mongo_db_2]
 col2 = db2[mongo_col_2]
 
 
-def getResultsMongoDB(identifier):
-    for i in col1.find({"_id": identifier}):
-        data = i['data'][0]
-        return data
-
-
 def getResultsRedis(identifier):
     data = r1.get(identifier)
     data = literal_eval(data)
     return data
+
+
+def getResultsMongoDB(identifier):
+    for i in col1.find({"_id": identifier}):
+        data = i['data'][0]
+        return data
 
 
 class queryAPI(Resource):
@@ -77,12 +77,14 @@ class queryAPI(Resource):
         # Return Data to Site
         return {'message': 'Success', 'data': args}, 202
 
+
 class resultsAPI(Resource):
 
     def get(self, identifier):  # Send Results
         time.sleep(0.5)
         # Get Results from MongoDB
         #results = getResultsMongoDB(identifier=identifier)
+
         # Get Results from Redis DB0
         results = getResultsRedis(identifier=identifier)
 

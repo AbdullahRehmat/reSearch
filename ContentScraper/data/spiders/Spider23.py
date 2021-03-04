@@ -184,7 +184,6 @@ class SpiderTwentyThree(Spider):
 
         for data in scrapedData:
             item = DataItem()
-            #item['title'] = data.css('h3.mh-posts-list-title > a::text').get(),
             item['title'] = data.css('h3.mh-posts-list-title > a::attr(title)').get(),
             item['source'] = 'Salafi Sounds - Audio',
             item['url'] = data.css('h3.mh-posts-list-title > a::attr(href)').get()

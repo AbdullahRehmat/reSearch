@@ -24,7 +24,7 @@ class globalAPI():
 
     def postQuery(form):  # Send Query
         query = form.query.data
-        query = query.title()
+        #query = query.title()  #################TESTING
         identifier = generateIdentifier(10)
 
         session['identifier'] = identifier
