@@ -71,7 +71,7 @@ class queryAPI(Resource):
         parser.add_argument('query', required=True)
         args = parser.parse_args()
 
-        # Add message to Stream
+        # Add message to Stream -> SearchEngine
         r0.xadd('streamA', fields=args)
 
         # Return Data to Site

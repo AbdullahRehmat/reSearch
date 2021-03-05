@@ -24,7 +24,6 @@ class globalAPI():
 
     def postQuery(form):  # Send Query
         query = form.query.data
-        #query = query.title()  #################TESTING
         identifier = generateIdentifier(10)
 
         session['identifier'] = identifier
@@ -41,7 +40,7 @@ class globalAPI():
             url = str('http://global-api/api/') + identifier
             api = get(url).json()
 
-            return api
+            return api, 200
 
         else:
             return "No Identifier was found... \n", 400
@@ -92,7 +91,7 @@ def admin():
     matrixRedis = matrixStats[1]
     matrixMongoSE = matrixStats[2]
 
-    return render_template('admin.html', matrixMCS=matrixMongoCS, matrixRedis=matrixRedis, matrixMSE=matrixMongoSE)
+    return render_template('admin.html', matrixMCS=matrixMongoCS, matrixMSE=matrixMongoSE, matrixRedis=matrixRedis)
 
 
 @app.route("/legal")
