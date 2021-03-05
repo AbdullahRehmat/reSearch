@@ -40,7 +40,7 @@ class globalAPI():
             url = str('http://global-api/api/') + identifier
             api = get(url).json()
 
-            return api, 200
+            return api
 
         else:
             return "No Identifier was found... \n", 400
