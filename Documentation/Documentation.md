@@ -114,10 +114,6 @@ All responses have form:
 
 - Messages:  GlobalAPI ->  SearchEngine
 
-**Stream B**
-
-- Results:  SearchEngine -> GlobalAPI
-
 
 
 ### DB 1
@@ -190,15 +186,10 @@ All Records have form:
 
 ### Build: General 
 
-- [ ] Log Aggregation
-
 - [ ] Secure Databases
 
-- [ ] Make sure API is using JSON
-
-- [ ] Add Sources Page
-
   
+
 
 
 ### Build: Website
