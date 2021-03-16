@@ -82,8 +82,6 @@ class resultsAPI(Resource):
 
     def get(self, identifier):  # Send Results
         time.sleep(0.5)
-        # Get Results from MongoDB
-        #results = getResultsMongoDB(identifier=identifier)
 
         # Get Results from Redis DB0
         results = getResultsRedis(identifier=identifier)

@@ -58,7 +58,7 @@ def htmlResponse(title, col2):
     # Get Title's URL + Source
     dbResponse = col2.find_one(
         {"title": title}, {"_id": 0, "url": 1, "source": 1})
-    url = dbResponse["url"][0]
+    url = dbResponse["url"]
     source = dbResponse["source"][0]
 
     # Format Results with HTML tags
