@@ -90,7 +90,7 @@ class resultsAPI(Resource):
         return results, 200
 
 
-class matrix(Resource):
+class metrix(Resource):
 
     def get(self):
         response = []
@@ -106,4 +106,4 @@ class matrix(Resource):
 # Create routes
 api.add_resource(queryAPI, "/api/query")
 api.add_resource(resultsAPI, "/api/<identifier>")
-api.add_resource(matrix, "/matrix")
+api.add_resource(metrix, "/metrix")

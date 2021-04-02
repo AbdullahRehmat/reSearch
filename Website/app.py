@@ -52,10 +52,10 @@ class MyForm(FlaskForm):
                         render_kw={"placeholder": "Search..."})
 
 
-class matrix():
+class metrix():
 
-    def stats():
-        api = get('http://global-api/matrix')
+    def data():
+        api = get('http://global-api/metrix')
         return api
 
 
@@ -84,14 +84,11 @@ def sources():
 
 
 @app.route("/admin")
-def admin():
-    matrixStats = matrix.stats().text
-    matrixStats = literal_eval(matrixStats)
-    matrixMongoCS = matrixStats[0]
-    matrixRedis = matrixStats[1]
-    matrixMongoSE = matrixStats[2]
 
-    return render_template('admin.html', matrixMCS=matrixMongoCS, matrixMSE=matrixMongoSE, matrixRedis=matrixRedis)
+def admin():
+    metrixData = metrix.data().text
+    metrixData = literal_eval(metrixData)
+    return render_template('admin.html', metrixData=metrixData)
 
 
 @app.route("/legal")
