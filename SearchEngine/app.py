@@ -45,41 +45,33 @@ db2 = conn2[mongo_db_2]
 col2 = db2[mongo_col_2]
 
 
-# Get Titles from MongoCS + Return as Corpus
-def createCorpus():
-    corpus = []
-    for data in col2.find():
-        corpus += data["title"]
-    return corpus
+class searchEngine():
 
+    # Get Titles from MongoCS + Return as Corpus
+    def createCorpus():
+        corpus = []
+        for data in col2.find():
+            corpus += data["title"]
+        return corpus
 
-# Outputs Title formatted with HTML + Other relavent information
-def htmlResponse(title, col2):
-    # Get Title's URL + Source
-    dbResponse = col2.find_one(
-        {"title": title}, {"_id": 0, "url": 1, "source": 1})
-    url = dbResponse["url"]
-    source = dbResponse["source"][0]
+    # Outputs Title formatted with HTML + Other relavent information
+    def htmlResponse(title, col2):
+        # Get Title's URL + Source
+        dbResponse = col2.find_one(
+            {"title": title}, {"_id": 0, "url": 1, "source": 1})
+        url = dbResponse["url"][0]
+        source = dbResponse["source"][0]
 
-    # Format Results with HTML tags
-    htmlResponse = f"<a href=\" {url} \" class=\"searchResult\" target=\"_blank\" rel=\"noopener noreferrer\"> {title} <br/> <p class=\"resultSource\"> {source} </p> </a><br />"
-    return htmlResponse
+        # Format Results with HTML tags
+        htmlResponse = f"<a href=\" {url} \" class=\"searchResult\" target=\"_blank\" rel=\"noopener noreferrer\"> {title} <br/> <p class=\"resultSource\"> {source} </p> </a><br />"
+        return htmlResponse
 
-
-# Runs at Start of Script to decrease Search time + DB Calls
-corpus = createCorpus()
-
-
-# Redis Streams
-while True:
-    fromStreamA = r0.xread({'streamA': "$"}, count=1, block=0)
-
-    if fromStreamA != {}:
-
+    # Takes query as input, returns sorted search results to Redis & MongoDB
+    def engine(col1, r1, streamAData):
         # Get Query from StreamA as String
-        streamContent = fromStreamA[0][1][0][1]
-        streamQuery = streamContent["query"]
-        streamIdentifier = streamContent["identifier"]
+        streamData = streamAData[0][1][0][1]
+        streamQuery = streamData["query"]
+        streamIdentifier = streamData["identifier"]
 
         # Move Query from StreamA to BM25
         # Converts Query to Uppercase to improve search results
@@ -100,16 +92,29 @@ while True:
         # For List of ranked Titles:
         for title in rankedTitles:
 
-            response = htmlResponse(title, col2)
+            response = searchEngine.htmlResponse(title, col2)
             responseList += [response]
 
             # Add List to Dict <- MongoDb Col1
             responseDict['_id'] = streamIdentifier
             responseDict['data'] = [responseList]
 
-    # Return Results via Redis DB1 to GlobalAPI
-    r1.set(streamIdentifier, str(responseList), ex=150)
+        # Return Results via Redis DB1 to GlobalAPI
+        r1.set(streamIdentifier, str(responseList), ex=150)
 
-    # Add Results to MongoDB Col1
-    # Currently used by MetriX Service Only
-    col1.insert_one(responseDict)
+        # Add Results to MongoDB Col1
+        # Currently used by MetriX Service Only
+        col1.insert_one(responseDict)
+
+
+# Runs at Start of Script to decrease Search time + DB Calls
+corpus = searchEngine.createCorpus()
+
+
+# Redis Streams
+while True:
+    streamAData = r0.xread({'streamA': "$"}, count=1, block=0)
+
+    if streamAData != {}:
+        # Process query via Engine Function
+        searchEngine.engine(col1, r1, streamAData)
