@@ -4,6 +4,7 @@ import json
 import pymongo
 from dotenv import load_dotenv
 from rank_bm25 import BM25Okapi
+import asyncio
 
 load_dotenv()
 
