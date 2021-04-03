@@ -55,11 +55,11 @@ class searchEngine():
         return corpus
 
     # Outputs Title formatted with HTML + Other relavent information
-    def htmlResponse(title, col2):
+    def htmlResponse(col2, title):
         # Get Title's URL + Source
         dbResponse = col2.find_one(
             {"title": title}, {"_id": 0, "url": 1, "source": 1})
-        url = dbResponse["url"][0]
+        url = dbResponse["url"]
         source = dbResponse["source"][0]
 
         # Format Results with HTML tags
@@ -92,7 +92,7 @@ class searchEngine():
         # For List of ranked Titles:
         for title in rankedTitles:
 
-            response = searchEngine.htmlResponse(title, col2)
+            response = searchEngine.htmlResponse(col2, title)
             responseList += [response]
 
             # Add List to Dict <- MongoDb Col1
