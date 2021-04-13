@@ -101,7 +101,7 @@ class searchEngine():
             responseDict['data'] = [responseList]
 
         # Return Results via Redis DB1 to GlobalAPI
-        r1.set(streamIdentifier, str(responseList), ex=150)
+        r1.set(streamIdentifier, str(responseList), ex=300)
 
         # Add Results to MongoDB Col1
         # Currently used by MetriX Service Only
