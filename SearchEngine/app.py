@@ -84,7 +84,7 @@ class searchEngine():
         bm25 = BM25Okapi(tokenized_corpus)
 
         # Return n most relavent Titles
-        rankedTitles = bm25.get_top_n(tokenized_query, corpus, n=15)
+        rankedTitles = bm25.get_top_n(tokenized_query, corpus, n=25)
 
         # HTML + Title + URL List
         responseList = []
