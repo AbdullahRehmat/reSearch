@@ -4,7 +4,6 @@ import json
 import pymongo
 from dotenv import load_dotenv
 from rank_bm25 import BM25Okapi
-import asyncio
 
 load_dotenv()
 
@@ -83,8 +82,8 @@ class searchEngine():
         tokenized_corpus = [doc.split(" ") for doc in corpus]
         bm25 = BM25Okapi(tokenized_corpus)
 
-        # Return n most relavent Titles
-        rankedTitles = bm25.get_top_n(tokenized_query, corpus, n=25)
+        # Return n most relavent Titles + Time taken for Set O(1) < List O(n)
+        rankedTitles = set(bm25.get_top_n(tokenized_query, corpus, n=25))
 
         # HTML + Title + URL List
         responseList = []
@@ -104,7 +103,7 @@ class searchEngine():
         r1.set(streamIdentifier, str(responseList), ex=300)
 
         # Add Results to MongoDB Col1
-        # Currently used by MetriX Service Only
+        # Used by MetriX Service Only
         col1.insert_one(responseDict)
 
 
