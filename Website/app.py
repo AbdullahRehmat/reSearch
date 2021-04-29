@@ -74,7 +74,7 @@ def index():
 @app.route("/results")
 def results():
     query = session['query']
-    searchResults = globalAPI.getResults()
+    searchResults = set(globalAPI.getResults())
     return render_template('results.html', searchResults=searchResults, query=query)
 
 
