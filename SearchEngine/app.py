@@ -68,7 +68,7 @@ class searchEngine():
 
     # Takes query as input, returns sorted search results to Redis & MongoDB
     def engine(col1, r1, streamAData):
-        # Get Query from StreamA as String
+        # Get Data from StreamA as Strings
         streamData = streamAData[0][1][0][1]
         streamQuery = streamData["query"]
         streamIdentifier = streamData["identifier"]
