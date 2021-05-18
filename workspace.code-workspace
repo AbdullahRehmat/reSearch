@@ -9,6 +9,10 @@
 			"path": "GlobalAPI"
 		},
 		{
+			"name": "GoAPI",
+			"path": "GoAPI"
+		},
+		{
 			"name": "MongoCS",
 			"path": "MongoCS"
 		},
