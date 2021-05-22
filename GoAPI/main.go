@@ -2,11 +2,9 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/go-redis/redis/v8"
-	//"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -15,11 +13,10 @@ var (
 	RedisAddr string = "localhost:6379"
 	RedisPass string = "password"
 	RCtx             = context.Background()
-
-	MongoPort string = ":27018"
+	MCtx             = context.TODO()
 )
 
-func RDB(x int) *redis.Client {
+func RedisDB(x int) *redis.Client {
 	db := redis.NewClient(&redis.Options{
 		Addr:     RedisAddr,
 		Password: RedisPass,
@@ -34,37 +31,33 @@ func RDB(x int) *redis.Client {
 	return db
 }
 
-func MDB(dbHost, dbName, dbColl string) *mongo.Collection {
-
-	var MongoAddr string = "mongodb://" + dbHost + MongoPort
-
-	clientOptions := options.Client().ApplyURI(MongoAddr)
+func MongoDB(host string) *mongo.Client {
+	clientOptions := options.Client().ApplyURI("mongodb://" + host + ":27019/")
 	client, err := mongo.Connect(context.TODO(), clientOptions)
+
 	if err != nil {
-		log.Fatal("Failed to Connect to MongoDB: ", err)
+		log.Fatal("Failed to Connect to MongoDB ", err)
 	}
 
-	collection := client.Database(dbName).Collection(dbColl)
+	err = client.Ping(context.TODO(), nil)
 
-	return collection
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return client
 }
 
-//func getRedisResults(identifier string) string {
-//	return "test"
-//}
-//
-//func getMongoResults(identifier string) string {
-//	return "test"
-//}
-//
-//func apiEndpoints() {
-//}
+// Connect  to Redis and MongoDB
+// Function: Get Results From Redis
+// Function: Get Results From MongoDB
+// Create API Endpoints
+// Assign relavent Logic to API Endpoints
 
 func main() {
-	rDB0 := RDB(0)
-	defer rDB0.Close()
-	fmt.Println(rDB0.Ping(RCtx))
+	//m := MongoDB("localhost")
+	//defer m.Disconnect(MCtx)
+	//collection := m.Database("ContentScraperDB").Collection("ScrapedDataS1")
+	//fmt.Println(collection.EstimatedDocumentCount(MCtx))
 
-	mDB0 := MDB("localhost", "SearchEngineDB", "htmlResults")
-	fmt.Print(mDB0.CountDocuments(context.TODO(), nil, nil))
 }
