@@ -65,7 +65,7 @@ def getResultsMongoDB(identifier):
 
 class queryAPI(Resource):
 
-    def post(self):  # Reveive Query
+    def post(self):  # Reveive Query from Client
         parser = reqparse.RequestParser()
         parser.add_argument('identifier', required=True)
         parser.add_argument('query', required=True)
@@ -80,7 +80,7 @@ class queryAPI(Resource):
 
 class resultsAPI(Resource):
 
-    def get(self, identifier):  # Send Results
+    def get(self, identifier):  # Send Results to Client
         time.sleep(0.5)
 
         # Get Results from Redis DB0
@@ -104,6 +104,6 @@ class metrix(Resource):
 
 
 # Create routes
-api.add_resource(queryAPI, "/api/query")
-api.add_resource(resultsAPI, "/api/<identifier>")
-api.add_resource(metrix, "/metrix")
+api.add_resource(queryAPI, "/api/query")              #POST
+api.add_resource(resultsAPI, "/api/<identifier>")     #GET
+api.add_resource(metrix, "/metrix")                   #GET
