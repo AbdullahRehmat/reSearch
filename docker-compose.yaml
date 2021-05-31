@@ -36,8 +36,10 @@ services:
     restart: unless-stopped
     networks:
       - backend
-    expose:
-      - "6379"
+    #expose:
+    #  - "6379"
+    ports: 
+      - "6379:6379"
 
   #content-scraper:
   #  hostname: content-scraper
@@ -62,8 +64,31 @@ services:
       - backend
     expose:
       - "80"
+    ports: 
+      - "8000:80"
     depends_on:
       - redis-api
+      - mongo-cs
+      - mongo-se
+
+  go-api:
+    hostname: go-api
+    container_name: GoAPI
+    build: ./GoAPI
+    restart: unless-stopped
+    networks:
+      - frontend 
+      - backend
+    depends_on: 
+      -redis-api
+    #expose: 
+    #    - "80"
+    ports: 
+      - "5000:80"
+    depends_on:
+      - redis-api
+      - mongo-cs
+      - mongo-se
 
   search-engine:
     hostname: search-engine
