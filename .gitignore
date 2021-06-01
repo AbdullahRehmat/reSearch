@@ -1,9 +1,7 @@
 MongoSE/
 MongoCS/
-Test/
+Testing/
 
-workspace.code-workspace
-
+*workspace.code-workspace
 *__pycache__/
 *.vscode/
-!.gitignore
