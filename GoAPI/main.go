@@ -61,8 +61,12 @@ type MongoDoc struct {
 func redisResults(identifier string) string {
 	db := RedisDB(1)
 	defer db.Close()
-	data := db.Get(RCtx, identifier)
-	return data.String()
+	data, err := db.Get(RCtx, identifier).Result()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return data
 }
 
 // Function: Get Results From MongoDB
