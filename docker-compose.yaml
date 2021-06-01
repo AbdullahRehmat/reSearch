@@ -36,10 +36,8 @@ services:
     restart: unless-stopped
     networks:
       - backend
-    #expose:
-    #  - "6379"
-    ports: 
-      - "6379:6379"
+    expose:
+      - "6379"
 
   #content-scraper:
   #  hostname: content-scraper
@@ -62,8 +60,8 @@ services:
     networks:
       - frontend
       - backend
-    expose:
-      - "80"
+    #expose:
+    #  - "80"
     ports: 
       - "8000:80"
     depends_on:
@@ -100,6 +98,7 @@ services:
     depends_on:
       - redis-api
       - global-api
+      - go-api
       - mongo-se
       - mongo-cs
 
@@ -124,6 +123,7 @@ services:
       - "80:80"
     depends_on:
       - global-api
+      - go-api
       - website
 
 networks:
