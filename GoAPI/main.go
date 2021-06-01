@@ -19,7 +19,7 @@ var (
 	MCtx             = context.TODO()
 )
 
-// Connect  to Redis and MongoDB
+// Provide Connection to Redis Cache
 func RedisDB(x int) *redis.Client {
 	db := redis.NewClient(&redis.Options{
 		Addr:     RedisAddr,
@@ -35,6 +35,7 @@ func RedisDB(x int) *redis.Client {
 	return db
 }
 
+// Provide Connection to MongoDB
 func MongoDB(host, port string) *mongo.Client {
 	clientOptions := options.Client().ApplyURI("mongodb://" + host + ":" + port + "/")
 	client, err := mongo.Connect(context.TODO(), clientOptions)
@@ -52,22 +53,22 @@ func MongoDB(host, port string) *mongo.Client {
 	return client
 }
 
-type MongoDoc struct {
-	ID   string
-	Data string
-}
+//type MongoDoc struct {
+//	ID   string
+//	Data string
+//}
 
 // Function: Get Results From Redis
-func redisResults(identifier string) string {
-	db := RedisDB(1)
-	defer db.Close()
-	data, err := db.Get(RCtx, identifier).Result()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return data
-}
+//func redisResults(identifier string) string {
+//	db := RedisDB(1)
+//	defer db.Close()
+//	data, err := db.Get(RCtx, identifier).Result()
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//
+//	return data
+//}
 
 // Function: Get Results From MongoDB
 //func mongoResults(identifier string) MongoDoc {
@@ -114,21 +115,28 @@ func queryAPI(w http.ResponseWriter, r *http.Request) {
 	}{200, "OK"})
 }
 
-// Provide Results to Client
+// Return Results to Client
 func resultsAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 
 	params := mux.Vars(r)
 	identifier := params["identifier"]
 
-	results := redisResults(identifier)
+	//results := redisResults(identifier)
+
+	db := RedisDB(1)
+	defer db.Close()
+	results, err := db.Get(RCtx, identifier).Result()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	json.NewEncoder(w).Encode(struct {
 		Data string
 	}{results})
 }
 
-// Provide Metrix & Stats
+// Return Metrix & Stats
 func metrix(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 
@@ -137,7 +145,7 @@ func metrix(w http.ResponseWriter, r *http.Request) {
 	}{"Not Implemented Yet"})
 }
 
-// Create API Endpoints
+// Create API & Handle Endpoints
 func main() {
 	router := mux.NewRouter()
 
