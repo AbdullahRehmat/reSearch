@@ -7,9 +7,7 @@ reSearch is a lightweight, fast Search Engine written in Python and built with F
 ### Installation
 
 Run with [Docker-Compose](https://docs.docker.com/compose/)
-
-> cd ./reSearch
->
+  
 > ./start.sh
 
 
