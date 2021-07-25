@@ -29,7 +29,7 @@ class globalAPI():
         session['identifier'] = identifier
         session['query'] = query
 
-        api = post('http://global-api/api/query',
+        api = post('http://go-api/api/query',
                    data={"identifier": identifier, "query": query}).json()
 
         return api

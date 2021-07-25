@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/mux"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -19,7 +20,7 @@ var (
 	MCtx             = context.TODO()
 )
 
-// Provide Connection to Redis Cache
+// Redis Cache Connection
 func RedisDB(x int) *redis.Client {
 	db := redis.NewClient(&redis.Options{
 		Addr:     RedisAddr,
@@ -35,7 +36,7 @@ func RedisDB(x int) *redis.Client {
 	return db
 }
 
-// Provide Connection to MongoDB
+// MongoDB Connection
 func MongoDB(host, port string) *mongo.Client {
 	clientOptions := options.Client().ApplyURI("mongodb://" + host + ":" + port + "/")
 	client, err := mongo.Connect(context.TODO(), clientOptions)
@@ -53,10 +54,10 @@ func MongoDB(host, port string) *mongo.Client {
 	return client
 }
 
-//type MongoDoc struct {
-//	ID   string
-//	Data string
-//}
+type MongoDoc struct {
+	ID   string
+	Data string
+}
 
 // Function: Get Results From Redis
 //func redisResults(identifier string) string {
@@ -71,22 +72,22 @@ func MongoDB(host, port string) *mongo.Client {
 //}
 
 // Function: Get Results From MongoDB
-//func mongoResults(identifier string) MongoDoc {
-//
-//	var results MongoDoc
-//
-//	db := MongoDB("mongo-se", "27018")
-//	defer db.Disconnect(MCtx)
-//	coll := db.Database("SearchEngineDB").Collection("htmlResults")
-//	filter := bson.D{{Key: "_id", Value: identifier}}
-//	err := coll.FindOne(MCtx, filter).Decode(&results)
-//
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//
-//	return results
-//}
+func mongoResults(identifier string) MongoDoc {
+
+	var results MongoDoc
+
+	db := MongoDB("mongo-se", "27018")
+	defer db.Disconnect(MCtx)
+	coll := db.Database("SearchEngineDB").Collection("htmlResults")
+	filter := bson.D{{Key: "_id", Value: identifier}}
+	err := coll.FindOne(MCtx, filter).Decode(&results)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return results
+}
 
 // Receive Query from Client
 func queryAPI(w http.ResponseWriter, r *http.Request) {
@@ -126,10 +127,7 @@ func resultsAPI(w http.ResponseWriter, r *http.Request) {
 
 	db := RedisDB(1)
 	defer db.Close()
-	results, err := db.Get(RCtx, identifier).Result()
-	if err != nil {
-		log.Fatal(err)
-	}
+  results := db.Get(RCtx, identifier).Val()
 
 	json.NewEncoder(w).Encode(struct {
 		Data string

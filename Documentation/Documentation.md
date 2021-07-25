@@ -2,7 +2,7 @@
 
 [toc]
 
-## Steps
+## User Guide
 
 - User visits `Website` & enters Query
 - Query assigned Unique Identifier & sent to `GlobalAPI`
@@ -79,9 +79,14 @@ Scrapes Sites and collects relevant data
 
 ## Docs: GlobalAPI 
 
-Communication between Frontend and Backend Services
+Python (`Flask`) based API Communication between Frontend and Backend Services
 
 
+## Docs: GoAPI
+
+**Not Fully Implemented!** 
+Golang (`gorilla/mux`) based API for communication between Frontend & Backend Services.
+Up to 75x faster than `GlobalAPI`. 
 
 ### Route   `/api` 
 

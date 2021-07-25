@@ -1,2 +1,2 @@
 #Start Docker-Compose
-docker-compose up --build
+docker-compose up --build --remove-orphans
