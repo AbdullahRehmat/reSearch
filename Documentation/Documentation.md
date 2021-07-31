@@ -14,17 +14,13 @@
 - `SearchEngine` receives Query + Identifier
 - `SearchEngine` uses `rank-BM25` to rank content from `MongoCS` database according to Query
 - `SearchEngine` adds list of ranked results to `RedisAPI DB0`
-  
-- `GlobalAPI`  fetches list of ranked results from `RedisAPI DB0`
-  
+- `GlobalAPI` fetches list of ranked results from `RedisAPI DB0`
 - `GlobalAPI` sends list of links to `url_for('results')`
 
 - `Website` receives list of links
 - `Website` displays list of links at `url_for('results')`
 
 - `ContentScraper` runs once every 24 hours to look for new URLs
-
-  
 
 ## Services
 
@@ -33,8 +29,6 @@
 NGINX + Gunicorn
 
 HTTP + Production grade WSGI Server
-
-
 
 ### Website
 
@@ -49,13 +43,9 @@ User Web Interface
 
   - www.site.com/admin
 
-    
-
 ### GlobalAPI
 
 Handles Communication between Front and Backend
-
-
 
 ### RedisAPI
 
@@ -63,32 +53,25 @@ Redis + RedisJSON + Streams
 
 Handles Backend Inter-Service Communication
 
- 
+### SearchEngine
 
-### SearchEngine 
-
-Ranks stored data according to Query and returns results to  `GlobalAPI` via **Stream-B**
-
-
+Ranks stored data according to Query and returns results to `GlobalAPI` via **Stream-B**
 
 ### ContentScraper
 
 Scrapes Sites and collects relevant data
 
-
-
-## Docs: GlobalAPI 
+## Docs: GlobalAPI
 
 Python (`Flask`) based API Communication between Frontend and Backend Services
 
-
 ## Docs: GoAPI
 
-**Not Fully Implemented!** 
+**Not Fully Implemented!**
 Golang (`gorilla/mux`) based API for communication between Frontend & Backend Services.
-Up to 75x faster than `GlobalAPI`. 
+Up to 75x faster than `GlobalAPI`.
 
-### Route   `/api` 
+### Route `/api`
 
 API: siteAPI_GP
 
@@ -96,20 +79,19 @@ All responses have form:
 
 > {
 >
-> ​	"identifier":   mixed-type        Randomly Generated  String
+>  "identifier": mixed-type Randomly Generated String
 >
-> ​	"query":          mixed-type     " form.query.data "
+>  "query": mixed-type " form.query.data "
 >
 > }
 
 - **GET**
-  
+
   - Returns Query Result from SearchEngine
+
 - **POST**
-  
+
   - Send Query to SearchEngine for Processing
-  
-    
 
 ## Docs: Redis
 
@@ -117,17 +99,13 @@ All responses have form:
 
 **Stream A**
 
-- Messages:  GlobalAPI ->  SearchEngine
-
-
+- Messages: GlobalAPI -> SearchEngine
 
 ### DB 1
 
 **Set/Get**
 
 - Results: SearchEngine -> GlobalAPI
-
-
 
 ## Docs: MongoDB
 
@@ -137,17 +115,15 @@ URLs + Titles from ContentScraper
 
 All Records have form:
 
->{
+> {
 >
->​	"global_id": "000112312334"
+>  "global_id": "000112312334"
 >
->​	"title": "First Blog Post"
+>  "title": "First Blog Post"
 >
->​	"URL": "www.example.com/blogpost1"
+>  "URL": "www.example.com/blogpost1"
 >
->}
-
-
+> }
 
 ### MongoSE
 
@@ -155,17 +131,15 @@ URLs + Titles Ranked by Query
 
 All Records have form:
 
->{
+> {
 >
->​	"global_id": identifier 10 Char String
+>  "global_id": identifier 10 Char String
 >
->​	"title": "First Blog Post"
+>  "title": "First Blog Post"
 >
->​	"URL": "www.example.com/blogpost1"
+>  "URL": "www.example.com/blogpost1"
 >
->}
-
-
+> }
 
 ## Cloud Providers
 
@@ -185,30 +159,25 @@ All Records have form:
 
 - Mongo Atlas
 
-
-
 ## Checklist
 
-### Build: General 
+### Build: General
 
 - [ ] Secure Databases
-
-  
-
-
+- [ ] Create Folder Structure for spare Service Modules
+- [ ] Research + Add Monitoring System
 
 ### Build: Website
 
 - [ ] Add Flask-Login
 
-  
+### Build: API
 
+- [ ] Add Authentication to all API's
 
 ### Build: Content Scraper
 
 - [ ] Save Article Content for ranking
-
-
 
 ### Build: Search Engine Build
 

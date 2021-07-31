@@ -13,11 +13,14 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var (
+const (
 	RedisAddr string = "redis-api:6379"
 	RedisPass string = "Password:)"
-	RCtx             = context.Background()
-	MCtx             = context.TODO()
+)
+
+var (
+	RCtx = context.Background()
+	MCtx = context.TODO()
 )
 
 // Redis Cache Connection
@@ -36,7 +39,7 @@ func RedisDB(x int) *redis.Client {
 	return db
 }
 
-// MongoDB Connection
+// MongoDB DB Connection
 func MongoDB(host, port string) *mongo.Client {
 	clientOptions := options.Client().ApplyURI("mongodb://" + host + ":" + port + "/")
 	client, err := mongo.Connect(context.TODO(), clientOptions)
@@ -72,6 +75,7 @@ type MongoDoc struct {
 //}
 
 // Function: Get Results From MongoDB
+// Complete + Test Function
 func mongoResults(identifier string) MongoDoc {
 
 	var results MongoDoc
@@ -127,7 +131,7 @@ func resultsAPI(w http.ResponseWriter, r *http.Request) {
 
 	db := RedisDB(1)
 	defer db.Close()
-  results := db.Get(RCtx, identifier).Val()
+	results := db.Get(RCtx, identifier).Val()
 
 	json.NewEncoder(w).Encode(struct {
 		Data string
@@ -135,6 +139,7 @@ func resultsAPI(w http.ResponseWriter, r *http.Request) {
 }
 
 // Return Metrix & Stats
+// Use mongoResults
 func metrix(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 
