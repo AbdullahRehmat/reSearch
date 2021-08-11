@@ -22,6 +22,8 @@
 
 - `ContentScraper` runs once every 24 hours to look for new URLs
 
+
+
 ## Services
 
 ### NGINX
@@ -61,9 +63,13 @@ Ranks stored data according to Query and returns results to `GlobalAPI` via **St
 
 Scrapes Sites and collects relevant data
 
+
+
 ## Docs: GlobalAPI
 
 Python (`Flask`) based API Communication between Frontend and Backend Services
+
+
 
 ## Docs: GoAPI
 
@@ -93,6 +99,8 @@ All responses have form:
 
   - Send Query to SearchEngine for Processing
 
+
+
 ## Docs: Redis
 
 ### DB 0
@@ -106,6 +114,8 @@ All responses have form:
 **Set/Get**
 
 - Results: SearchEngine -> GlobalAPI
+
+
 
 ## Docs: MongoDB
 
@@ -141,6 +151,8 @@ All Records have form:
 >
 > }
 
+
+
 ## Cloud Providers
 
 ### Hosting
@@ -159,21 +171,26 @@ All Records have form:
 
 - Mongo Atlas
 
+
+
 ## Checklist
 
 ### Build: General
 
-- [ ] Secure Databases
+- [ ] Secure Database Connections
 - [ ] Create Folder Structure for spare Service Modules
 - [ ] Research + Add Monitoring System
 
 ### Build: Website
 
-- [ ] Add Flask-Login
+- [ ] Add Flask-Login to Website
 
 ### Build: API
 
-- [ ] Add Authentication to all API's
+- [ ] Add Authentication to all API endpoints
+- [ ] Add `.env` file to GoAPI
+- [ ] Complete MongoDB Integration for GoAPI
+- [ ] Make GoAPI Fully Functional
 
 ### Build: Content Scraper
 
@@ -181,4 +198,7 @@ All Records have form:
 
 ### Build: Search Engine Build
 
+- [ ] Strip text of all formatting and punctuation before ranking and store in dict
+- [ ] Strip query of all formatting and punctuation on input
+- [ ] Test and experiment with BM25 to find best solution
 - [ ] Rank by Article Content

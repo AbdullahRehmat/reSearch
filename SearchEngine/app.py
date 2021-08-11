@@ -3,7 +3,7 @@ import redis
 import json
 import pymongo
 from dotenv import load_dotenv
-from rank_bm25 import BM25Okapi
+from rank_bm25 import BM25Plus
 
 load_dotenv()
 
@@ -80,10 +80,10 @@ class searchEngine():
         # BM25 Config
         tokenized_query = query.split(" ")
         tokenized_corpus = [doc.split(" ") for doc in corpus]
-        bm25 = BM25Okapi(tokenized_corpus)
+        bm25 = BM25Plus(tokenized_corpus)
 
         # Return n most relavent Titles + Time taken for Set O(1) < List O(n)
-        rankedTitles = set(bm25.get_top_n(tokenized_query, corpus, n=25))
+        rankedTitles = set(bm25.get_top_n(tokenized_query, corpus, n=50))
 
         # HTML + Title + URL List
         responseList = []

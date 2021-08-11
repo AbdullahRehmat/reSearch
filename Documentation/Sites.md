@@ -36,7 +36,7 @@ List of Sites either scraped by ContentScraper or to be scraped
 
 ### Salafi Publications
 
-- www.salafipubs.com
+- www.SalafiPubs.com
 
 - www.SalafiSounds.com
 
@@ -50,11 +50,11 @@ N/A
 
 ## Issues
 
-- www.Salaf.com                                    Requires Different Scraper
+- www.Salaf.com                                   Requires Different Scraper
 
-- www.Alhajuri.com                               Not Able To Scrape - Single Page
+- www.FatwaIslam.com                       Requires Different Scraper  
 
-- www.FatwaIslam.com                         Requires Different Scraper  
+- www.Alhajuri.com                              Not Able To Scrape - Single Page
 
 - www.SayyidQutb.com                       Links to other already scraped sites -> Redundant
 
