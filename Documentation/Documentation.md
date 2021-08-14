@@ -202,3 +202,4 @@ All Records have form:
 - [ ] Strip query of all formatting and punctuation on input
 - [ ] Test and experiment with BM25 to find best solution
 - [ ] Rank by Article Content
+
