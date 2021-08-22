@@ -8,7 +8,6 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/mux"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -62,36 +61,25 @@ type MongoDoc struct {
 	Data string
 }
 
-// Function: Get Results From Redis
-//func redisResults(identifier string) string {
-//	db := RedisDB(1)
-//	defer db.Close()
-//	data, err := db.Get(RCtx, identifier).Result()
+// Function: Get Results From MongoDB
+// Complete + Test Function
+//
+//func mongoResults(identifier string) MongoDoc {
+//
+//	var results MongoDoc
+//
+//	db := MongoDB("mongo-se", "27018")
+//	defer db.Disconnect(MCtx)
+//	coll := db.Database("SearchEngineDB").Collection("htmlResults")
+//	filter := bson.D{{Key: "_id", Value: identifier}}
+//	err := coll.FindOne(MCtx, filter).Decode(&results)
+//
 //	if err != nil {
 //		log.Fatal(err)
 //	}
 //
-//	return data
+//	return results
 //}
-
-// Function: Get Results From MongoDB
-// Complete + Test Function
-func mongoResults(identifier string) MongoDoc {
-
-	var results MongoDoc
-
-	db := MongoDB("mongo-se", "27018")
-	defer db.Disconnect(MCtx)
-	coll := db.Database("SearchEngineDB").Collection("htmlResults")
-	filter := bson.D{{Key: "_id", Value: identifier}}
-	err := coll.FindOne(MCtx, filter).Decode(&results)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return results
-}
 
 // Receive Query from Client
 func queryAPI(w http.ResponseWriter, r *http.Request) {
@@ -127,25 +115,28 @@ func resultsAPI(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	identifier := params["identifier"]
 
-	//results := redisResults(identifier)
-
 	db := RedisDB(1)
 	defer db.Close()
-	results := db.Get(RCtx, identifier).Val()
+	results, err := db.Get(RCtx, identifier).Result()
 
-	json.NewEncoder(w).Encode(struct {
-		Data string
-	}{results})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	json.NewEncoder(w).Encode(results)
 }
 
 // Return Metrix & Stats
-// Use mongoResults
 func metrix(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 
-	json.NewEncoder(w).Encode(struct {
+	err := json.NewEncoder(w).Encode(struct {
 		Message string
 	}{"Not Implemented Yet"})
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 // Create API & Handle Endpoints

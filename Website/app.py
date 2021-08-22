@@ -34,7 +34,7 @@ class apiConn():
 
         return api
 
-    def getResults():  # Get Results from GlobalAPI
+    def getResults():  # Get Results
         if 'identifier' in session:
             identifier = session['identifier']
             url = str('http://global-api/api/') + identifier
