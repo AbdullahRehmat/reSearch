@@ -20,7 +20,7 @@ def generateIdentifier(length):  # Generate Random String
     return ''.join(random.choice(letters) for i in range(length))
 
 
-class globalAPI():
+class apiConn():
 
     def postQuery(form):  # Send Query
         query = form.query.data
@@ -65,7 +65,7 @@ def index():
     form = MyForm()
     if form.validate_on_submit():
 
-        globalAPI.postQuery(form)
+        apiConn.postQuery(form)
         return redirect(url_for('results'))
 
     return render_template('index.html', form=form)
@@ -74,7 +74,7 @@ def index():
 @app.route("/results")
 def results():
     query = session['query']
-    searchResults = set(globalAPI.getResults())
+    searchResults = set(apiConn.getResults())
     return render_template('results.html', searchResults=searchResults, query=query)
 
 
