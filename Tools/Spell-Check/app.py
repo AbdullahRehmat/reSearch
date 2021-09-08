@@ -1,12 +1,12 @@
 from textblob import TextBlob as TB
 
-text = "being-thankful-to-allaah-by-abu-fudhayl"
+text = "Allaah Allah Abu Khadeejah Iyaad Hakeem Taymiyyah Quraan"
 
 text = TB(text)
 
 textCorrected = text.correct()
 
-print(type(textCorrected))
+print(text)
 print(textCorrected)
 
 # connect to db
