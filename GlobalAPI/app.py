@@ -93,17 +93,19 @@ class resultsAPI(Resource):
 class metrix(Resource):
 
     def get(self):
-        response = []
-        mongoCSCount = col1.estimated_document_count()
-        mongoSECount = col2.estimated_document_count()
-        redisCount = r1.dbsize()
-        response += [mongoCSCount]
-        response += [redisCount]
-        response += [mongoSECount]
-        return response, 200
+        # Get Statistics from API
+        db1Count = col1.estimated_document_count()
+        db2Count = col2.estimated_document_count()
+        db3Count = r1.dbsize()
+
+        # Format Statistics
+        responseTest = {"TotalQueries": db1Count, "ArticlesAvailable": db2Count,  "LiveQueries": db3Count}
+
+        # Return Results
+        return responseTest, 200
 
 
 # Create routes
-api.add_resource(queryAPI, "/api/query")              #POST
-api.add_resource(resultsAPI, "/api/<identifier>")     #GET
-api.add_resource(metrix, "/metrix")                   #GET
+api.add_resource(queryAPI, "/api/query")                      #POST
+api.add_resource(resultsAPI, "/api/results/<identifier>")     #GET
+api.add_resource(metrix, "/metrix")                           #GET

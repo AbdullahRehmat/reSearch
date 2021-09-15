@@ -37,7 +37,7 @@ class apiConn():
     def getResults():  # Get Results
         if 'identifier' in session:
             identifier = session['identifier']
-            url = str('http://global-api/api/') + identifier
+            url = str('http://go-api/api/results/') + identifier
             api = get(url).json()
 
             return api
@@ -55,7 +55,8 @@ class MyForm(FlaskForm):
 class metrix():
 
     def data():
-        api = get('http://global-api/metrix')
+        api = get('http://go-api/metrix')
+        
         return api
 
 
@@ -84,11 +85,13 @@ def sources():
 
 
 @app.route("/admin")
-
 def admin():
     metrixData = metrix.data().text
     metrixData = literal_eval(metrixData)
-    return render_template('admin.html', metrixData=metrixData)
+    data = metrixData.values()
+    data = list(data)
+
+    return render_template('admin.html', metrixData=data)
 
 
 @app.route("/legal")

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/mux"
@@ -56,30 +57,30 @@ func MongoDB(host, port string) *mongo.Client {
 	return client
 }
 
-type MongoDoc struct {
-	ID   string
-	Data string
-}
+func dbStats() (x, y, z int64) {
 
-// Function: Get Results From MongoDB
-// Complete + Test Function
-//
-//func mongoResults(identifier string) MongoDoc {
-//
-//	var results MongoDoc
-//
-//	db := MongoDB("mongo-se", "27018")
-//	defer db.Disconnect(MCtx)
-//	coll := db.Database("SearchEngineDB").Collection("htmlResults")
-//	filter := bson.D{{Key: "_id", Value: identifier}}
-//	err := coll.FindOne(MCtx, filter).Decode(&results)
-//
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//
-//	return results
-//}
+	db1 := MongoDB("mongo-se", "27017")
+	defer db1.Disconnect(MCtx)
+	x, err := db1.Database("SearchEngineDB").Collection("htmlResults").EstimatedDocumentCount(MCtx)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	db2 := MongoDB("mongo-cs", "27017")
+	defer db1.Disconnect(MCtx)
+	y, err = db2.Database("ContentScraperDB").Collection("ScrapedDataS1").EstimatedDocumentCount(MCtx)
+
+	db3 := RedisDB(1)
+	z = db3.DBSize(RCtx).Val()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return x, y, z
+
+}
 
 // Receive Query from Client
 func queryAPI(w http.ResponseWriter, r *http.Request) {
@@ -115,6 +116,8 @@ func resultsAPI(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	identifier := params["identifier"]
 
+	time.Sleep(2 * time.Second) // To allow for response from SearchEngine Service
+
 	db := RedisDB(1)
 	defer db.Close()
 	results, err := db.Get(RCtx, identifier).Result()
@@ -130,9 +133,14 @@ func resultsAPI(w http.ResponseWriter, r *http.Request) {
 func metrix(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 
+	var x, y, z int64
+	x, y, z = dbStats()
+
 	err := json.NewEncoder(w).Encode(struct {
-		Message string
-	}{"Not Implemented Yet"})
+		TotalQueries      int64
+		ArticlesAvailable int64
+		LiveQueries       int64
+	}{x, y, z})
 
 	if err != nil {
 		log.Fatal(err)
@@ -144,7 +152,7 @@ func main() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/api/query", queryAPI).Methods("POST")
-	router.HandleFunc("/api/{identifier}", resultsAPI).Methods("GET")
+	router.HandleFunc("/api/results/{identifier}", resultsAPI).Methods("GET")
 	router.HandleFunc("/metrix", metrix).Methods("GET")
 
 	http.ListenAndServe(":80", router)
