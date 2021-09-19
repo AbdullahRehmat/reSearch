@@ -69,35 +69,21 @@ Scrapes Sites and collects relevant data
 
 Python (`Flask`) based API Communication between Frontend and Backend Services
 
+### Routes
+
+- `/api/query` POST - Send query to Search Engine
+- `/api/results`  GET - Retrieves Result from Search Engine in `JSON`
+
 
 
 ## Docs: GoAPI
 
-**Not Fully Implemented!**
-Golang (`gorilla/mux`) based API for communication between Frontend & Backend Services.
-Up to 75x faster than `GlobalAPI`.
+GoLang (`gorilla/mux`) based API for communication between Frontend & Backend Services.
 
-### Route `/api`
+### Routes
 
-API: siteAPI_GP
-
-All responses have form:
-
-> {
->
->  "identifier": mixed-type Randomly Generated String
->
->  "query": mixed-type " form.query.data "
->
-> }
-
-- **GET**
-
-  - Returns Query Result from SearchEngine
-
-- **POST**
-
-  - Send Query to SearchEngine for Processing
+- `/api/query` POST - Send query to Search Engine
+- `/api/results`  GET - Retrieves Result from Search Engine in `JSON`
 
 
 
@@ -153,53 +139,45 @@ All Records have form:
 
 
 
-## Cloud Providers
-
-### Hosting
-
-- Digital Ocean
-
-### CDN
-
-- Cloud Flare
-
-### Caching
-
-- Redis Labs
-
-### Databases
-
-- Mongo Atlas
-
-
-
 ## Checklist
 
 ### Build: General
 
 - [ ] Secure Database Connections
-- [ ] Create Folder Structure for spare Service Modules
-- [ ] Research + Add Monitoring System
+
+- [ ] Rename DB's + Tables 
+
+- [ ] Standardise `/env` Files
+
+- [ ] Look at Python Scripts and use optimal Data Types -> Test with `GlobalAPI` Module
+
+  
 
 ### Build: Website
 
 - [ ] Add Flask-Login to Website
 
+  
+
 ### Build: API
 
 - [ ] Add Authentication to all API endpoints
+
 - [ ] Add `.env` file to GoAPI
-- [ ] Complete MongoDB Integration for GoAPI
+
 - [ ] Make GoAPI Fully Functional
+
+  
 
 ### Build: Content Scraper
 
 - [ ] Save Article Content for ranking
 
+  
+
 ### Build: Search Engine Build
 
 - [ ] Strip text of all formatting and punctuation before ranking and store in dict
 - [ ] Strip query of all formatting and punctuation on input
-- [ ] Test and experiment with BM25 to find best solution
 - [ ] Rank by Article Content
 
