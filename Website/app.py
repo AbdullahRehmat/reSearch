@@ -75,7 +75,7 @@ def index():
 @app.route("/results")
 def results():
     query = session['query']
-    searchResults = set(apiConn.getResults())
+    searchResults = list(apiConn.getResults())
     return render_template('results.html', searchResults=searchResults, query=query)
 
 
@@ -89,7 +89,7 @@ def admin():
     metrixData = metrix.data().text
     metrixData = literal_eval(metrixData)
     data = metrixData.values()
-    data = list(data)
+    data = tuple(data)
 
     return render_template('admin.html', metrixData=data)
 
