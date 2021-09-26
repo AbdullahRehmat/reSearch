@@ -29,7 +29,7 @@ class apiConn():
         session['identifier'] = identifier
         session['query'] = query
 
-        api = post('http://go-api/api/query',
+        api = post('http://global-api/api/query',
                    data={"identifier": identifier, "query": query}).json()
 
         return api
@@ -37,7 +37,7 @@ class apiConn():
     def getResults():  # Get Results
         if 'identifier' in session:
             identifier = session['identifier']
-            url = str('http://go-api/api/results/') + identifier
+            url = str('http://global-api/api/results/') + identifier
             api = get(url).json()
 
             return api
@@ -88,7 +88,7 @@ def sources():
 def admin():
     stats = metrix.data().text
     stats = literal_eval(stats)
-    stats = data.values()
+    stats = stats.values()
     stats = tuple(stats)
 
     return render_template('admin.html', stats=stats)
