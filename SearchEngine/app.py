@@ -82,8 +82,8 @@ class searchEngine():
         tokenized_corpus = [doc.split(" ") for doc in corpus]
         bm25 = BM25Plus(tokenized_corpus)
 
-        # Return n most relavent Titles + Time taken for Set O(1) < List O(n)
-        # Check if using a list improves accuracy compared to a list
+        # Return n most relavent Titles
+        # Lists used over Sets as order of results matters!
         rankedTitles = list(bm25.get_top_n(tokenized_query, corpus, n=50))
 
         # HTML + Title + URL List
