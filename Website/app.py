@@ -75,8 +75,8 @@ def index():
 @app.route("/results")
 def results():
     query = session['query']
-    searchResults = list(apiConn.getResults())
-    return render_template('results.html', searchResults=searchResults, query=query)
+    results = list(apiConn.getResults())
+    return render_template('results.html', results=results, query=query)
 
 
 @app.route("/sources")
@@ -86,12 +86,12 @@ def sources():
 
 @app.route("/admin")
 def admin():
-    metrixData = metrix.data().text
-    metrixData = literal_eval(metrixData)
-    data = metrixData.values()
+    data = metrix.data().text
+    data = literal_eval(data)
+    data = data.values()
     data = tuple(data)
 
-    return render_template('admin.html', metrixData=data)
+    return render_template('admin.html', statistics=data)
 
 
 @app.route("/legal")
