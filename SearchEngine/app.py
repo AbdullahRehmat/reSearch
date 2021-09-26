@@ -55,7 +55,7 @@ class searchEngine():
         return corpus
 
     # Outputs Title formatted with HTML + Other relavent information
-    def htmlResponse(col2, title):
+    def formatter(col2, title):
         # Get Title's URL + Source
         dbResponse = col2.find_one(
             {"title": title}, {"_id": 0, "url": 1, "source": 1})
@@ -63,8 +63,8 @@ class searchEngine():
         source = dbResponse["source"][0]
 
         # Format Results with HTML tags
-        htmlResponse = f"<a href=\" {url} \" class=\"searchResult\" target=\"_blank\" rel=\"noopener noreferrer\"> {title} <br/> <p class=\"resultSource\"> {source} </p> </a><br />"
-        return htmlResponse
+        formatter = f"<a href=\" {url} \" class=\"searchResult\" target=\"_blank\" rel=\"noopener noreferrer\"> {title} <br/> <p class=\"resultSource\"> {source} </p> </a><br />"
+        return formatter
 
     # Takes query as input, returns sorted search results to Redis & MongoDB
     def engine(col1, r1, streamAData):
@@ -93,7 +93,7 @@ class searchEngine():
         # For List of ranked Titles:
         for title in rankedTitles:
 
-            response = searchEngine.htmlResponse(col2, title)
+            response = searchEngine.formatter(col2, title)
             responseList += [response]
 
             # Add List to Dict <- MongoDb Col1
