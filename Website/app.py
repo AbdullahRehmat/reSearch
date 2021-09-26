@@ -86,12 +86,12 @@ def sources():
 
 @app.route("/admin")
 def admin():
-    data = metrix.data().text
-    data = literal_eval(data)
-    data = data.values()
-    data = tuple(data)
+    stats = metrix.data().text
+    stats = literal_eval(stats)
+    stats = data.values()
+    stats = tuple(stats)
 
-    return render_template('admin.html', statistics=data)
+    return render_template('admin.html', stats=stats)
 
 
 @app.route("/legal")
