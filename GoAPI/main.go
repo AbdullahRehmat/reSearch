@@ -69,7 +69,7 @@ func dbStats() (x, y, z int64) {
 
 	db2 := MongoDB("mongo-cs", "27017")
 	defer db1.Disconnect(MCtx)
-	y, err = db2.Database("ContentScraperDB").Collection("ScrapedDataS1").EstimatedDocumentCount(MCtx)
+	y, err = db2.Database("ContentScraperDB").Collection("ScrapedDataC1").EstimatedDocumentCount(MCtx)
 
 	db3 := RedisDB(1)
 	z = db3.DBSize(RCtx).Val()
