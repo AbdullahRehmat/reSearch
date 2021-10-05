@@ -9,9 +9,11 @@ from dotenv import load_dotenv
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
 
-
+# Init Flask & API
 app = Flask(__name__)
 api = Api(app)
+
+# Load ENV Variables
 load_dotenv()
 
 # Redis .env Variables
@@ -51,21 +53,25 @@ db2 = conn2[mongo_db_2]
 col2 = db2[mongo_col_2]
 
 
-def getResultsRedis(identifier):
+def redis_results(identifier):
     data = r1.get(identifier)
     data = literal_eval(data)
     return data
 
 
-def getResultsMongoDB(identifier):
+def mongo_results(identifier):
     for i in col1.find({"_id": identifier}):
         data = i['data'][0]
         return data
 
 
-class queryAPI(Resource):
+class QueryAPI(Resource):
+    """
+    Route for API to recieve requests on
 
-    def post(self):  # Reveive Query from Client
+    """
+
+    def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('identifier', required=True)
         parser.add_argument('query', required=True)
@@ -78,34 +84,43 @@ class queryAPI(Resource):
         return {'message': 'Success', 'data': args}, 202
 
 
-class resultsAPI(Resource):
+class ResultsAPI(Resource):
+    """
+    Returns results collected from MongoDB Database to Client
 
-    def get(self, identifier):  # Send Results to Client
+    """
+
+    def get(self, identifier):
         time.sleep(0.5)
 
         # Get Results from Redis DB0
-        results = getResultsRedis(identifier=identifier)
+        results = redis_results(identifier=identifier)
 
         # Return Results
         return results, 200
 
 
-class metrix(Resource):
+class Metrix(Resource):
+    """
+    Collect usage statistics from MongoDB Database and return to Website
+
+    """
 
     def get(self):
-        # Get Statistics from API
+        # Get Statistics from Databases
         db1Count = col1.estimated_document_count()
         db2Count = col2.estimated_document_count()
         db3Count = r1.dbsize()
 
         # Format Statistics
-        responseTest = {"TotalQueries": db1Count, "ArticlesAvailable": db2Count,  "LiveQueries": db3Count}
+        response = {"TotalQueries": db1Count,
+                    "ArticlesAvailable": db2Count,  "LiveQueries": db3Count}
 
         # Return Results
-        return responseTest, 200
+        return response, 200
 
 
 # Create routes
-api.add_resource(queryAPI, "/api/query")                      #POST
-api.add_resource(resultsAPI, "/api/results/<identifier>")     #GET
-api.add_resource(metrix, "/metrix")                           #GET
+api.add_resource(QueryAPI, "/api/query")
+api.add_resource(ResultsAPI, "/api/results/<identifier>")
+api.add_resource(Metrix, "/metrix")

@@ -15,16 +15,20 @@ load_dotenv()
 app.config['SECRET_KEY'] = os.getenv("FLASK_SECRET_KEY")
 
 
-def generateIdentifier(length):  # Generate Random String
+def generate_identifier(length):  # Generate Random String
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for i in range(length))
 
 
-class apiConn():
+class ApiConn():
 
-    def postQuery(form):  # Send Query
+    def post_query(form):
+        """
+        Sends query recieved to API for processing via POST
+        
+        """
         query = form.query.data
-        identifier = generateIdentifier(10)
+        identifier = generate_identifier(10)
 
         session['identifier'] = identifier
         session['query'] = query
@@ -34,7 +38,10 @@ class apiConn():
 
         return api
 
-    def getResults():  # Get Results
+    def get_results():
+        """
+        Collects response from API via unique ID
+        """
         if 'identifier' in session:
             identifier = session['identifier']
             url = str('http://global-api/api/results/') + identifier
@@ -52,11 +59,11 @@ class MyForm(FlaskForm):
                         render_kw={"placeholder": "Search..."})
 
 
-class metrix():
+class Metrix():
 
     def data():
         api = get('http://go-api/metrix')
-        
+
         return api
 
 
@@ -66,7 +73,7 @@ def index():
     form = MyForm()
     if form.validate_on_submit():
 
-        apiConn.postQuery(form)
+        ApiConn.post_query(form)
         return redirect(url_for('results'))
 
     return render_template('index.html', form=form)
@@ -75,7 +82,7 @@ def index():
 @app.route("/results")
 def results():
     query = session['query']
-    results = list(apiConn.getResults())
+    results = list(ApiConn.get_results())
     return render_template('results.html', results=results, query=query)
 
 
@@ -86,7 +93,7 @@ def sources():
 
 @app.route("/admin")
 def admin():
-    stats = metrix.data().text
+    stats = Metrix.data().text
     stats = literal_eval(stats)
     stats = stats.values()
     stats = tuple(stats)
