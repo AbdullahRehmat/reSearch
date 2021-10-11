@@ -22,8 +22,6 @@
 
 - `ContentScraper` runs once every 24 hours to look for new URLs
 
-
-
 ## Services
 
 ### NGINX
@@ -61,31 +59,27 @@ Ranks stored data according to Query and returns results to `GlobalAPI` via **St
 
 ### ContentScraper
 
-Scrapes Sites and collects relevant data
-
-
+Scrapes listed sites, collects required data & stores it in the `MongoCS` Database.
 
 ## Docs: GlobalAPI
 
-Python (`Flask`) based API Communication between Frontend and Backend Services
+Python (`Flask`) based API Communication between Frontend and Backend Services.  
+Format = JSON
 
 ### Routes
 
-- `/api/query` POST - Send query to Search Engine
-- `/api/results`  GET - Retrieves Result from Search Engine in `JSON`
-
-
+- POST `/api/query` - Send query to Search Engine
+- GET `/api/results` - Retrieves Result from Search Engine
 
 ## Docs: GoAPI
 
-GoLang (`gorilla/mux`) based API for communication between Frontend & Backend Services.
+GoLang (`gorilla/mux`) based API for communication between Frontend & Backend Services.  
+Format = JSON
 
 ### Routes
 
-- `/api/query` POST - Send query to Search Engine
-- `/api/results`  GET - Retrieves Result from Search Engine in `JSON`
-
-
+- POST `/api/query` - Send query to Search Engine
+- GET `/api/results` - Retrieves Result from Search Engine
 
 ## Docs: Redis
 
@@ -101,43 +95,38 @@ GoLang (`gorilla/mux`) based API for communication between Frontend & Backend Se
 
 - Results: SearchEngine -> GlobalAPI
 
-
-
 ## Docs: MongoDB
 
 ### MongoCS
 
-URLs + Titles from ContentScraper
+Stores URLs + Titles from ContentScraper
 
 All Records have form:
 
 > {
 >
->  "global_id": "000112312334"
+> "global_id": identifier - Unique 10 Character String
 >
->  "title": "First Blog Post"
+> "title": "First Blog Post"
 >
->  "URL": "www.example.com/blogpost1"
+> "URL": "www.example.com/blogpost1"
 >
 > }
 
 ### MongoSE
 
-URLs + Titles Ranked by Query
-
+Stores URLs + Titles Ranked by Query  
 All Records have form:
 
 > {
 >
->  "global_id": identifier 10 Char String
+> "global_id": identifier - Unique 10 Character String
 >
->  "title": "First Blog Post"
+> "title": "First Blog Post"
 >
->  "URL": "www.example.com/blogpost1"
+> "URL": "www.example.com/blogpost1"
 >
 > }
-
-
 
 ## Checklist
 
@@ -145,19 +134,15 @@ All Records have form:
 
 - [ ] Secure Database Connections
 
-- [ ] Rename DB's + Tables 
+- [ ] Rename DB's + Tables
 
 - [ ] Standardise `/env` Files
 
 - [ ] Look at Python Scripts and use optimal Data Types -> Test with `GlobalAPI` Module
 
-  
-
 ### Build: Website
 
 - [ ] Add Flask-Login to Website
-
-  
 
 ### Build: API
 
@@ -165,19 +150,12 @@ All Records have form:
 
 - [ ] Add `.env` file to GoAPI
 
-- [ ] Make GoAPI Fully Functional
-
-  
-
 ### Build: Content Scraper
 
 - [ ] Save Article Content for ranking
-
-  
 
 ### Build: Search Engine Build
 
 - [ ] Strip text of all formatting and punctuation before ranking and store in dict
 - [ ] Strip query of all formatting and punctuation on input
 - [ ] Rank by Article Content
-
