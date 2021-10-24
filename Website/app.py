@@ -25,7 +25,7 @@ class ApiConn():
     def post_query(form):
         """
         Sends query recieved to API for processing via POST
-        
+
         """
         query = form.query.data
         identifier = generate_identifier(10)

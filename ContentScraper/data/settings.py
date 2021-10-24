@@ -13,7 +13,7 @@ SPIDER_MODULES = ['data.spiders']
 NEWSPIDER_MODULE = 'data.spiders'
 
 ITEM_PIPELINES = {
-    'data.pipelines.MongoPipeline': 300,
+	'data.pipelines.MongoPipeline': 300,
 }
 
 MONGO_URI = 'mongodb://mongo-cs:27017/'
