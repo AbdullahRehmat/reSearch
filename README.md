@@ -16,4 +16,4 @@ Run with [Docker-Compose](https://docs.docker.com/compose/)
 
 Micro-Service [Flowchart](https://drive.google.com/file/d/1B-zdlsKatmy8d8mDB0afmoZ2w-dGRKc4/view?usp=sharing)
 
-Please read `Documentation.md`
+Please read documentation present in the `/Documentation` directory.  
