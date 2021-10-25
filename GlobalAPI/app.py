@@ -36,88 +36,88 @@ mongo_col_2 = os.getenv("MONGO_COL_2")
 
 # Redis Streams
 r0 = redis.Redis(host=redis_host, port=redis_port,
-                 password=redis_password, db=0, decode_responses=True)
+				 password=redis_password, db=0, decode_responses=True)
 
 r1 = redis.Redis(host=redis_host, port=redis_port,
-                 password=redis_password, db=1, decode_responses=True)
+				 password=redis_password, db=1, decode_responses=True)
 
 # Connect to MongoSE Database
 conn1 = pymongo.MongoClient(
-    host='mongodb://' + mongo_host_1 + ':' + str(mongo_port) + '/')
+	host='mongodb://' + mongo_host_1 + ':' + str(mongo_port) + '/')
 db1 = conn1[mongo_db_1]
 col1 = db1[mongo_col_1]
 
 conn2 = pymongo.MongoClient(
-    host='mongodb://' + mongo_host_2 + ':' + str(mongo_port) + '/')
+	host='mongodb://' + mongo_host_2 + ':' + str(mongo_port) + '/')
 db2 = conn2[mongo_db_2]
 col2 = db2[mongo_col_2]
 
 
 def redis_results(identifier):
-    data = r1.get(identifier)
-    data = literal_eval(data)
-    return data
+	data = r1.get(identifier)
+	data = literal_eval(data)
+	return data
 
 
 def mongo_results(identifier):
-    for i in col1.find({"_id": identifier}):
-        data = i['data'][0]
-        return data
+	for i in col1.find({"_id": identifier}):
+		data = i['data'][0]
+		return data
 
 
 class QueryAPI(Resource):
-    """
-    Route for API to recieve requests on
+	"""
+	Route for API to recieve requests on
 
-    """
+	"""
 
-    def post(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('identifier', required=True)
-        parser.add_argument('query', required=True)
-        args = parser.parse_args()
+	def post(self):
+		parser = reqparse.RequestParser()
+		parser.add_argument('identifier', required=True)
+		parser.add_argument('query', required=True)
+		args = parser.parse_args()
 
-        # Add message to Stream -> SearchEngine
-        r0.xadd('streamA', fields=args)
+		# Add message to Stream -> SearchEngine
+		r0.xadd('streamA', fields=args)
 
-        # Return Data to Site
-        return {'message': 'Success', 'data': args}, 202
+		# Return Data to Site
+		return {'message': 'Success', 'data': args}, 202
 
 
 class ResultsAPI(Resource):
-    """
-    Returns results collected from MongoDB Database to Client
+	"""
+	Returns results collected from MongoDB Database to Client
 
-    """
+	"""
 
-    def get(self, identifier):
-        time.sleep(0.5)
+	def get(self, identifier):
+		time.sleep(0.5)
 
-        # Get Results from Redis DB0
-        results = redis_results(identifier=identifier)
+		# Get Results from Redis DB0
+		results = redis_results(identifier=identifier)
 
-        # Return Results
-        return results, 200
+		# Return Results
+		return results, 200
 
 
 class Metrix(Resource):
-    """
-    Collect usage statistics from MongoDB Database and return to Website
+	"""
+	Collect usage statistics from MongoDB Database and return to Website
 
-    """
+	"""
 
-    def get(self):
-        # Get Statistics from Databases
-        db1Count = col1.estimated_document_count()
-        db2Count = col2.estimated_document_count()
-        db3Count = r1.dbsize()
+	def get(self):
+		# Get Statistics from Databases
+		db1Count = col1.estimated_document_count()
+		db2Count = col2.estimated_document_count()
+		db3Count = r1.dbsize()
 
-        # Format Statistics
-        response = {"TotalQueries": db1Count,
-                    "ArticlesAvailable": db2Count,  "LiveQueries": db3Count}
+		# Format Statistics
+		response = {"TotalQueries": db1Count,
+					"ArticlesAvailable": db2Count,  "LiveQueries": db3Count}
 
-        # Return Results
-        return response, 200
+		# Return Results
+		return response, 200
 
 
 # Create routes

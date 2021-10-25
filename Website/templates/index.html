@@ -2,14 +2,14 @@
 reSearch {% endblock %} {% block body %}
 
 <section id="index-search-section">
-  <div id="index-title">reSearch<span id="version">Alpha</span></div>
+	<div id="index-title">reSearch<span id="version">Alpha</span></div>
 
-  <div id="search-box">
-    <form method="POST" action="/">
-      {{ form.csrf_token }} {{ form.query(autocomplete="off") }}
-      <input type="submit" value="Go" id="submit-button" />
-    </form>
-  </div>
+	<div id="search-box">
+		<form method="POST" action="/">
+			{{ form.csrf_token }} {{ form.query(autocomplete="off") }}
+			<input type="submit" value="Go" id="submit-button" />
+		</form>
+	</div>
 </section>
 
 {% endblock %}
