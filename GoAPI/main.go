@@ -57,6 +57,7 @@ func MongoDB(host, port string) *mongo.Client {
 	return client
 }
 
+// Returns Search Engine Stats
 func dbStats() (x, y, z int64) {
 
 	db1 := MongoDB("mongo-se", "27017")
@@ -78,6 +79,7 @@ func dbStats() (x, y, z int64) {
 		log.Fatal(err)
 	}
 
+	// Modify to return as JSON
 	return x, y, z
 
 }
@@ -107,6 +109,7 @@ func queryAPI(w http.ResponseWriter, r *http.Request) {
 		StatusCode int
 		Message    string
 	}{200, "OK"})
+	// Return Identifier + Query Also
 }
 
 // Return Results to Client
