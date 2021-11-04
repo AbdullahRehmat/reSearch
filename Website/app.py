@@ -7,7 +7,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField
 from requests import put, post, get
 from wtforms.validators import DataRequired
-from flask import Flask, render_template, redirect, url_for, jsonify, session, request, Response
+from flask import Flask, Response, render_template, redirect, url_for, session
 
 app = Flask(__name__)
 load_dotenv()
@@ -16,103 +16,98 @@ app.config['SECRET_KEY'] = os.getenv("FLASK_SECRET_KEY")
 
 
 def generate_identifier(length):  # Generate Random String
-	letters = string.ascii_lowercase
-	return ''.join(random.choice(letters) for i in range(length))
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(length))
 
 
 class ApiConn():
 
-	def post_query(form):
-		"""
-		Sends query recieved to API for processing via POST
+    def post_query(query):
+        """ Sends query recieved to API for processing via POST """
 
-		"""
-		query = form.query.data
-		identifier = generate_identifier(10)
+        identifier = generate_identifier(10)
+        session['identifier'] = identifier
+        session['query'] = query
 
-		session['identifier'] = identifier
-		session['query'] = query
+        api = post('http://global-api/api/query',
+                   data={"identifier": identifier, "query": query}).json()
 
-		api = post('http://global-api/api/query',
-				   data={"identifier": identifier, "query": query}).json()
+        return api
 
-		return api
+    def get_results():
+        """ Collects response from API via unique ID """
 
-	def get_results():
-		"""
-		Collects response from API via unique ID
-		"""
-		if 'identifier' in session:
-			identifier = session['identifier']
-			url = str('http://global-api/api/results/') + identifier
-			api = get(url).json()
+        if 'identifier' in session:
+            identifier = session['identifier']
+            url = str('http://global-api/api/results/') + identifier
+            api = get(url).json()
 
-			return api
+            return api
 
-		else:
-			return "No Identifier was found... \n", 400
+        else:
+            return "No Identifier was found... \n", 400
 
 
 class MyForm(FlaskForm):
 
-	query = StringField('Search', validators=[DataRequired()],
-						render_kw={"placeholder": "Search..."})
+    query = StringField('Search', validators=[DataRequired()],
+                        render_kw={"placeholder": "Search..."})
 
 
 class Metrix():
 
-	def data():
-		api = get('http://go-api/metrix')
+    def data():
+        api = get('http://go-api/metrix')
 
-		return api
+        return api
 
 
 @app.route('/', methods=('GET', 'POST'))
 @app.route('/index', methods=('GET', 'POST'))
 def index():
-	form = MyForm()
-	if form.validate_on_submit():
+    form = MyForm()
+    if form.validate_on_submit():
 
-		ApiConn.post_query(form)
-		return redirect(url_for('results'))
+        ApiConn.post_query(form.query.data)
+        return redirect(url_for('results'))
 
-	return render_template('index.html', form=form)
+    return render_template('index.html', form=form)
 
 
 @app.route("/results")
 def results():
-	query = session['query']
-	results = list(ApiConn.get_results())
-	return render_template('results.html', results=results, query=query)
+    query = session['query']
+    results = list(ApiConn.get_results())
+    return render_template('results.html', results=results, query=query)
 
 
 @app.route("/sources")
 def sources():
-	return render_template('sources.html')
+    return render_template('sources.html')
 
 
 @app.route("/admin")
 def admin():
-	stats = Metrix.data().text
-	stats = literal_eval(stats)
-	stats = stats.values()
-	stats = tuple(stats)
+    stats = Metrix.data().text
+    stats = literal_eval(stats)
+    stats = stats.values()
+    stats = tuple(stats)
 
-	return render_template('admin.html', stats=stats)
+    return render_template('admin.html', stats=stats)
 
 
 @app.route("/legal")
 def legal():
-	return render_template('legal.html')
+    return render_template('legal.html')
 
 
 @app.route("/robots.txt")
-def robotstxt():
-	r = Response(response="User-Agent: * \nAllow: /index")
-	r.headers["Content-Type"] = "text/plain; charset=utf-8"
-	return r
+def robots_txt():
+    r = Response(response="User-Agent: * \nAllow: /index")
+    r.headers["Content-Type"] = "text/plain; charset=utf-8"
+    return r
 
 
 @app.errorhandler(404)
 def page_not_found(e):
-	return render_template('404.html'), 404
+    return render_template('404.html'), 404
