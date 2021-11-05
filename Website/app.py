@@ -41,8 +41,16 @@ class ApiConn():
             identifier = session['identifier']
             url = str('http://global-api/api/results/') + identifier
             api = get(url).json()
-
-            return api
+            
+            # This needs refactoring
+            # If Else Stack ensures that the api returns a list
+            # Needs to be fixed by the API!
+            if type(api) == str:
+                return literal_eval(api)
+            elif type(api) != str:
+                return api
+            else:
+                return ['An Error Occured!']
 
         else:
             return "No Identifier was found... \n", 400
