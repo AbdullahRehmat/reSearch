@@ -84,6 +84,13 @@ func dbStats() (x, y, z int64) {
 
 }
 
+type Response struct {
+	Identifier string
+	Query      string
+	StatusCode int
+	Message    string
+}
+
 // Receive Query from Client
 func queryAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
@@ -105,11 +112,19 @@ func queryAPI(w http.ResponseWriter, r *http.Request) {
 		},
 	})
 
-	json.NewEncoder(w).Encode(struct {
-		StatusCode int
-		Message    string
-	}{200, "OK"})
-	// Return Identifier + Query Also
+	response := Response{
+		StatusCode: 200,
+		Message:    "OK",
+		Identifier: identifier,
+		Query:      query,
+	}
+
+	json.Marshal(response)
+
+	//json.NewEncoder(w).Encode(struct {
+	//	StatusCode int
+	//	Message    string
+	//}{200, "OK"})
 }
 
 // Return Results to Client
