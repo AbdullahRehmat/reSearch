@@ -3,25 +3,24 @@ from ast import literal_eval
 
 identifer = "abcdef123"
 
-def GlobalAPI():
+def Global_API_Test():
     url = str('http://localhost:8000/api/results/') + identifer
     results = get(url).json()
     return results
 
-def GoAPI():
+def Go_API_Test():
     url = str('http://localhost:5000/api/results/') + identifer
     results = get(url).json()
     return results
 
 if __name__ == "__main__":
-    python = GlobalAPI()
-    golang = GoAPI()
+    python = Global_API_Test()
+    golang = Go_API_Test()
 
     print("Types as recieved: ")
     print(type(python))
     print(type(golang))
 
-    #python = literal_eval(python) DOES NOT WORK
     golang = literal_eval(golang)
     print("Types after Literal_Eval Applied")
     print(type(python))
