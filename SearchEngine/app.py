@@ -1,6 +1,6 @@
 import os
+import time
 import redis
-import json
 import pymongo
 from dotenv import load_dotenv
 from rank_bm25 import BM25Plus
@@ -13,109 +13,134 @@ redis_port = os.getenv("REDIS_PORT")
 redis_password = os.getenv("REDIS_PASSWORD")
 
 # MongoDB General Settings
-mongo_port = os.getenv("MONGO_PORT")
+mdb_port = os.getenv("MDB_PORT")
 
 # MongoDB DB1 .env Variables
-mongo_host_1 = os.getenv("MONGO_HOST_1")
-mongo_db_1 = os.getenv("MONGO_DB_1")
-mongo_col_1 = os.getenv("MONGO_COL_1")
+mdb_host_1 = os.getenv("MDB_HOST_1")
+mdb_db_1 = os.getenv("MDB_DB_1")
+mongo_col_1 = os.getenv("MDB_COL_1")
 
 # MongoDB DB2 .env Variables
-mongo_host_2 = os.getenv("MONGO_HOST_2")
-mongo_db_2 = os.getenv("MONGO_DB_2")
-mongo_col_2 = os.getenv("MONGO_COL_2")
+mdb_host_2 = os.getenv("MDB_HOST_2")
+mdb_db_2 = os.getenv("MDB_DB_2")
+mdb_col_2 = os.getenv("MDB_COL_2")
 
-# Connect to Redis Streams
-r0 = redis.Redis(host=redis_host, port=redis_port,
-                 password=redis_password, db=0, decode_responses=True)
 
-r1 = redis.Redis(host=redis_host, port=redis_port,
-                 password=redis_password, db=1, decode_responses=True)
+class Corpus():
 
-# Connect to MongoSE Database
-conn1 = pymongo.MongoClient(
-    host='mongodb://' + mongo_host_1 + ':' + str(mongo_port) + '/')
-db1 = conn1[mongo_db_1]
-col1 = db1[mongo_col_1]
+    def __init__(self, input_col) -> None:
+        self.col = input_col
 
-# Connect to MongoCS Database
-conn2 = pymongo.MongoClient(
-    host='mongodb://' + mongo_host_2 + ':' + str(mongo_port) + '/')
-db2 = conn2[mongo_db_2]
-col2 = db2[mongo_col_2]
+    def create_corpus(self) -> list:
+        """ Creates Corpus of Titles from MongoCS """
+
+        corpus = []
+        for data in self.col.find():
+            corpus += data["title"]
+        return corpus
 
 
 class SearchEngine():
 
-    # Get Titles from MongoCS + Return as Corpus
-    def create_corpus():
-        corpus = []
-        for data in col2.find():
-            corpus += data["title"]
-        return corpus
+    def __init__(self, rdb1, output_col, input_col, corpus, stream_data) -> None:
+        self.rdb1 = rdb1
+        self.col1 = output_col
+        self.col2 = input_col
+        self.corpus = corpus
+        self.stream_data = stream_data
+        self.title = ""
 
-    # Outputs Title formatted with HTML + Other relavent information
-    def url_formatter(col2, title):
+    def url_formatter(self) -> str:
+        """ Formats Titles + URLs Into Valid HTML Links """
+
         # Get Title's URL + Source from Col2
-        db_data = col2.find_one(
-            {"title": title}, {"_id": 0, "url": 1, "source": 1})
+        db_data = self.col2.find_one(
+            {"title": self.title}, {"_id": 0, "url": 1, "source": 1})
         url = db_data["url"]
         source = db_data["source"][0]
 
-        # Format Results with HTML tags
-        ouput = f"<a href=\" {url} \" class=\"searchResult\" target=\"_blank\" rel=\"noopener noreferrer\"> {title} <br/> <p class=\"resultSource\"> {source} </p> </a><br />"
+        # Format Results as HTML
+        ouput = f"<a href=\" {url} \" class=\"searchResult\" target=\"_blank\" rel=\"noopener noreferrer\"> {self.title} <br/> <p class=\"resultSource\"> {source} </p> </a><br />"
         return ouput
 
-    # Takes query as input, returns sorted search results to Redis & MongoDB
-    def engine(col1, r1, streamAData):
+    def engine(self) -> None:
+        """Sorts Corpus By Query via BM25"""
+
         # Get Data from StreamA as Strings
-        streamData = streamAData[0][1][0][1]
-        streamQuery = streamData["query"]
-        streamIdentifier = streamData["identifier"]
+        stream_data = self.stream_data[0][1][0][1]
+        stream_query = stream_data["query"]
+        stream_id = stream_data["identifier"]
 
         # Move Query from StreamA to BM25
         # Converts Query to Uppercase to improve search results
-        query = str(streamQuery).title()
+        query = str(stream_query).title()
 
         # BM25 Config
         tokenized_query = query.split(" ")
-        tokenized_corpus = [doc.split(" ") for doc in corpus]
+        tokenized_corpus = [doc.split(" ") for doc in self.corpus]
         bm25 = BM25Plus(tokenized_corpus)
 
         # Return n most relavent Titles
         # Lists used over Sets as order of results matters!
-        rankedTitles = list(bm25.get_top_n(tokenized_query, corpus, n=50))
+        ranked_titles = list(bm25.get_top_n(
+            tokenized_query, self.corpus, n=30))
 
         # HTML + Title + URL List
-        responseList = []
-        responseDict = {}
+        response_list = []
+        response_dict = {}
 
-        # For List of ranked Titles:
-        for title in rankedTitles:
+        # Iterate through Ranked Titles + Format
+        for title in ranked_titles:
 
-            response = SearchEngine.url_formatter(col2, title)
-            responseList += [response]
+            self.title = title
+            response = self.url_formatter()
+            response_list += [response]
 
-            # Add List to Dict <- MongoDb Col1
-            responseDict['_id'] = streamIdentifier
-            responseDict['data'] = [responseList]
+            # Add List to Dict <- MongoDB Col1
+            response_dict['_id'] = stream_id
+            response_dict['data'] = [response_list]
 
-        # Return Results via Redis DB1 to GlobalAPI
-        r1.set(streamIdentifier, str(responseList), ex=300)
+        # Return Results via Redis DB1 to API
+        self.rdb1.set(stream_id, str(response_list), ex=300)
 
         # Add Results to MongoDB Col1
         # Used by MetriX Service Only
-        col1.insert_one(responseDict)
+        self.col1.insert_one(response_dict)
+
+        return None
 
 
-# Runs at Start of Script to decrease Search time + DB Calls
-corpus = SearchEngine.create_corpus()
+if __name__ == "__main__":
 
+    # Connect to Redis Streams
+    # r0 -> Query Stream
+    rdb0 = redis.Redis(host=redis_host, port=redis_port,
+                       password=redis_password, db=0, decode_responses=True)
 
-# Redis Streams
-while True:
-    streamAData = r0.xread({'streamA': "$"}, count=1, block=0)
+    # r1 -> Return Results To API
+    rdb1 = redis.Redis(host=redis_host, port=redis_port,
+                       password=redis_password, db=1, decode_responses=True)
 
-    if streamAData != {}:
-        # Process query via Engine Function
-        SearchEngine.engine(col1, r1, streamAData)
+    # Connect To MongoSE Database
+    conn1 = pymongo.MongoClient(
+        host='mongodb://' + mdb_host_1 + ':' + str(mdb_port) + '/')
+    db1 = conn1[mdb_db_1]
+    col1 = db1[mongo_col_1]
+
+    # Connect To MongoCS Database
+    conn2 = pymongo.MongoClient(
+        host='mongodb://' + mdb_host_2 + ':' + str(mdb_port) + '/')
+    db2 = conn2[mdb_db_2]
+    col2 = db2[mdb_col_2]
+
+    c = Corpus(col2)
+    c = c.create_corpus()
+
+    # Monitor Redis Stream
+    while True:
+        streamAData = rdb0.xread({'streamA': "$"}, count=1, block=0)
+
+        if streamAData != {}:
+            # Pass Query To Search Engine
+            s = SearchEngine(rdb1, col1, col2, c, streamAData)
+            s.engine()
