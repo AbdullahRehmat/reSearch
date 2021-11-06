@@ -27,95 +27,95 @@ mongo_col_2 = os.getenv("MONGO_COL_2")
 
 # Connect to Redis Streams
 r0 = redis.Redis(host=redis_host, port=redis_port,
-				 password=redis_password, db=0, decode_responses=True)
+                 password=redis_password, db=0, decode_responses=True)
 
 r1 = redis.Redis(host=redis_host, port=redis_port,
-				 password=redis_password, db=1, decode_responses=True)
+                 password=redis_password, db=1, decode_responses=True)
 
 # Connect to MongoSE Database
 conn1 = pymongo.MongoClient(
-	host='mongodb://' + mongo_host_1 + ':' + str(mongo_port) + '/')
+    host='mongodb://' + mongo_host_1 + ':' + str(mongo_port) + '/')
 db1 = conn1[mongo_db_1]
 col1 = db1[mongo_col_1]
 
 # Connect to MongoCS Database
 conn2 = pymongo.MongoClient(
-	host='mongodb://' + mongo_host_2 + ':' + str(mongo_port) + '/')
+    host='mongodb://' + mongo_host_2 + ':' + str(mongo_port) + '/')
 db2 = conn2[mongo_db_2]
 col2 = db2[mongo_col_2]
 
 
-class searchEngine():
+class SearchEngine():
 
-	# Get Titles from MongoCS + Return as Corpus
-	def createCorpus():
-		corpus = []
-		for data in col2.find():
-			corpus += data["title"]
-		return corpus
+    # Get Titles from MongoCS + Return as Corpus
+    def create_corpus():
+        corpus = []
+        for data in col2.find():
+            corpus += data["title"]
+        return corpus
 
-	# Outputs Title formatted with HTML + Other relavent information
-	def formatter(col2, title):
-		# Get Title's URL + Source
-		dbResponse = col2.find_one(
-			{"title": title}, {"_id": 0, "url": 1, "source": 1})
-		url = dbResponse["url"]
-		source = dbResponse["source"][0]
+    # Outputs Title formatted with HTML + Other relavent information
+    def url_formatter(col2, title):
+        # Get Title's URL + Source from Col2
+        db_data = col2.find_one(
+            {"title": title}, {"_id": 0, "url": 1, "source": 1})
+        url = db_data["url"]
+        source = db_data["source"][0]
 
-		# Format Results with HTML tags
-		formatter = f"<a href=\" {url} \" class=\"searchResult\" target=\"_blank\" rel=\"noopener noreferrer\"> {title} <br/> <p class=\"resultSource\"> {source} </p> </a><br />"
-		return formatter
+        # Format Results with HTML tags
+        ouput = f"<a href=\" {url} \" class=\"searchResult\" target=\"_blank\" rel=\"noopener noreferrer\"> {title} <br/> <p class=\"resultSource\"> {source} </p> </a><br />"
+        return ouput
 
-	# Takes query as input, returns sorted search results to Redis & MongoDB
-	def engine(col1, r1, streamAData):
-		# Get Data from StreamA as Strings
-		streamData = streamAData[0][1][0][1]
-		streamQuery = streamData["query"]
-		streamIdentifier = streamData["identifier"]
+    # Takes query as input, returns sorted search results to Redis & MongoDB
+    def engine(col1, r1, streamAData):
+        # Get Data from StreamA as Strings
+        streamData = streamAData[0][1][0][1]
+        streamQuery = streamData["query"]
+        streamIdentifier = streamData["identifier"]
 
-		# Move Query from StreamA to BM25
-		# Converts Query to Uppercase to improve search results
-		query = str(streamQuery).title()
+        # Move Query from StreamA to BM25
+        # Converts Query to Uppercase to improve search results
+        query = str(streamQuery).title()
 
-		# BM25 Config
-		tokenized_query = query.split(" ")
-		tokenized_corpus = [doc.split(" ") for doc in corpus]
-		bm25 = BM25Plus(tokenized_corpus)
+        # BM25 Config
+        tokenized_query = query.split(" ")
+        tokenized_corpus = [doc.split(" ") for doc in corpus]
+        bm25 = BM25Plus(tokenized_corpus)
 
-		# Return n most relavent Titles
-		# Lists used over Sets as order of results matters!
-		rankedTitles = list(bm25.get_top_n(tokenized_query, corpus, n=50))
+        # Return n most relavent Titles
+        # Lists used over Sets as order of results matters!
+        rankedTitles = list(bm25.get_top_n(tokenized_query, corpus, n=50))
 
-		# HTML + Title + URL List
-		responseList = []
-		responseDict = {}
+        # HTML + Title + URL List
+        responseList = []
+        responseDict = {}
 
-		# For List of ranked Titles:
-		for title in rankedTitles:
+        # For List of ranked Titles:
+        for title in rankedTitles:
 
-			response = searchEngine.formatter(col2, title)
-			responseList += [response]
+            response = SearchEngine.url_formatter(col2, title)
+            responseList += [response]
 
-			# Add List to Dict <- MongoDb Col1
-			responseDict['_id'] = streamIdentifier
-			responseDict['data'] = [responseList]
+            # Add List to Dict <- MongoDb Col1
+            responseDict['_id'] = streamIdentifier
+            responseDict['data'] = [responseList]
 
-		# Return Results via Redis DB1 to GlobalAPI
-		r1.set(streamIdentifier, str(responseList), ex=300)
+        # Return Results via Redis DB1 to GlobalAPI
+        r1.set(streamIdentifier, str(responseList), ex=300)
 
-		# Add Results to MongoDB Col1
-		# Used by MetriX Service Only
-		col1.insert_one(responseDict)
+        # Add Results to MongoDB Col1
+        # Used by MetriX Service Only
+        col1.insert_one(responseDict)
 
 
 # Runs at Start of Script to decrease Search time + DB Calls
-corpus = searchEngine.createCorpus()
+corpus = SearchEngine.create_corpus()
 
 
 # Redis Streams
 while True:
-	streamAData = r0.xread({'streamA': "$"}, count=1, block=0)
+    streamAData = r0.xread({'streamA': "$"}, count=1, block=0)
 
-	if streamAData != {}:
-		# Process query via Engine Function
-		searchEngine.engine(col1, r1, streamAData)
+    if streamAData != {}:
+        # Process query via Engine Function
+        SearchEngine.engine(col1, r1, streamAData)
