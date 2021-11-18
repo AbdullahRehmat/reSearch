@@ -1,5 +1,4 @@
 import os
-import time
 import redis
 import pymongo
 from dotenv import load_dotenv

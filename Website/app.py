@@ -5,7 +5,7 @@ from ast import literal_eval
 from dotenv import load_dotenv
 from flask_wtf import FlaskForm
 from wtforms import StringField
-from requests import put, post, get
+from requests import post, get
 from wtforms.validators import DataRequired
 from flask import Flask, Response, render_template, redirect, url_for, session
 
