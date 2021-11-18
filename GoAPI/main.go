@@ -19,8 +19,9 @@ const (
 )
 
 var (
-	RCtx = context.Background()
-	MCtx = context.TODO()
+	RCtx = context.Background() // Redis
+	MCtx = context.Background()
+	//MCtx = context.TODO()       // MongoDB
 )
 
 // Redis Cache Connection
