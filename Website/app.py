@@ -41,13 +41,15 @@ class ApiConn():
             identifier = session['identifier']
             url = str('http://global-api/api/results/') + identifier
             api = get(url).json()
-            
+
             # This needs refactoring
             # If Else Stack ensures that the api returns a list
             # Needs to be fixed by the API!
             if type(api) == str:
+                print("Recived String. Converted to JSON")
                 return literal_eval(api)
             elif type(api) != str:
+                print("Recived JSON.")
                 return api
             else:
                 return ['An Error Occured!']
