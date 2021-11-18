@@ -83,7 +83,7 @@ func dbStats() (x, y, z int64) {
 
 }
 
-type Response struct {
+type QueryResponse struct {
 	Identifier string
 	Query      string
 	StatusCode int
@@ -111,7 +111,7 @@ func queryAPI(w http.ResponseWriter, r *http.Request) {
 		},
 	})
 
-	response := Response{
+	response := QueryResponse{
 		StatusCode: 200,
 		Message:    "OK",
 		Identifier: identifier,
@@ -128,7 +128,7 @@ func resultsAPI(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	identifier := params["identifier"]
 
-	time.Sleep(2 * time.Second) // To allow for response from SearchEngine Service
+	time.Sleep(2 * time.Second) // To Allow For Response From SearchEngine Service
 
 	db := RedisDB(1)
 	defer db.Close()
@@ -141,22 +141,25 @@ func resultsAPI(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(results)
 }
 
+type MetrixReponse struct {
+	TotalQueryCount   int64
+	TotalArticleCount int64
+	LiveQueryCount    int64
+}
+
 // Return Metrix & Stats
 func metrix(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 
-	var x, y, z int64
-	x, y, z = dbStats()
+	var x, y, z int64 = dbStats()
 
-	err := json.NewEncoder(w).Encode(struct {
-		TotalQueries      int64
-		ArticlesAvailable int64
-		LiveQueries       int64
-	}{x, y, z})
-
-	if err != nil {
-		log.Fatal(err)
+	response := MetrixReponse{
+		TotalQueryCount:   x,
+		TotalArticleCount: y,
+		LiveQueryCount:    z,
 	}
+
+	json.Marshal(response)
 }
 
 // Create API & Handle Endpoints
