@@ -79,7 +79,6 @@ func dbStats() (x, y, z int64) {
 		log.Fatal(err)
 	}
 
-	// Modify to return as JSON
 	return x, y, z
 
 }
@@ -120,11 +119,6 @@ func queryAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.Marshal(response)
-
-	//json.NewEncoder(w).Encode(struct {
-	//	StatusCode int
-	//	Message    string
-	//}{200, "OK"})
 }
 
 // Return Results to Client
