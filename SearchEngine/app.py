@@ -59,8 +59,8 @@ class SearchEngine():
         source = db_data["source"][0]
 
         # Format Results as HTML
-        ouput = f"<a href=\" {url} \" class=\"searchResult\" target=\"_blank\" rel=\"noopener noreferrer\"> {self.title} <br/> <p class=\"resultSource\"> {source} </p> </a><br />"
-        return ouput
+        output = f"<a href=\" {url} \" class=\"searchResult\" target=\"_blank\" rel=\"noopener noreferrer\"> {self.title} <br/> <p class=\"resultSource\"> {source} </p> </a><br />"
+        return output
 
     def engine(self) -> None:
         """Sorts Corpus By Query via BM25"""
