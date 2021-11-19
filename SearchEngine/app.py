@@ -31,7 +31,7 @@ class Corpus():
         self.col = input_col
 
     def create_corpus(self) -> list:
-        """ Creates Corpus of Titles from MongoCS """
+        """ Creates Corpus oF Titles From MongoDB """
 
         corpus = []
         for data in self.col.find():
@@ -63,7 +63,7 @@ class SearchEngine():
         return output
 
     def engine(self) -> None:
-        """Sorts Corpus By Query via BM25"""
+        """ Sorts Corpus By Query Via BM25 """
 
         # Get Data from StreamA as Strings
         stream_data = self.stream_data[0][1][0][1]
@@ -121,14 +121,17 @@ if __name__ == "__main__":
                        password=redis_password, db=1, decode_responses=True)
 
     # Connect To MongoSE Database
+    #conn1 = pymongo.MongoClient(host="mongodb://" + mdb_host_1 + ":" + str(mdb_port) + "/")
     conn1 = pymongo.MongoClient(
-        host='mongodb://' + mdb_host_1 + ':' + str(mdb_port) + '/')
+        host=f"mongodb://{mdb_host_1}:{str(mdb_port)}/")
+
     db1 = conn1[mdb_db_1]
     col1 = db1[mongo_col_1]
 
     # Connect To MongoCS Database
+    #conn2 = pymongo.MongoClient(host='mongodb://' + mdb_host_2 + ':' + str(mdb_port) + '/')
     conn2 = pymongo.MongoClient(
-        host='mongodb://' + mdb_host_2 + ':' + str(mdb_port) + '/')
+        host=f"mongodb://{mdb_host_2}:{str(mdb_port)}/")
     db2 = conn2[mdb_db_2]
     col2 = db2[mdb_col_2]
 

@@ -64,10 +64,7 @@ def mongo_results(identifier):
 
 
 class QueryAPI(Resource):
-    """
-    Route for API to recieve requests on
-
-    """
+    """ Route For API To Recieve Requests On """
 
     def post(self):
         parser = reqparse.RequestParser()
@@ -83,10 +80,7 @@ class QueryAPI(Resource):
 
 
 class ResultsAPI(Resource):
-    """
-    Returns results collected from MongoDB Database to Client
-
-    """
+    """ Returns Results Collected From MongoDB Database To Client """
 
     def get(self, identifier):
         time.sleep(0.5)
@@ -99,10 +93,7 @@ class ResultsAPI(Resource):
 
 
 class Metrix(Resource):
-    """
-    Collect usage statistics from MongoDB Database and return to Website
-
-    """
+    """ Collect Usage Statistics From MongoDB Database And Return To Client """
 
     def get(self):
         # Get Statistics from Databases
@@ -112,7 +103,8 @@ class Metrix(Resource):
 
         # Format Statistics
         response = {"totalQueryCount": db1Count,
-                    "totalArticleCount": db2Count,  "liveQueryCount": db3Count}
+                    "totalArticleCount": db2Count,
+                    "liveQueryCount": db3Count}
 
         # Return Results
         return response, 200
