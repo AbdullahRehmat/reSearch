@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -20,8 +21,7 @@ const (
 
 var (
 	RCtx = context.Background() // Redis
-	MCtx = context.Background()
-	//MCtx = context.TODO()       // MongoDB
+	MCtx = context.TODO()       // MongoDB
 )
 
 // Redis Cache Connection
@@ -84,19 +84,31 @@ func dbStats() (x, y, z int64) {
 
 }
 
-type QueryResponse struct {
-	Identifier string
-	Query      string
-	StatusCode int
-	Message    string
+type QueryData struct {
+	Identifier string `json:"identifier"`
+	Query      string `json:"query"`
+}
+
+type QueryReponse struct {
+	Message string    `json:"message"`
+	Data    QueryData `json:"data"`
 }
 
 // Receive Query from Client
+// Unable to get IDENTIFIER AND QUERY
 func queryAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 
 	identifier := r.FormValue("identifier")
 	query := r.FormValue("query")
+
+	if len(identifier) == 0 {
+		fmt.Println("No IDENTIFIER - Line 102")
+	}
+
+	if len(query) == 0 {
+		fmt.Println("No QUERY - Line 103")
+	}
 
 	db := RedisDB(0)
 	defer db.Close()
@@ -112,17 +124,21 @@ func queryAPI(w http.ResponseWriter, r *http.Request) {
 		},
 	})
 
-	response := QueryResponse{
-		StatusCode: 200,
-		Message:    "OK",
+	responseData := QueryData{
 		Identifier: identifier,
 		Query:      query,
 	}
 
-	json.Marshal(response)
+	response := QueryReponse{
+		Message: "Success",
+		Data:    responseData,
+	}
+
+	json.NewEncoder(w).Encode(response)
 }
 
 // Return Results to Client
+// WORKING
 func resultsAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 
@@ -139,37 +155,44 @@ func resultsAPI(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	json.NewEncoder(w).Encode(results)
+	//json.NewEncoder(w).Encode(results)
+	response, _ := json.Marshal(results)
+	w.WriteHeader(http.StatusOK)
+	w.Write(response)
 }
 
 type MetrixReponse struct {
-	TotalQueryCount   int64
-	TotalArticleCount int64
-	LiveQueryCount    int64
+	TotalQueryCount   int64 `json:"totalQueryCount"`
+	TotalArticleCount int64 `json:"totalArticleCount"`
+	LiveQueryCount    int64 `json:"liveQueryCount"`
 }
 
 // Return Metrix & Stats
+// WORKING ???
 func metrix(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 
 	var x, y, z int64 = dbStats()
 
-	response := MetrixReponse{
+	metrixData := MetrixReponse{
 		TotalQueryCount:   x,
 		TotalArticleCount: y,
 		LiveQueryCount:    z,
 	}
 
-	json.Marshal(response)
+	response, _ := json.Marshal(metrixData)
+	w.WriteHeader(http.StatusOK)
+	w.Write(response)
 }
 
 // Create API & Handle Endpoints
+// WORKING
 func main() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/api/query", queryAPI).Methods("POST")
 	router.HandleFunc("/api/results/{identifier}", resultsAPI).Methods("GET")
-	router.HandleFunc("/metrix", metrix).Methods("GET")
+	router.HandleFunc("/api/metrix", metrix).Methods("GET")
 
 	http.ListenAndServe(":80", router)
 }
