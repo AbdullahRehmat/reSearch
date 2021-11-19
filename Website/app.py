@@ -16,7 +16,9 @@ app.config['SECRET_KEY'] = os.getenv("FLASK_SECRET_KEY")
 app.config['API_HOST'] = os.getenv("API_HOSTNAME")
 
 
-def generate_identifier(length):  # Generate Random String
+def generate_identifier(length):
+    """ Generates Random String For Use As An Identifier """
+
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for i in range(length))
 
@@ -62,7 +64,7 @@ class ApiConn():
 
 class MyForm(FlaskForm):
 
-    query = StringField('Search', validators=[DataRequired()],
+    query = StringField("Search", validators=[DataRequired()],
                         render_kw={"placeholder": "Search..."})
 
 
@@ -70,7 +72,7 @@ class Metrix():
 
     def data():
         """ Sends Search Engine Useage Data to Client """
-        
+
         api = get(f"http://{app.config['API_HOST']}/api/v1/metrix")
 
         return api
