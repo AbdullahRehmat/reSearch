@@ -13,6 +13,7 @@ app = Flask(__name__)
 load_dotenv()
 
 app.config['SECRET_KEY'] = os.getenv("FLASK_SECRET_KEY")
+app.config['API_HOST'] = os.getenv("API_HOSTNAME")
 
 
 def generate_identifier(length):  # Generate Random String
@@ -29,7 +30,7 @@ class ApiConn():
         session['identifier'] = identifier
         session['query'] = query
 
-        api = post('http://global-api/api/v1/query',
+        api = post(f"http://{app.config['API_HOST']}/api/v1/query",
                    data={"identifier": identifier, "query": query}).json()
 
         return api
@@ -39,7 +40,8 @@ class ApiConn():
 
         if 'identifier' in session:
             identifier = session['identifier']
-            url = str('http://global-api/api/v1/results/') + identifier
+            url = str(
+                f"http://{app.config['API_HOST']}/api/v1/results/") + identifier
             api = get(url).json()
 
             # This needs refactoring
@@ -67,7 +69,9 @@ class MyForm(FlaskForm):
 class Metrix():
 
     def data():
-        api = get('http://go-api/api/v1/metrix')
+        """ Sends Search Engine Useage Data to Client """
+        
+        api = get(f"http://{app.config['API_HOST']}/api/v1/metrix")
 
         return api
 
