@@ -9,13 +9,12 @@ flask-restful = "*"
 redis = "*"
 rejson = "*"
 pymongo = "*"
-requests = "*"
 python-dotenv = "*"
 gunicorn = "*"
 
 [dev-packages]
-autopep8 = "*"
 rope = "*"
+autopep8 = "*"
 
 [requires]
 python_version = "3.8"

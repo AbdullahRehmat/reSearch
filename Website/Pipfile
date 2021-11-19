@@ -12,8 +12,8 @@ gunicorn = "*"
 flask-login = "*"
 
 [dev-packages]
-autopep8 = "*"
 rope = "*"
+autopep8 = "*"
 
 [requires]
 python_version = "3.8"
