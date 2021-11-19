@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -24,7 +23,7 @@ var (
 	MCtx = context.TODO()       // MongoDB
 )
 
-// Redis Cache Connection
+// Redis DB Connection
 func RedisDB(x int) *redis.Client {
 	db := redis.NewClient(&redis.Options{
 		Addr:     RedisAddr,
@@ -99,16 +98,16 @@ type QueryReponse struct {
 func queryAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 
-	identifier := r.FormValue("identifier")
-	query := r.FormValue("query")
+	var body QueryData
 
-	if len(identifier) == 0 {
-		fmt.Println("No IDENTIFIER - Line 102")
+	err := json.NewDecoder(r.Body).Decode(&body)
+
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	if len(query) == 0 {
-		fmt.Println("No QUERY - Line 103")
-	}
+	identifier := body.Identifier
+	query := body.Query
 
 	db := RedisDB(0)
 	defer db.Close()
@@ -119,8 +118,8 @@ func queryAPI(w http.ResponseWriter, r *http.Request) {
 		MaxLenApprox: 0,
 		ID:           "",
 		Values: map[string]interface{}{
-			"identifier": string(identifier),
-			"query":      string(query),
+			"identifier": identifier,
+			"query":      query,
 		},
 	})
 
@@ -134,11 +133,11 @@ func queryAPI(w http.ResponseWriter, r *http.Request) {
 		Data:    responseData,
 	}
 
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
 
 // Return Results to Client
-// WORKING
 func resultsAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 
@@ -155,15 +154,8 @@ func resultsAPI(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
+	w.WriteHeader(http.StatusAccepted)
 	json.NewEncoder(w).Encode(results)
-	//response, err := json.Marshal(results)
-
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-
-	//w.WriteHeader(http.StatusOK)
-	//w.Write(response)
 }
 
 type MetrixReponse struct {
@@ -173,7 +165,6 @@ type MetrixReponse struct {
 }
 
 // Return Metrix & Stats
-// WORKING
 func metrix(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 
@@ -185,19 +176,11 @@ func metrix(w http.ResponseWriter, r *http.Request) {
 		LiveQueryCount:    z,
 	}
 
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(data)
-	//response, err := json.Marshal(data)
-
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-
-	//w.WriteHeader(http.StatusOK)
-	//w.Write(response)
 }
 
-// Create API & Handle Endpoints
-// WORKING
+// Create API URLS & Handle Endpoints
 func main() {
 	router := mux.NewRouter()
 
