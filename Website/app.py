@@ -29,7 +29,7 @@ class ApiConn():
         session['identifier'] = identifier
         session['query'] = query
 
-        api = post('http://global-api/api/query',
+        api = post('http://global-api/api/v1/query',
                    data={"identifier": identifier, "query": query}).json()
 
         return api
@@ -39,7 +39,7 @@ class ApiConn():
 
         if 'identifier' in session:
             identifier = session['identifier']
-            url = str('http://global-api/api/results/') + identifier
+            url = str('http://global-api/api/v1/results/') + identifier
             api = get(url).json()
 
             # This needs refactoring
@@ -67,7 +67,7 @@ class MyForm(FlaskForm):
 class Metrix():
 
     def data():
-        api = get('http://go-api/metrix')
+        api = get('http://go-api/api/v1/metrix')
 
         return api
 

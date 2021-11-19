@@ -119,6 +119,6 @@ class Metrix(Resource):
 
 
 # Create routes
-api.add_resource(QueryAPI, "/api/query")
-api.add_resource(ResultsAPI, "/api/results/<identifier>")
-api.add_resource(Metrix, "/api/metrix")
+api.add_resource(QueryAPI, "/api/v1/query")
+api.add_resource(ResultsAPI, "/api/v1/results/<identifier>")
+api.add_resource(Metrix, "/api/v1/metrix")

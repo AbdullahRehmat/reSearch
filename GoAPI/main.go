@@ -190,9 +190,9 @@ func metrix(w http.ResponseWriter, r *http.Request) {
 func main() {
 	router := mux.NewRouter()
 
-	router.HandleFunc("/api/query", queryAPI).Methods("POST")
-	router.HandleFunc("/api/results/{identifier}", resultsAPI).Methods("GET")
-	router.HandleFunc("/api/metrix", metrix).Methods("GET")
+	router.HandleFunc("/api/v1/query", queryAPI).Methods("POST")
+	router.HandleFunc("/api/v1/results/{identifier}", resultsAPI).Methods("GET")
+	router.HandleFunc("/api/v1/metrix", metrix).Methods("GET")
 
 	http.ListenAndServe(":80", router)
 }
