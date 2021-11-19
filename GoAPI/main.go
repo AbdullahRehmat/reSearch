@@ -144,7 +144,7 @@ func resultsAPI(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	identifier := params["identifier"]
 
-	time.Sleep(2 * time.Second) // To Allow For Response From SearchEngine Service
+	time.Sleep(2 * time.Second) // To Allow SearchEngine Time To Return Response
 
 	db := RedisDB(1)
 	defer db.Close()
