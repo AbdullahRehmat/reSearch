@@ -156,7 +156,12 @@ func resultsAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//json.NewEncoder(w).Encode(results)
-	response, _ := json.Marshal(results)
+	response, err := json.Marshal(results)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	w.WriteHeader(http.StatusOK)
 	w.Write(response)
 }
@@ -168,19 +173,25 @@ type MetrixReponse struct {
 }
 
 // Return Metrix & Stats
-// WORKING ???
+// WORKING
 func metrix(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 
 	var x, y, z int64 = dbStats()
 
-	metrixData := MetrixReponse{
+	data := MetrixReponse{
 		TotalQueryCount:   x,
 		TotalArticleCount: y,
 		LiveQueryCount:    z,
 	}
 
-	response, _ := json.Marshal(metrixData)
+	//json.NewEncoder(w).Encode(data)
+	response, err := json.Marshal(data)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	w.WriteHeader(http.StatusOK)
 	w.Write(response)
 }

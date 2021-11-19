@@ -111,8 +111,8 @@ class Metrix(Resource):
 		db3Count = r1.dbsize()
 
 		# Format Statistics
-		response = {"TotalQueries": db1Count,
-					"ArticlesAvailable": db2Count,  "LiveQueries": db3Count}
+		response = {"totalQueryCount": db1Count,
+					"totalArticleCount": db2Count,  "liveQueryCount": db3Count}
 
 		# Return Results
 		return response, 200
