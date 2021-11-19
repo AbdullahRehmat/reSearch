@@ -63,7 +63,7 @@ func dbStats() (x, y, z int64) {
 
 	db1 := MongoDB("mongo-se", "27017")
 	defer db1.Disconnect(MCtx)
-	x, err := db1.Database("SearchEngineDB").Collection("htmlResults").EstimatedDocumentCount(MCtx)
+	x, err := db1.Database("SearchEngineDB").Collection("ResultsC1").EstimatedDocumentCount(MCtx)
 
 	if err != nil {
 		log.Fatal(err)
@@ -155,15 +155,15 @@ func resultsAPI(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	//json.NewEncoder(w).Encode(results)
-	response, err := json.Marshal(results)
+	json.NewEncoder(w).Encode(results)
+	//response, err := json.Marshal(results)
 
-	if err != nil {
-		log.Fatal(err)
-	}
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
 
-	w.WriteHeader(http.StatusOK)
-	w.Write(response)
+	//w.WriteHeader(http.StatusOK)
+	//w.Write(response)
 }
 
 type MetrixReponse struct {
@@ -185,15 +185,15 @@ func metrix(w http.ResponseWriter, r *http.Request) {
 		LiveQueryCount:    z,
 	}
 
-	//json.NewEncoder(w).Encode(data)
-	response, err := json.Marshal(data)
+	json.NewEncoder(w).Encode(data)
+	//response, err := json.Marshal(data)
 
-	if err != nil {
-		log.Fatal(err)
-	}
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
 
-	w.WriteHeader(http.StatusOK)
-	w.Write(response)
+	//w.WriteHeader(http.StatusOK)
+	//w.Write(response)
 }
 
 // Create API & Handle Endpoints
