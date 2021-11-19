@@ -9,7 +9,6 @@ import logging
 import pymongo
 from itemadapter import ItemAdapter
 
-
 #class DataPipeline:
 #    def process_item(self, item, spider):
 #        return item
