@@ -94,7 +94,6 @@ type QueryReponse struct {
 }
 
 // Receive Query from Client
-// Unable to get IDENTIFIER AND QUERY
 func queryAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 
@@ -103,6 +102,7 @@ func queryAPI(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&body)
 
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		log.Fatal(err)
 	}
 
@@ -151,10 +151,11 @@ func resultsAPI(w http.ResponseWriter, r *http.Request) {
 	results, err := db.Get(RCtx, identifier).Result()
 
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		log.Fatal(err)
 	}
 
-	w.WriteHeader(http.StatusAccepted)
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(results)
 }
 
