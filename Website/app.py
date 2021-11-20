@@ -1,3 +1,4 @@
+import json
 import os
 import random
 import string
@@ -29,11 +30,17 @@ class ApiConn():
         """ Sends query recieved to API for processing via POST """
 
         identifier = generate_identifier(10)
+        
+        # Add Identifier and Query to Session
         session['identifier'] = identifier
         session['query'] = query
 
-        api = post(f"http://{app.config['API_HOST']}/api/v1/query",
-                   data={"identifier": identifier, "query": query}).json()
+        # Assemble URL and Payload
+        url = str(f"http://{app.config['API_HOST']}/api/v1/query")
+        payload = {"identifier": identifier, "query": query}
+
+        # Send POST Request
+        api = post(url, json=payload)
 
         return api
 
@@ -42,12 +49,11 @@ class ApiConn():
 
         if 'identifier' in session:
             identifier = session['identifier']
-            url = str(
-                f"http://{app.config['API_HOST']}/api/v1/results/") + identifier
+
+            url = str(f"http://{app.config['API_HOST']}/api/v1/results/{identifier}")
+            
             api = get(url).json()
 
-            # This needs refactoring
-            # If Else Stack ensures that the api returns a list
             # Needs to be fixed by the API!
             if type(api) == str:
                 print("Recived String. Converted to JSON")
