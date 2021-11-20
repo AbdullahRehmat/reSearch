@@ -1,4 +1,3 @@
-import json
 import os
 import random
 import string
@@ -30,7 +29,7 @@ class ApiConn():
         """ Sends query recieved to API for processing via POST """
 
         identifier = generate_identifier(10)
-        
+
         # Add Identifier and Query to Session
         session['identifier'] = identifier
         session['query'] = query
@@ -51,7 +50,7 @@ class ApiConn():
             identifier = session['identifier']
 
             url = str(f"http://{app.config['API_HOST']}/api/v1/results/{identifier}")
-            
+
             api = get(url).json()
 
             # Needs to be fixed by the API!
@@ -59,7 +58,7 @@ class ApiConn():
                 print("Recived String. Converted to JSON")
                 return literal_eval(api)
             elif type(api) != str:
-                print("Recived JSON.")
+                print("Received JSON.")
                 return api
             else:
                 return ['An Error Occured!']
