@@ -3,7 +3,7 @@ import pymongo
 import unicodedata
 
 
-def createsCorpus():
+def createsCorpus() -> list:
     host = "localhost"  # Mongo-CS
     port = 27019
     db_name = "ContentScraperDB"
@@ -21,14 +21,14 @@ def createsCorpus():
     return corpus
 
 
-def stripPunctuation(text):
+def stripPunctuation(text: str) -> str:
     punctuation = "!#$%'*+,./;<=>?@[\]^_`{|}~"
     new_text = text.translate(str.maketrans("", "", punctuation))
 
     return new_text
 
 
-def stripAccents(text):
+def stripAccents(text: str) -> str:
     nfkd_form = unicodedata.normalize("NFKD", text)
     ascii_form = nfkd_form.encode("ASCII", "ignore")
     new_text = ascii_form.decode("utf-8")
@@ -36,7 +36,7 @@ def stripAccents(text):
     return str(new_text)
 
 
-def formatText(text):
+def formatText(text: str) -> str:
     if "  " in text:
         new_text = text.replace("  ", " ")
         return new_text
@@ -55,120 +55,124 @@ def spellChecker(text: str) -> str:
         "Aashoora": ["ashooraa"],
         "Abdullah": ["abdullaah"],
         "Abdulillah": ["abdulilah"],
-        "albani": ["albaanee", "albaani"],
-        "ansari": ["ansaree"],
-        "aqidah": ["aqeedah"],
-        "asqalani": ["asqalaani"],
-        "awiyyah": ["awiyah"],
-        "ayyan": ["ayaan"],
-        "aziz": ["azeez"],
-        "azzaam": ["azzam"],
-        "baatini": ["batinee"],
-        "baghdadi": ["baghdadee"],
-        "banna": ["bannaa"],
-        "barbahari": ["barbaharee"],
-        "bukhari": ["bukharee", "bukhaari"],
-        "buloogh": ["bulugh"],
+        "Albani": ["albaanee", "albaani"],
+        "Ansari": ["ansaree"],
+        "Aqidah": ["aqeedah"],
+        "Asqalani": ["asqalaani"],
+        "Awiyyah": ["awiyah"],
+        "Ayyan": ["ayaan"],
+        "Aziz": ["azeez"],
+        "Azzaam": ["azzam"],
+        "Baatini": ["batinee"],
+        "Baghdadi": ["baghdadee"],
+        "Banna": ["bannaa"],
+        "Barbahari": ["barbaharee"],
+        "Bukhari": ["bukharee", "bukhaari"],
+        "Buloogh": ["bulugh"],
         "Baz": ["baaz"],
-        "christmas": ["xmas"],
+        "Christmas": ["xmas"],
         "daesh": ["isis"],
         "dhahabi": ["dhahabee"],
         "eesa": ["isa", "eesaa"],
         "falasifah": ["flasafah"],
         "fatwa": ["fatwah"],
-        "Fawzaan": ["fawzan"],
+        "fawzaan": ["fawzan"],
         "imaan": ["emaan", "eemaan"],
-        "haddad": ["hadad"],
-        "hadee": ["haadee", "hadi"],
-        "haqiqiyah": ["haqeeqiyyah"],
-        "haram": ["haraam"],
-        "hassan": ["hasan"],
-        "hawadith": ["hawaadith"],
-        "hizbi": ["hizbee"],
-        "ibraheem": ["ibrahim"],
-        "idafiyyah": ["idaafiyyah"],
-        "ikhwani": ["ikhwanee", "ikhwaani"],
-        "imaam": ["imam"],
-        "imaams": ["imams"],
-        "imaan": ["iman"],
-        "islam": ["islaam"],
-        "ismaeel": ["ismael", "ismail"],
-        "istiqamah": ["istiqaamah", "istiqama"],
-        "Iyyad": ["iyyadh"],
+        "Haddad": ["hadad"],
+        "Hadee": ["haadee", "hadi"],
+        "Haqiqiyah": ["haqeeqiyyah"],
+        "Haram": ["haraam"],
+        "Hassan": ["hasan"],
+        "Hawadith": ["hawaadith"],
+        "Hizbi": ["hizbee"],
+        "Ibraheem": ["ibrahim"],
+        "Idafiyyah": ["idaafiyyah"],
+        "Ikhwani": ["ikhwanee", "ikhwaani"],
+        "Imaam": ["imam"],
+        "Imaams": ["imams"],
+        "Imaan": ["iman"],
+        "Islam": ["islaam"],
+        "Ismaeel": ["ismael", "ismail"],
+        "Istiqamah": ["istiqaamah", "istiqama"],
+        "Iyaad": ["iyyadh", "iyyad"],
         "Jaabiree": ["jabiri", "jabiree"],
         "Jahmi": ["jahmee"],
-        "jamaa": ["jama"],
+        "Jamaa": ["jama"],
         "Jinn": ["jin"],
-        "kalaam": ["kalam"],
+        "Kalaam": ["kalam"],
         "Kashif": ["Kashiff"],
         "Khadeejah": ["khadejah"],
-        "khawaarij": ["khawarij"],
+        "Khawaarij": ["khawarij"],
         "Khomenei": ["khomeini"],
-        "kullab": ["kullaab"],
-        "kullabi": ["kullaabi"],
-        "kullabis": ["kullaabis"],
-        "laden": ["ladin"],
+        "Kullab": ["kullaab"],
+        "Kullabi": ["kullaabi"],
+        "Kullabis": ["kullaabis"],
+        "Laden": ["ladin"],
         "Luhaydan": ["luhaydaan"],
         "Madkhali": ["madkhalee"],
         "Mahdi": ["mahdee"],
-        "makhlooq": ["makhluq"],
+        "Makhlooq": ["makhluq"],
         "Makkah": ["mecca"],
         "Maliki": ["malikee"],
         "Maryam": ["mary"],
         "Musa": ["moses"],
         "Muhamad": ["muhammad"],
-        "mutakalimeen": ["mutakalimin"],
-        "mutakalimoon": ["mutakalimun"],
-        "nabi": ["nabee", "nabiyy"],
+        "Mutakalimeen": ["mutakalimin"],
+        "Mutakalimoon": ["mutakalimun"],
+        "Nabi": ["nabee", "nabiyy"],
         "Najmee": ["najmi"],
-        "naseehah": ["nasihah"],
+        "Naseehah": ["nasihah"],
         "Nuh": ["noah"],
-        "nuzool": ["nuzul"],
+        "Nuzool": ["nuzul"],
         "Umar": ["omar"],
         "Pharaoh": ["pharoah"],
-        "post codes": ["postcodes"],
+        "Post codes": ["postcodes"],
         "Premier Hajj": ["premierhajj"],
         "Quran": ["quraan"],
         "Rabee": ["rabi"],
-        "ramadan": ["ramadhaan", "ramadhan"],
+        "Ramadan": ["ramadhaan", "ramadhan"],
         "Saeed": ["saed"],
         "Safwaan": ["safwan"],
         "Sahabah": ["sahaabah"],
-        "salafi": ["salafee"],
-        "salafiyyah": ["salafiyah", "salafiyan"],
+        "Salafi": ["salafee"],
+        "Salafiyyah": ["salafiyah", "salafiyan"],
         "Salafi Publications": ["salafipublications"],
-        "salallahu": ["salallaahu"],
-        "salat": ["salaat"],
-        "salah": ["salaah"],
+        "Salallahu": ["salallaahu"],
+        "Salat": ["salaat"],
+        "Salah": ["salaah"],
         "Shatibi": ["shatibee"],
         "Shayateen": ["shayaateen"],
         "Shaytaan": ["shaytan", "satan"],
-        "sharia": ["shariah"],
+        "Sharia": ["shariah"],
         "Sufyaan": ["sufyan"],
         "Sulayman": ["sulaymaan"],
-        "tadhkiratus": ["tadhkirahtus"],
-        "tafseer": ["tafsir"],
-        "taqleed": ["taqlid"],
-        "taraweeh": ["tarawih"],
-        "tawheed": ["tawhid"],
+        "Tadhkiratus": ["tadhkirahtus"],
+        "Tafseer": ["tafsir"],
+        "Taqleed": ["taqlid"],
+        "Taraweeh": ["tarawih"],
+        "Tawheed": ["tawhid"],
         "Ubayd": ["ubaid"],
         "Usamah": ["usaamah"],
         "Uthaymeen": ["uthaymin", "uthaimeen"],
         "Uthmaan": ["uthman"],
         "Uways": ["uwais"],
         "Wahab": ["wahhab", "wahhaab"],
-        "jihad": ["jihaad"],
+        "Jihad": ["jihaad"],
         "Yahya": ["yahyaa"],
         "Zakariyyah": ["zakariyyaa", "zakariyah"],
         "Zayd": ["zaid"],
         "Zubayr": ["zubair"],
-        "zilal": ["zilaal"],
+        "Zilal": ["zilaal"],
     }
 
     for key, values in dictionary.items():
         for i in values:
-            if i in text.lower:
-                new_text = text.replace(i, key)
+            if i.lower() in text:
+                new_text = text.replace(i.lower(), key.lower())
+                return new_text
+
+            elif i.title() in text:
+                new_text = text.replace(i.title(), key.title())
                 return new_text
 
     else:
@@ -186,4 +190,7 @@ if __name__ == "__main__":
         text = formatText(text)
         text = spellChecker(text)
         print(text)
-    print(time.perf_counter() - start)
+
+    print("")
+    print("Time taken: ", time.perf_counter() - start)
+    print("Items in Corpus: ", len(corpus))
