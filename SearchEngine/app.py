@@ -12,17 +12,17 @@ redis_port = os.getenv("REDIS_PORT")
 redis_password = os.getenv("REDIS_PASSWORD")
 
 # MongoDB General Settings
-mdb_port = os.getenv("MDB_PORT")
+mdb_port = os.getenv("MONGO_PORT")
 
 # MongoDB DB1 .env Variables
-mdb_host_1 = os.getenv("MDB_HOST_1")
-mdb_db_1 = os.getenv("MDB_DB_1")
-mongo_col_1 = os.getenv("MDB_COL_1")
+mdb_host_1 = os.getenv("MONGO_HOST_1")
+mdb_db_1 = os.getenv("MONGO_DB_1")
+mongo_col_1 = os.getenv("MONGO_COL_1")
 
 # MongoDB DB2 .env Variables
-mdb_host_2 = os.getenv("MDB_HOST_2")
-mdb_db_2 = os.getenv("MDB_DB_2")
-mdb_col_2 = os.getenv("MDB_COL_2")
+mdb_host_2 = os.getenv("MONGO_HOST_2")
+mdb_db_2 = os.getenv("MONGO_DB_2")
+mdb_col_2 = os.getenv("MONGO_COL_2")
 
 
 class Corpus():
