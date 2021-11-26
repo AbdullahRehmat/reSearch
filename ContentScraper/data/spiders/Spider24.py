@@ -11,6 +11,7 @@ class SpiderTwentyFour(Spider):
     ]
 
     start_urls = [
+        "https://www.healthymuslim.com/authors/abuiyaad.cfm",
         "https://www.healthymuslim.com/authors/Admin.cfm?start=1",
         "https://www.healthymuslim.com/authors/Admin.cfm?start=21",
         "https://www.healthymuslim.com/authors/Admin.cfm?start=41",
@@ -24,7 +25,6 @@ class SpiderTwentyFour(Spider):
         "https://www.healthymuslim.com/authors/Admin.cfm?start=201",
         "https://www.healthymuslim.com/authors/Admin.cfm?start=221",
         "https://www.healthymuslim.com/authors/Admin.cfm?start=241",
-        "https://www.healthymuslim.com/authors/abuiyaad.cfm",
         "https://www.healthymuslim.com/authors/SoundHealth.cfm",
         "https://www.healthymuslim.com/authors/SoundHealth.cfm?start=21",
         "https://www.healthymuslim.com/authors/SoundHealth.cfm?start=41",

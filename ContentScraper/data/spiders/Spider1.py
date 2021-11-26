@@ -18,6 +18,7 @@ class SpiderOne(Spider):
         scrapedData = Selector(response).css('a.articleTitleListSmall')
 
         for data in scrapedData:
+
             item = DataItem()
             item['title'] = data.css('a.articleTitleListSmall::text').get(),
             item['source'] = 'Shia.bs - Article - Abu Iyyad',
