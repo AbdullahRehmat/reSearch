@@ -12,23 +12,23 @@ redis_port = os.getenv("REDIS_PORT")
 redis_password = os.getenv("REDIS_PASSWORD")
 
 # MongoDB General Settings
-mdb_port = os.getenv("MONGO_PORT")
+mongo_port = os.getenv("MONGO_PORT")
 
 # MongoDB DB1 .env Variables
-mdb_host_1 = os.getenv("MONGO_HOST_1")
-mdb_db_1 = os.getenv("MONGO_DB_1")
+mongo_host_1 = os.getenv("MONGO_HOST_1")
+mongo_db_1 = os.getenv("MONGO_DB_1")
 mongo_col_1 = os.getenv("MONGO_COL_1")
 
 # MongoDB DB2 .env Variables
-mdb_host_2 = os.getenv("MONGO_HOST_2")
-mdb_db_2 = os.getenv("MONGO_DB_2")
-mdb_col_2 = os.getenv("MONGO_COL_2")
+mongo_host_2 = os.getenv("MONGO_HOST_2")
+mongo_db_2 = os.getenv("MONGO_DB_2")
+mongo_col_2 = os.getenv("MONGO_COL_2")
 
 
 class Corpus():
 
-    def __init__(self, input_col) -> None:
-        self.col = input_col
+    def __init__(self, mongo_col) -> None:
+        self.col = mongo_col
 
     def create_corpus(self) -> list:
         """ Creates Corpus oF Titles From MongoDB """
@@ -36,6 +36,7 @@ class Corpus():
         corpus = []
         for data in self.col.find():
             corpus += data["title"]
+
         return corpus
 
 
@@ -53,8 +54,9 @@ class SearchEngine():
         """ Formats Titles + URLs Into Valid HTML Links """
 
         # Get Title's URL + Source from Col2
-        db_data = self.col2.find_one(
-            {"title": self.title}, {"_id": 0, "url": 1, "source": 1})
+        db_data = self.col2.find_one({"title": self.title}, {
+                                     "_id": 0, "url": 1, "source": 1})
+
         url = db_data["url"]
         source = db_data["source"][0]
 
@@ -64,6 +66,7 @@ class SearchEngine():
 
     def engine(self) -> None:
         """ Sorts Corpus By Query Via BM25 """
+
 
         # Get Data from StreamA as Strings
         stream_data = self.stream_data[0][1][0][1]
@@ -121,19 +124,16 @@ if __name__ == "__main__":
                        password=redis_password, db=1, decode_responses=True)
 
     # Connect To MongoSE Database
-    #conn1 = pymongo.MongoClient(host="mongodb://" + mdb_host_1 + ":" + str(mdb_port) + "/")
     conn1 = pymongo.MongoClient(
-        host=f"mongodb://{mdb_host_1}:{str(mdb_port)}/")
-
-    db1 = conn1[mdb_db_1]
+        host=f"mongodb://{mongo_host_1}:{str(mongo_port)}/")
+    db1 = conn1[mongo_db_1]
     col1 = db1[mongo_col_1]
 
     # Connect To MongoCS Database
-    #conn2 = pymongo.MongoClient(host='mongodb://' + mdb_host_2 + ':' + str(mdb_port) + '/')
     conn2 = pymongo.MongoClient(
-        host=f"mongodb://{mdb_host_2}:{str(mdb_port)}/")
-    db2 = conn2[mdb_db_2]
-    col2 = db2[mdb_col_2]
+        host=f"mongodb://{mongo_host_2}:{str(mongo_port)}/")
+    db2 = conn2[mongo_db_2]
+    col2 = db2[mongo_col_2]
 
     c = Corpus(col2)
     c = c.create_corpus()
