@@ -14,6 +14,7 @@ html {
   --admin-item-color: #dadce0;
   --footer-item-color: #595959;
   --footer-color: #dadce0;
+  --selection-color: rgba(44, 82, 120, 0.6);
 }
 
 .theme-dark {
@@ -26,6 +27,13 @@ html {
   --admin-item-color: #1e1e1e;
   --footer-item-color: #9e9e9e;
   --footer-color: #1e1e1e;
+  --selection-color: #ffffff;
+}
+
+::selection 
+::-moz-selection {
+  color: var(--background-color);
+  background-color: var(--selection-color);
 }
 
 body {
