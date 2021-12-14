@@ -1,4 +1,3 @@
-import pymongo
 import unicodedata
 from wordlist import dictionary
 
@@ -7,31 +6,12 @@ class SpellChecker():
     def __init__(self) -> None:
         pass
 
-    # @classmethod
-    # def create_corpus_db() -> list:
-    #    host = "localhost"  # Mongo-CS
-    #    port = 27019
-    #    db_name = "ContentScraperDB"
-    #    col_name = "ScrapedDataC1"
-    #
-    #    conn = pymongo.MongoClient(host=f"mongodb://{host}:{str(port)}/")
-    #
-    #    db = conn[db_name]
-    #    col = db[col_name]
-    #
-    #    corpus = []
-    #    for data in col.find():
-    #        corpus += data["title"]
-    #
-    #    return corpus
-    @classmethod
     def strip_punctuation(self, text: str) -> str:
         punctuation = "!#$%'*+,./;<=>?@[\]^_`{|}~"
         new_text = text.translate(str.maketrans("", "", punctuation))
 
         return new_text
 
-    @classmethod
     def strip_accents(self, text: str) -> str:
         nfkd_form = unicodedata.normalize("NFKD", text)
         ascii_form = nfkd_form.encode("ASCII", "ignore")
@@ -47,18 +27,17 @@ class SpellChecker():
         else:
             return text
 
-    @classmethod
     def fix_spelling(self, text: str) -> str:
         d = dictionary()
 
-        for key, values in d.items():
-            for i in values:
+        for k, v in d.items():
+            for i in v:
                 if i.lower() in text:
-                    new_text = text.replace(i.lower(), key.lower())
+                    new_text = text.replace(i.lower(), k.lower())
                     return new_text
 
                 elif i.title() in text:
-                    new_text = text.replace(i.title(), key.title())
+                    new_text = text.replace(i.title(), k.title())
                     return new_text
 
         else:
@@ -66,30 +45,22 @@ class SpellChecker():
 
     def spell_checker(self, text: str) -> str:
 
-        # Split Text -> Words
-        words = text.split(" ")
-        x = []
+        if type(text) != str:
+            return str(text)
 
-        # Spell Check Words
-        for word in words:
-            word = self.strip_punctuation(word)
-            word = self.strip_accents(word)
-            word = self.format_spaces(word)
-            word = self.fix_spelling(word)
+        text = self.strip_punctuation(text)
+        text = self.strip_accents(text)
+        text = self.format_spaces(text)
+        text = self.fix_spelling(text)
 
-            x.append(word)
-
-        # Join Words -> Sentence
-        sentence = " "
-        sentence = sentence.join(x)
-
-        # Return Sentence
-        return sentence
+        return text
 
 
 if __name__ == "__main__":
 
     print("Running Library As Stand-Alone File...")
+    input_text = input("Enter Text: ")
+
     s = SpellChecker()
-    new_text = s.spell_checker("abdullaah allaah noah")
-    print(new_text)
+    corrected_text = s.spell_checker(input_text)
+    print("Corrected Text: " + corrected_text)
