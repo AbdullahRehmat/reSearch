@@ -18,7 +18,6 @@ ITEM_PIPELINES = {
 
 MONGO_URI = 'mongodb://mongo-cs:27017/'
 MONGO_DATABASE = 'ContentScraperDB'
-MONGO_COLLECTION = "Test"
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
