@@ -4,31 +4,20 @@
 
 ## User Guide
 
-- User visits `Website` & enters Query
-- Query assigned Unique Identifier & sent to `GlobalAPI`
-- User is redirected to `url_for('results')`
+- Install [Docker-Compose](https://docs.docker.com/compose/)
+- Execute `./start.sh` and view Web Interface `http://localhost`
 
-- `GlobalAPI` receives Query + Identifier
-- `GlobalAPI` send query to `SearchEngine` via `Redis-StreamA`
 
-- `SearchEngine` receives Query + Identifier
-- `SearchEngine` uses `rank-BM25` to rank content from `MongoCS` database according to Query
-- `SearchEngine` adds list of ranked results to `RedisAPI DB0`
-- `GlobalAPI` fetches list of ranked results from `RedisAPI DB0`
-- `GlobalAPI` sends list of links to `url_for('results')`
-
-- `Website` receives list of links
-- `Website` displays list of links at `url_for('results')`
-
-- `ContentScraper` runs once every 24 hours to look for new URLs
 
 ## Services
 
 ### NGINX
 
-NGINX + Gunicorn
+- NGINX + Gunicorn
 
-HTTP + Production grade WSGI Server
+- HTTP + Production grade WSGI Server
+
+
 
 ### Website
 
@@ -43,43 +32,68 @@ User Web Interface
 
   - www.site.com/admin
 
-### GlobalAPI
 
-Handles Communication between Front and Backend
 
-### RedisAPI
+### Global API
 
-Redis + RedisJSON + Streams
+- Handles Communication between Front and Backend
+- Original API written in Python
 
-Handles Backend Inter-Service Communication
 
-### SearchEngine
 
-Ranks stored data according to Query and returns results to `GlobalAPI` via **Stream-B**
+### Go API
 
-### ContentScraper
+- Handles Communication between Front and Backend
 
-Scrapes listed sites, collects required data & stores it in the `MongoCS` Database.
+- `GlobalAPI` alternative written in Go
+
+
+
+### Redis API
+
+- Redis + RedisJSON Module + Streams
+
+- Handles Backend Inter-Service Communication
+
+
+
+
+### Search Engine
+
+- Ranks stored data according to Query and returns results to `Global API` via **Stream-B**
+
+
+
+
+### Content Scraper
+
+- Scrapes listed sites, collects required data & stores it in the `MongoCS` Database
+
+
 
 ## Docs: GlobalAPI
 
-Python (`Flask`) based API Communication between Frontend and Backend Services.  
+Python (`Flask`) based API Communication between Frontend and Backend Services. 
 Format = JSON
 
 ### Routes
 
-- POST `/api/query` - Send query to Search Engine
-- GET `/api/results` - Retrieves Result from Search Engine
+- POST `/api/v1/query` - Send query to `SearchEngine` Service
+- GET `/api/v1/results` - Retrieves Result from `SearchEngine` Service as JSON
+
+
 
 ## Docs: GoAPI
 
-GoLang (`gorilla/mux`) based API for communication between Frontend & Backend Services.  
+GoLang (`gorilla/mux`) based API for communication between Frontend & Backend Services. 
 Format = JSON
 
 ### Routes
 
-- POST `/api/query` - Send query to Search Engine
-- GET `/api/results` - Retrieves Result from Search Engine
+- POST `/api/v1/query` - Send query to `SearchEngine` Service
+- GET `/api/v1/results` - Retrieves Result from `SearchEngine` Service as JSON
+
+
 
 ## Docs: Redis
 
@@ -95,67 +109,45 @@ Format = JSON
 
 - Results: SearchEngine -> GlobalAPI
 
+
+
 ## Docs: MongoDB
 
 ### MongoCS
 
-Stores URLs + Titles from ContentScraper
+Stores URLs + Titles from `ContentScraper`
 
-All Records have form:
+**All Records have form:**
 
 > {
 >
 > "global_id": identifier - Unique 10 Character String
 >
-> "title": "First Blog Post"
+> "title":[ "First Blog Post"]
 >
-> "URL": "www.example.com/blogpost1"
+> "url": ["www.example.com/blogpost1"]
+>
+> "source": "www.example.com - Admin - 2021"
 >
 > }
+
+
 
 ### MongoSE
 
-Stores URLs + Titles Ranked by Query  
-All Records have form:
+Stores URLs + Titles  as ranked by BM25 from `SearchEngine`
+
+**All Records have form:**
 
 > {
 >
 > "global_id": identifier - Unique 10 Character String
 >
-> "title": "First Blog Post"
+> "title":[ "First Blog Post"]
 >
-> "URL": "www.example.com/blogpost1"
+> "url": ["www.example.com/blogpost1"]
+>
+> "source": "www.example.com - Admin - 2021"
 >
 > }
 
-## Checklist
-
-### Build: General
-
-- [ ] Secure Database Connections
-
-- [ ] Rename DB's + Tables
-
-- [ ] Standardise `/env` Files
-
-- [ ] Look at Python Scripts and use optimal Data Types -> Test with `GlobalAPI` Module
-
-### Build: Website
-
-- [ ] Add Flask-Login to Website
-
-### Build: API
-
-- [ ] Add Authentication to all API endpoints
-
-- [ ] Add `.env` file to GoAPI
-
-### Build: Content Scraper
-
-- [ ] Save Article Content for ranking
-
-### Build: Search Engine Build
-
-- [ ] Strip text of all formatting and punctuation before ranking and store in dict
-- [ ] Strip query of all formatting and punctuation on input
-- [ ] Rank by Article Content
