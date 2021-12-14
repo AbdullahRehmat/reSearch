@@ -9,11 +9,12 @@ import logging
 import pymongo
 from itemadapter import ItemAdapter
 from scrapy.http.request.form import _urlencode
-from data.spelling import SpellChecker
+from ..SpellChecker.app import SpellChecker
 
-#class DataPipeline:
+# class DataPipeline:
 #    def process_item(self, item, spider):
 #        return item
+
 
 class MongoPipeline(object):
 
@@ -25,30 +26,37 @@ class MongoPipeline(object):
 
     @classmethod
     def from_crawler(cls, crawler):
-        ## Pull in information from settings.py
+        # Pull in information from settings.py
         return cls(
             mongo_uri=crawler.settings.get('MONGO_URI'),
             mongo_db=crawler.settings.get('MONGO_DATABASE')
         )
 
     def open_spider(self, spider):
-        ## Initializing spider
-        ## Opening db connection
+        # Initializing spider
+        # Opening DB connection
         self.client = pymongo.MongoClient(self.mongo_uri)
         self.db = self.client[self.mongo_db]
+
+        # Drop Old Database To Prevent Duplicates
         self.db[self.collection_name].drop()
 
     def close_spider(self, spider):
-        ## Clean up when spider is closed
+        # Clean up when spider is closed
         self.client.close()
 
     def process_item(self, item, spider):
 
+        # Item <- Dict
+        # Item["title"] <- Set
+        # Item["url"] <- Set
+        # Item["source"] <- Str
+
         # Spell Check Title
         s = SpellChecker()
         item["title"] = [s.spell_checker(str(item["title"][0]))]
-        
-        self.db[self.collection_name].insert(dict(item))        
+
+        self.db[self.collection_name].insert(dict(item))
         logging.debug("Post added to MongoDB")
 
         return item

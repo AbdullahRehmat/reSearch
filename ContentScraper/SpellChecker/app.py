@@ -1,8 +1,8 @@
 import unicodedata
-from data.wordlist import dictionary
+from wordlist import dictionary
 
 
-class SpellChecker():
+class SpellChecker:
     def __init__(self) -> None:
         pass
 
@@ -54,7 +54,6 @@ class SpellChecker():
         text = self.fix_spelling(text)
 
         return text
-
 
 
 if __name__ == "__main__":
