@@ -5,13 +5,11 @@ name = "pypi"
 
 [packages]
 redis = "*"
-rank-bm25 = "*"
 pymongo = "*"
 python-dotenv = "*"
+rank-bm25 = "*"
 
 [dev-packages]
-autopep8 = "*"
-rope = "*"
 
 [requires]
 python_version = "3.8"

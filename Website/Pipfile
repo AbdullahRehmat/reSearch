@@ -4,16 +4,13 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask = "*"
-requests = "*"
-flask-wtf = "*"
 python-dotenv = "*"
+flask-wtf = "*"
+flask = "*"
 gunicorn = "*"
-flask-login = "*"
+requests = "*"
 
 [dev-packages]
-rope = "*"
-autopep8 = "*"
 
 [requires]
 python_version = "3.8"
