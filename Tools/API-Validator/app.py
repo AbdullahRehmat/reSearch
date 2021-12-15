@@ -4,12 +4,12 @@ from ast import literal_eval
 identifer = "abcdef123"
 
 def Global_API_Test():
-    url = str('http://localhost:8000/api/results/') + identifer
+    url = str('http://localhost:8000/api/v1/results/') + identifer
     results = get(url).json()
     return results
 
 def Go_API_Test():
-    url = str('http://localhost:5000/api/results/') + identifer
+    url = str('http://localhost:5000/api/v1/results/') + identifer
     results = get(url).json()
     return results
 

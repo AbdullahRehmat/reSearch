@@ -86,7 +86,7 @@ class ResultsAPI(Resource):
         time.sleep(0.5)
 
         # Get Results from Redis DB0
-        results = redis_results(identifier=identifier)
+        results = str(redis_results(identifier=identifier))
 
         # Return Results
         return results, 200
