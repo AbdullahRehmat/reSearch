@@ -6,6 +6,7 @@ from ast import literal_eval
 from dotenv import load_dotenv
 from flask import Flask
 from flask_restful import Resource, Api, reqparse
+from redis.commands.json.path import Path as JPath
 
 # Init Flask & API
 app = Flask(__name__)
@@ -21,7 +22,6 @@ redis_password = os.getenv("REDIS_PASSWORD")
 
 # MongoDB General Settings
 mongo_port = os.getenv("MONGO_PORT")
-
 # MongoDB DB1 .env Variables
 mongo_host_1 = os.getenv("MONGO_HOST_1")
 mongo_db_1 = os.getenv("MONGO_DB_1")
@@ -52,8 +52,10 @@ col2 = db2[mongo_col_2]
 
 
 def redis_results(identifier):
-    data = r1.get(identifier)
-    data = literal_eval(data)
+
+    #data = r1.get(identifier)
+    #data = literal_eval(data)
+    data = r1.json().get(str("id:" + identifier), JPath(".results"))
     return data
 
 

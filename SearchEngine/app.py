@@ -3,6 +3,7 @@ import redis
 import pymongo
 from dotenv import load_dotenv
 from rank_bm25 import BM25Plus
+from redis.commands.json.path import Path as JPath
 
 load_dotenv()
 
@@ -67,11 +68,10 @@ class SearchEngine():
     def engine(self) -> None:
         """ Sorts Corpus By Query Via BM25 """
 
-
         # Get Data from StreamA as Strings
         stream_data = self.stream_data[0][1][0][1]
         stream_query = stream_data["query"]
-        stream_id = stream_data["identifier"]
+        stream_query_id = stream_data["identifier"]
 
         # Move Query from StreamA to BM25
         # Converts Query to Uppercase to improve search results
@@ -99,11 +99,19 @@ class SearchEngine():
             response_list += [response]
 
             # Add List to Dict <- MongoDB Col1
-            response_dict['_id'] = stream_id
+            response_dict['_id'] = stream_query_id
             response_dict['data'] = [response_list]
 
         # Return Results via Redis DB1 to API
-        self.rdb1.set(stream_id, str(response_list), ex=300)
+        #self.rdb1.set(stream_query_id, str(response_list), ex=300)
+
+        data = {
+            "id": stream_query_id,
+            "query": stream_query,
+            "results": response_list
+        }
+        
+        self.rdb1.json().set(str("id:" + stream_query_id), JPath.rootPath(), data)
 
         # Add Results to MongoDB Col1
         # Used by MetriX Service Only
