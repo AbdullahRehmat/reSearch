@@ -32,7 +32,8 @@ Please read documentation present in the `/Documentation` directory.
 - [ ] Rename DB's + Tables
 - [ ] Standardise `/env` Files
 - [ ] Look at Python Scripts and use optimal Data Types -> Test with `GlobalAPI` Module
-- [ ] 
+
+
 
 ### Client: Website
 
@@ -57,8 +58,8 @@ Please read documentation present in the `/Documentation` directory.
 
 - [ ] Modify to collect Article Text
 
-  
 
+  
 ### Service: Search Engine
 
 - [ ] Rank by Article Content
