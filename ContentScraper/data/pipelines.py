@@ -9,7 +9,7 @@ import logging
 import pymongo
 from itemadapter import ItemAdapter
 from scrapy.http.request.form import _urlencode
-from ..SpellChecker.app import SpellChecker
+from data.spellchecker import SpellChecker
 
 # class DataPipeline:
 #    def process_item(self, item, spider):

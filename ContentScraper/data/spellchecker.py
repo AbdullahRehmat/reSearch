@@ -1,5 +1,5 @@
 import unicodedata
-from wordlist import dictionary
+from data.wordlist import dictionary
 
 
 class SpellChecker:
