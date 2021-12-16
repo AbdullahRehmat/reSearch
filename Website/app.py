@@ -114,7 +114,7 @@ def admin():
     stats = stats.values()
     stats = tuple(stats)
 
-    return render_template('admin.html', stats=stats)
+    return render_template('admin.html', stats=stats, api=app.config['API_HOST'])
 
 
 @app.route("/legal")
