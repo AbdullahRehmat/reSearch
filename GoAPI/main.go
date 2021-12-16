@@ -149,11 +149,15 @@ func resultsAPI(w http.ResponseWriter, r *http.Request) {
 	db := RedisDB(1)
 	defer db.Close()
 	// Results are a String rather than List!
-	results, err := db.Get(RCtx, identifier).Result()
+	//results, err := db.Get(RCtx, identifier).Result()
+
+	var id string = "id:" + identifier
+
+	results, err := db.Do(RCtx, "JSON.GET", id, ".results").Result()
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		log.Fatal(err)
+		log.Fatal("Command Failed:", err)
 	}
 
 	w.WriteHeader(http.StatusOK)
