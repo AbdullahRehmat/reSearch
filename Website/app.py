@@ -51,7 +51,8 @@ class ApiConn():
         if 'identifier' in session:
             identifier = session['identifier']
 
-            url = str(f"http://{app.config['API_HOST']}/api/v1/results/{identifier}")
+            url = str(
+                f"http://{app.config['API_HOST']}/api/v1/results/{identifier}")
 
             api = get(url).json()
             api = json.loads(api)
