@@ -7,7 +7,7 @@ class SpiderOne(Spider):
     name = "data"
 
     allowed_domains = [
-        "www.shia.bs",          
+        "www.shia.bs",
     ]
 
     start_urls = [

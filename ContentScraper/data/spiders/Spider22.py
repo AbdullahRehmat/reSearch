@@ -21,5 +21,6 @@ class SpiderTwentyTwo(Spider):
             item = DataItem()
             item['title'] = data.css('a.uk-link-reset::text').get(),
             item['source'] = 'Salafi Publications - Article',
-            item['url'] =  "https://www.salafipubs.com/" + data.css('a.uk-link-reset::attr(href)').get()
+            item['url'] = "https://www.salafipubs.com/" + \
+                data.css('a.uk-link-reset::attr(href)').get()
             yield item

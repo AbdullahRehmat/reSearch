@@ -11,7 +11,7 @@ class SpiderTwo(Spider):
     ]
 
     start_urls = [
-        "http://www.aboutatheism.net/authors/admin.cfm", 
+        "http://www.aboutatheism.net/authors/admin.cfm",
         "http://www.aboutatheism.net/authors/Abu.Iyaad.cfm",
         "http://www.aboutatheism.net/authors/Abu.Iyaad.cfm?start=31",
     ]

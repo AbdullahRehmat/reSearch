@@ -7,7 +7,7 @@ class SpiderTwentyFour(Spider):
     name = "data"
 
     allowed_domains = [
-        "www.healthymuslim.com",          
+        "www.healthymuslim.com",
     ]
 
     start_urls = [
