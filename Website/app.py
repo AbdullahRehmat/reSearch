@@ -1,9 +1,11 @@
 import os
 import random
 import string
+import json
 from ast import literal_eval
 from dotenv import load_dotenv
 from flask_wtf import FlaskForm
+from werkzeug.wrappers import response
 from wtforms import StringField
 from requests import post, get
 from wtforms.validators import DataRequired
@@ -52,16 +54,9 @@ class ApiConn():
             url = str(f"http://{app.config['API_HOST']}/api/v1/results/{identifier}")
 
             api = get(url).json()
+            api = json.loads(api)
 
-            # Needs to be fixed by the API!
-            if type(api) == str:
-                print("Recived String. Converted to JSON")
-                return literal_eval(api)
-            elif type(api) != str:
-                print("Received JSON.")
-                return api
-            else:
-                return ['An Error Occured!']
+            return api
 
         else:
             return "No Identifier was found... \n", 400

@@ -1,6 +1,8 @@
 import os
 import time
+from flask.wrappers import Response
 import redis
+import json
 import pymongo
 from ast import literal_eval
 from dotenv import load_dotenv
@@ -52,16 +54,15 @@ col2 = db2[mongo_col_2]
 
 
 def redis_results(identifier):
-
-    #data = r1.get(identifier)
-    #data = literal_eval(data)
     data = r1.json().get(str("id:" + identifier), JPath(".results"))
+    
     return data
 
 
 def mongo_results(identifier):
     for i in col1.find({"_id": identifier}):
         data = i['data'][0]
+        
         return data
 
 
@@ -86,9 +87,9 @@ class ResultsAPI(Resource):
 
     def get(self, identifier):
         time.sleep(0.5)
-
-        # Get Results from Redis DB0
-        results = str(redis_results(identifier=identifier))
+        
+        results = redis_results(identifier)
+        results = json.dumps(results)
 
         # Return Results
         return results, 200
