@@ -33,7 +33,7 @@ func RedisDB(x int) *redis.Client {
 
 	err := db.Ping(RCtx).Err()
 	if err != nil {
-		log.Fatal("Failed to Connect to Redis: ", err)
+		log.Fatal("Redis: Failed To Connect - ", err)
 	}
 
 	return db
@@ -45,7 +45,7 @@ func MongoDB(host, port string) *mongo.Client {
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 
 	if err != nil {
-		log.Fatal("Failed to Connect to MongoDB ", err)
+		log.Fatal("MongoDB: Failed To Connect - ", err)
 	}
 
 	err = client.Ping(context.TODO(), nil)
@@ -80,7 +80,6 @@ func dbStats() (x, y, z int64) {
 	}
 
 	return x, y, z
-
 }
 
 type QueryData struct {
