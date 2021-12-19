@@ -12,7 +12,7 @@ To run with [Docker-Compose](https://docs.docker.com/compose/) execute the follo
 
 View the Web Interface at:
 
-> http://localhost/ 
+> http://localhost:80/ 
 
 
 
@@ -20,7 +20,7 @@ View the Web Interface at:
 
 Microservice Overview: [Flowchart](https://drive.google.com/file/d/1B-zdlsKatmy8d8mDB0afmoZ2w-dGRKc4/view?usp=sharing)  
 
-Please read documentation present in the `/Documentation` directory.  
+Please read documentation present in the `Documentation` directory.  
 
 
 
@@ -28,10 +28,9 @@ Please read documentation present in the `/Documentation` directory.
 
 ### General
 
-- [ ] Secure Database Connections
-- [ ] Rename DB's + Tables
-- [ ] Standardise `/env` Files
-- [ ] Look at Python Scripts and use optimal Data Types -> Test with `GlobalAPI` Module
+- [ ] Standardise `.env` Files
+- [ ] Format 
+- [ ] Optimise Data Types used
 
 
 
@@ -39,18 +38,19 @@ Please read documentation present in the `/Documentation` directory.
 
 - [ ] Add Flask-Login to Website
 
-  
+
 
 ### Service: APIs
 
-- [ ] Add Authentication to all API endpoints
 - [ ] Add `.env` file to GoAPI
+- [ ] Add Authentication to all API endpoints
 
 
 
 ### Service: Databases
 
-- [ ] Add Passwords to Databases
+- [ ] Rename Database's
+- [ ] Add Passwords to Database
 
 
 
@@ -59,7 +59,7 @@ Please read documentation present in the `/Documentation` directory.
 - [ ] Modify to collect Article Text
 
 
-  
+
 ### Service: Search Engine
 
 - [ ] Rank by Article Content
