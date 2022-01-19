@@ -29,7 +29,6 @@ Please read documentation present in the `Documentation` directory.
 ### General
 
 - [ ] Standardise `.env` Files
-- [ ] Format 
 - [ ] Optimise Data Types used
 
 
