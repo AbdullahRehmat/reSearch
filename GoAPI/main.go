@@ -14,8 +14,8 @@ import (
 )
 
 const (
-	RedisAddr string = "redis-api:6379"
-	RedisPass string = "Password:)"
+	RedisAddr string = "redis-api:6379" // Redis Address
+	RedisPass string = "Password:)"     // Redis Password
 )
 
 var (
@@ -57,7 +57,7 @@ func MongoDB(host, port string) *mongo.Client {
 	return client
 }
 
-// Returns Search Engine Stats
+// Function Returns Search Engine Stats
 func dbStats() (x, y, z int64) {
 
 	db1 := MongoDB("mongo-se", "27017")
@@ -92,7 +92,7 @@ type QueryReponse struct {
 	Data    QueryData `json:"data"`
 }
 
-// Receive Query from Client
+// Function Receive Query from Client
 func queryAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 
@@ -136,7 +136,7 @@ func queryAPI(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-// Return Results to Client
+// Function Return Results to Client
 func resultsAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 
@@ -167,7 +167,7 @@ type MetrixReponse struct {
 	LiveQueryCount    int64 `json:"liveQueryCount"`
 }
 
-// Return Metrix & Stats
+// Function Return Metrix & Stats
 func metrix(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 
@@ -183,7 +183,7 @@ func metrix(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(data)
 }
 
-// Create API URLS & Handle Endpoints
+// API URLS & Handle Endpoints
 func main() {
 	router := mux.NewRouter()
 
