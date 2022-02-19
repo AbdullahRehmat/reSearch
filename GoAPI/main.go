@@ -132,7 +132,7 @@ func queryAPI(w http.ResponseWriter, r *http.Request) {
 		Data:   responseData,
 	}
 
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusAccepted)
 	json.NewEncoder(w).Encode(response)
 }
 
