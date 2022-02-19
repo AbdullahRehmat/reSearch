@@ -174,9 +174,9 @@ func resultsAPI(w http.ResponseWriter, r *http.Request) {
 }
 
 type MetrixData struct {
-	TotalQueryCount   int64 `json:"totalQueryCount"`
-	TotalArticleCount int64 `json:"totalArticleCount"`
-	LiveQueryCount    int64 `json:"liveQueryCount"`
+	TotalQueries  int64 `json:"totalQueries"`
+	TotalArticles int64 `json:"totalArticles"`
+	LiveQueries   int64 `json:"liveQueries"`
 }
 
 type MetrixResponse struct {
@@ -191,9 +191,9 @@ func metrix(w http.ResponseWriter, r *http.Request) {
 	var x, y, z int64 = dbStats()
 
 	responseData := MetrixData{
-		TotalQueryCount:   x,
-		TotalArticleCount: y,
-		LiveQueryCount:    z,
+		TotalQueries:  x,
+		TotalArticles: y,
+		LiveQueries:   z,
 	}
 
 	response := MetrixResponse{

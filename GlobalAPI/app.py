@@ -1,10 +1,8 @@
 import os
 import time
-from flask.wrappers import Response
 import redis
 import json
 import pymongo
-from ast import arg, literal_eval
 from dotenv import load_dotenv
 from flask import Flask
 from flask_restful import Resource, Api, reqparse
@@ -119,9 +117,9 @@ class Metrix(Resource):
         response = {
             "status": "success",
             "data": {
-                "totalQueryCount": db1Count,
-                "totalArticleCount": db2Count,
-                "liveQueryCount": db3Count
+                "totalQueries": db1Count,
+                "totalArticles": db2Count,
+                "liveQueries": db3Count
             }
         }
 
