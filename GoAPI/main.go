@@ -87,9 +87,9 @@ type QueryData struct {
 	Query      string `json:"query"`
 }
 
-type QueryReponse struct {
-	Message string    `json:"message"`
-	Data    QueryData `json:"data"`
+type QueryResponse struct {
+	Status string    `json:"status"`
+	Data   QueryData `json:"data"`
 }
 
 // Function Receive Query from Client
@@ -127,13 +127,19 @@ func queryAPI(w http.ResponseWriter, r *http.Request) {
 		Query:      query,
 	}
 
-	response := QueryReponse{
-		Message: "Success",
-		Data:    responseData,
+	response := QueryResponse{
+		Status: "success",
+		Data:   responseData,
 	}
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
+}
+
+type ResultsResponse struct {
+	Status     string      `json:"status"`
+	Identifier string      `json:"identifier"`
+	Results    interface{} `json:"results"`
 }
 
 // Function Return Results to Client
@@ -157,14 +163,25 @@ func resultsAPI(w http.ResponseWriter, r *http.Request) {
 		log.Fatal("Command Failed: ", err)
 	}
 
+	response := ResultsResponse{
+		Status:     "success",
+		Identifier: identifier,
+		Results:    results,
+	}
+
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(results)
+	json.NewEncoder(w).Encode(response)
 }
 
-type MetrixReponse struct {
+type MetrixData struct {
 	TotalQueryCount   int64 `json:"totalQueryCount"`
 	TotalArticleCount int64 `json:"totalArticleCount"`
 	LiveQueryCount    int64 `json:"liveQueryCount"`
+}
+
+type MetrixResponse struct {
+	Status string     `json:"status"`
+	Data   MetrixData `json:"data"`
 }
 
 // Function Return Metrix & Stats
@@ -173,14 +190,19 @@ func metrix(w http.ResponseWriter, r *http.Request) {
 
 	var x, y, z int64 = dbStats()
 
-	data := MetrixReponse{
+	responseData := MetrixData{
 		TotalQueryCount:   x,
 		TotalArticleCount: y,
 		LiveQueryCount:    z,
 	}
 
+	response := MetrixResponse{
+		Status: "success",
+		Data:   responseData,
+	}
+
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(data)
+	json.NewEncoder(w).Encode(response)
 }
 
 // API URLS & Handle Endpoints

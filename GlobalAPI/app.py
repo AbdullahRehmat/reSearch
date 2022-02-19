@@ -4,7 +4,7 @@ from flask.wrappers import Response
 import redis
 import json
 import pymongo
-from ast import literal_eval
+from ast import arg, literal_eval
 from dotenv import load_dotenv
 from flask import Flask
 from flask_restful import Resource, Api, reqparse
@@ -63,7 +63,7 @@ def mongo_results(identifier):
     for i in col1.find({"_id": identifier}):
         data = i['data'][0]
 
-        return data
+    return data
 
 
 class QueryAPI(Resource):
@@ -79,7 +79,7 @@ class QueryAPI(Resource):
         r0.xadd('streamA', fields=args)
 
         # Return Data to Site
-        return {'message': 'Success', 'data': args}, 202
+        return {'message': 'success', 'data': args}, 202
 
 
 class ResultsAPI(Resource):
