@@ -5,7 +5,6 @@ import json
 from ast import literal_eval
 from dotenv import load_dotenv
 from flask_wtf import FlaskForm
-from werkzeug.wrappers import response
 from wtforms import StringField
 from requests import post, get
 from wtforms.validators import DataRequired
@@ -54,10 +53,11 @@ class ApiConn():
             url = str(
                 f"http://{app.config['API_HOST']}/api/v1/results/{identifier}")
 
-            api = get(url).json()
-            api = json.loads(api)
+            data = get(url).json()
+            data = data["results"]
+            data = json.loads(data)
 
-            return api
+            return data
 
         else:
             return "No Identifier was found... \n", 400
@@ -105,12 +105,12 @@ def sources():
 
 @app.route("/admin")
 def admin():
-    stats = Metrix.data().text
-    stats = literal_eval(stats)
-    stats = stats.values()
-    stats = tuple(stats)
+    data = Metrix.data().text
+    data = literal_eval(data)
+    data = data["data"]
+    data = tuple(data.values())
 
-    return render_template('admin.html', stats=stats, api=app.config['API_HOST'])
+    return render_template('admin.html', stats=data, api=app.config['API_HOST'])
 
 
 @app.route("/legal")
