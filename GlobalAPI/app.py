@@ -78,8 +78,13 @@ class QueryAPI(Resource):
         # Send Message: API -> Stream -> SearchEngine
         r0.xadd('streamA', fields=args)
 
+        response = {
+            "status": "success",
+            "data": args
+        }
+
         # Return Data to Site
-        return {'message': 'success', 'data': args}, 202
+        return response, 202
 
 
 class ResultsAPI(Resource):
@@ -91,8 +96,14 @@ class ResultsAPI(Resource):
         results = redis_results(identifier)
         results = json.dumps(results)
 
+        response = {
+            "status": "success",
+            "identifier": identifier,
+            "results": results
+        }
+
         # Return Results
-        return results, 200
+        return response, 200
 
 
 class Metrix(Resource):
@@ -105,9 +116,14 @@ class Metrix(Resource):
         db3Count = r1.dbsize()
 
         # Format Statistics
-        response = {"totalQueryCount": db1Count,
-                    "totalArticleCount": db2Count,
-                    "liveQueryCount": db3Count}
+        response = {
+            "status": "success",
+            "data": {
+                "totalQueryCount": db1Count,
+                "totalArticleCount": db2Count,
+                "liveQueryCount": db3Count
+            }
+        }
 
         # Return Results
         return response, 200
