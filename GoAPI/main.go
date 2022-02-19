@@ -153,8 +153,7 @@ func resultsAPI(w http.ResponseWriter, r *http.Request) {
 
 	db := RedisDB(1)
 	defer db.Close()
-	// Results are a String rather than List!
-	//results, err := db.Get(RCtx, identifier).Result()
+
 	var id string = "id:" + identifier
 	results, err := db.Do(RCtx, "JSON.GET", id, ".results").Result()
 

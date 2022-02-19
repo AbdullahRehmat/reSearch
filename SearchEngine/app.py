@@ -103,8 +103,6 @@ class SearchEngine():
             response_dict['data'] = [response_list]
 
         # Return Results via Redis DB1 to API
-        #self.rdb1.set(stream_query_id, str(response_list), ex=300)
-
         data = {
             "id": stream_query_id,
             "query": stream_query,
