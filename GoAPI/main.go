@@ -92,7 +92,7 @@ type QueryResponse struct {
 	Data   QueryData `json:"data"`
 }
 
-// Function Receive Query from Client
+// Function Receives Query from Client
 func queryAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 
@@ -111,6 +111,7 @@ func queryAPI(w http.ResponseWriter, r *http.Request) {
 	db := RedisDB(0)
 	defer db.Close()
 
+	// Sends Message: API -> Stream -> SearchEngine
 	db.XAdd(RCtx, &redis.XAddArgs{
 		Stream:       "streamA",
 		MaxLen:       0,
@@ -142,7 +143,7 @@ type ResultsResponse struct {
 	Results    interface{} `json:"results"`
 }
 
-// Function Return Results to Client
+// Function Collects Results From Redis And Returns Them To Client
 func resultsAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 
@@ -183,7 +184,7 @@ type MetrixResponse struct {
 	Data   MetrixData `json:"data"`
 }
 
-// Function Return Metrix & Stats
+// Function Collects Usage Statistics From MongoDB And Returns Them To Client
 func metrix(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 

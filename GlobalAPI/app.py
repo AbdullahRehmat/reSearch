@@ -65,7 +65,7 @@ def mongo_results(identifier):
 
 
 class QueryAPI(Resource):
-    """ Route For API To Recieve Requests On """
+    """ Function Receives Query from Client """
 
     def post(self):
         parser = reqparse.RequestParser()
@@ -73,7 +73,7 @@ class QueryAPI(Resource):
         parser.add_argument('query', required=True)
         args = parser.parse_args()
 
-        # Send Message: API -> Stream -> SearchEngine
+        # Sends Message: API -> Stream -> SearchEngine
         r0.xadd('streamA', fields=args)
 
         response = {
@@ -81,15 +81,14 @@ class QueryAPI(Resource):
             "data": args
         }
 
-        # Return Data to Site
         return response, 202
 
 
 class ResultsAPI(Resource):
-    """ Returns Results Collected From MongoDB Database To Client """
+    """ Function Collects Results From Redis And Returns Them To Client """
 
     def get(self, identifier):
-        time.sleep(0.5)
+        time.sleep(0.5)  # Delay Allows SearchEngine Time To Return Response
 
         results = redis_results(identifier)
         results = json.dumps(results)
@@ -100,12 +99,11 @@ class ResultsAPI(Resource):
             "results": results
         }
 
-        # Return Results
         return response, 200
 
 
 class Metrix(Resource):
-    """ Collect Usage Statistics From MongoDB Database And Return To Client """
+    """ Function Collects Usage Statistics From MongoDB And Returns Them To Client """
 
     def get(self):
         # Get Statistics from Databases
@@ -123,7 +121,6 @@ class Metrix(Resource):
             }
         }
 
-        # Return Results
         return response, 200
 
 
