@@ -32,7 +32,7 @@ class Corpus():
         self.col = mongo_col
 
     def create_corpus(self) -> list:
-        """ Creates Corpus oF Titles From MongoDB """
+        """ Creates Corpus Of Titles From MongoDB Collection"""
 
         corpus = []
         for data in self.col.find():
@@ -52,7 +52,7 @@ class SearchEngine():
         self.title = ""
 
     def url_formatter(self) -> str:
-        """ Formats Titles + URLs Into Valid HTML Links """
+        """ Formats Titles + URLs Into HTML Links """
 
         # Get Title's URL + Source from Col2
         db_data = self.col2.find_one({"title": self.title}, {
@@ -61,7 +61,7 @@ class SearchEngine():
         url = db_data["url"]
         source = db_data["source"][0]
 
-        # Format Results as HTML
+        # Format Results As HTML
         output = f"<a href=\" {url} \" class=\"searchResult\" target=\"_blank\" rel=\"noopener noreferrer\"> {self.title} <br/> <p class=\"resultSource\"> {source} </p> </a><br />"
         return output
 
@@ -73,8 +73,8 @@ class SearchEngine():
         stream_query = stream_data["query"]
         stream_query_id = stream_data["identifier"]
 
-        # Move Query from StreamA to BM25
-        # Converts Query to Uppercase to improve search results
+        # Move Query From StreamA To BM25
+        # Converts Query To Uppercase To Improve Search Results
         query = str(stream_query).title()
 
         # BM25 Config
@@ -82,8 +82,7 @@ class SearchEngine():
         tokenized_corpus = [doc.split(" ") for doc in self.corpus]
         bm25 = BM25Plus(tokenized_corpus)
 
-        # Return n most relavent Titles
-        # Lists used over Sets as order of results matters!
+        # Return "n" Most Relevant Titles
         ranked_titles = list(bm25.get_top_n(
             tokenized_query, self.corpus, n=30))
 
@@ -91,7 +90,7 @@ class SearchEngine():
         response_list = []
         response_dict = {}
 
-        # Iterate through Ranked Titles + Format
+        # Iterate Through Ranked Titles & Format
         for title in ranked_titles:
 
             self.title = title
@@ -102,7 +101,7 @@ class SearchEngine():
             response_dict['_id'] = stream_query_id
             response_dict['data'] = [response_list]
 
-        # Return Results via Redis DB1 to API
+        # Return Results To API Via Redis
         data = {
             "id": stream_query_id,
             "query": stream_query,
@@ -112,7 +111,7 @@ class SearchEngine():
         self.rdb1.json().set(str("id:" + stream_query_id), JPath.rootPath(), data)
 
         # Add Results to MongoDB Col1
-        # Used by MetriX Service Only
+        # USED ONLY BY METRIX SERVICE
         self.col1.insert_one(response_dict)
 
         return None
