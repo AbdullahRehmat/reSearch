@@ -29,11 +29,8 @@ class SearchEngine():
         self.corpus = corpus
         self.id = ""
         self.query = ""
-        self.title = ""
-        self.url_html = ""
-        self.url_json = {}
-        self.results_html = []
-        self.results_json = []
+        self.ranked_titles = []
+        self.results = []
 
     def parse_stream(self) -> None:
         """ Parses Information From Redis Stream Message """
@@ -41,25 +38,6 @@ class SearchEngine():
         s = self.stream[0][1][0][1]
         self.id = s["identifier"]
         self.query = s["query"]
-
-    def format_url(self) -> None:
-        """ Formats Titles & URLs Into Valid HTML Links """
-
-        # Get Title's URL & Source
-        data = self.colB.find_one({"title": self.title}, {
-            "_id": 0, "url": 1, "source": 1})
-        url = data["url"]
-        source = data["source"][0]
-
-        # Format Results as HTML
-        self.url_html = f"<a href=\" {url} \" class=\"searchResult\" target=\"_blank\" rel=\"noopener noreferrer\"> {self.title} <br/> <p class=\"resultSource\"> {source} </p> </a><br />"
-
-        # Format As JSON
-        self.url_json = {
-            "title": self.title,
-            "url": data["url"],
-            "source": data["source"][0]
-        }
 
     def search_engine(self) -> None:
         """Ranks Corpus According To Query Via BM25"""
@@ -73,24 +51,34 @@ class SearchEngine():
         bm25 = BM25Plus(tokenized_corpus)
 
         # Return "n" Most Relevant Titles
-        ranked_titles = list(bm25.get_top_n(
+        self.ranked_titles = list(bm25.get_top_n(
             tokenized_query, self.corpus, n=30))
 
-        # Iterate Through Ranked Titles + Format
-        for title in ranked_titles:
-            self.title = title
-            self.format_url()
-            self.results_html += [self.url_html]
-            self.results_json += [self.url_json]
+    def format_results(self) -> None:
+        """ Formats Result's Title, URL & Source"""
 
-    def send_results(self):
+        for title in self.ranked_titles:
+
+            # Get Title's URL & Source
+            data = self.colB.find_one({"title": title}, {
+                "_id": 0, "url": 1, "source": 1})
+
+            # Format As JSON
+            result = {
+                "title": title,
+                "url": data["url"],
+                "source": data["source"][0]
+            }
+
+            self.results += [result]
+
+    def send_results(self) -> None:
         """Sends JSON Formatted Results To API Via Redis"""
 
         data = {
             "id": self.id,
             "query": self.query,
-            # "results": self.html_results
-            "results": self.results_json
+            "results": self.results
         }
 
         # Return Results To API Via REDIS DB1
@@ -156,4 +144,5 @@ if __name__ == "__main__":
             s = SearchEngine(col1, col2, rdb1, c, stream)
             s.parse_stream()
             s.search_engine()
+            s.format_results()
             s.send_results()
