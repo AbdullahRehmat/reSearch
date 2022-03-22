@@ -55,7 +55,6 @@ class ApiConn():
 
             data = get(url).json()
             data = data["results"]
-            data = json.loads(data)
 
             return data
 
