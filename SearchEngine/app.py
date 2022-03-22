@@ -27,19 +27,19 @@ class SearchEngine():
         self.rdb = redis
         self.stream = stream_data
         self.corpus = corpus
-        self.id = ""
+        self.query_id = ""
         self.query = ""
-        self.ranked_titles = []
+        self.ranked_titles = ()
         self.results = []
 
     def parse_stream(self) -> None:
         """ Parses Information From Redis Stream Message """
 
         s = self.stream[0][1][0][1]
-        self.id = s["identifier"]
+        self.query_id = s["identifier"]
         self.query = s["query"]
 
-    def search_engine(self) -> None:
+    def rank_corpus(self) -> None:
         """Ranks Corpus According To Query Via BM25"""
 
         # Convert Query To Upper Case To Improve Search Results
@@ -51,7 +51,7 @@ class SearchEngine():
         bm25 = BM25Plus(tokenized_corpus)
 
         # Return "n" Most Relevant Titles
-        self.ranked_titles = list(bm25.get_top_n(
+        self.ranked_titles = tuple(bm25.get_top_n(
             tokenized_query, self.corpus, n=30))
 
     def format_results(self) -> None:
@@ -75,18 +75,18 @@ class SearchEngine():
     def send_results(self) -> None:
         """Sends JSON Formatted Results To API Via Redis"""
 
-        data = {
-            "id": self.id,
+        results = {
+            "id": self.query_id,
             "query": self.query,
             "results": self.results
         }
 
         # Return Results To API Via REDIS DB1
-        self.rdb.json().set(str("id:" + self.id), JPath.rootPath(), data)
+        self.rdb.json().set(str("id:" + self.query_id), JPath.rootPath(), results)
 
         # Add Results To MongoDB Col1
         # ONLY USED BY METRIX SERVICE
-        self.colA.insert_one({"_id": self.id, "data": [self.results_html]})
+        self.colA.insert_one({"_id": self.query_id, "data": [self.results]})
 
 
 if __name__ == "__main__":
@@ -143,6 +143,6 @@ if __name__ == "__main__":
         if stream != {}:
             s = SearchEngine(col1, col2, rdb1, c, stream)
             s.parse_stream()
-            s.search_engine()
+            s.rank_corpus()
             s.format_results()
             s.send_results()
