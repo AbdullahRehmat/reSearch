@@ -137,10 +137,16 @@ func queryAPI(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
+type ResultsData struct {
+	Title  string `json:"title"`
+	URL    string `json:"url"`
+	Source string `json:"source"`
+}
+
 type ResultsResponse struct {
-	Status     string      `json:"status"`
-	Identifier string      `json:"identifier"`
-	Results    interface{} `json:"results"`
+	Status     string        `json:"status"`
+	Identifier string        `json:"identifier"`
+	Results    []ResultsData `json:"results"`
 }
 
 // Function Collects Results From Redis And Returns Them To Client
@@ -156,17 +162,21 @@ func resultsAPI(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	var id string = "id:" + identifier
-	results, err := db.Do(RCtx, "JSON.GET", id, ".results").Result()
+
+	results, err := db.Do(RCtx, "JSON.GET", id, ".results").Text()
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		log.Fatal("Command Failed: ", err)
 	}
 
+	var resultsJSON []ResultsData
+	json.Unmarshal([]byte(results), &resultsJSON)
+
 	response := ResultsResponse{
 		Status:     "success",
 		Identifier: identifier,
-		Results:    results,
+		Results:    resultsJSON,
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -184,7 +194,7 @@ type MetrixResponse struct {
 	Data   MetrixData `json:"data"`
 }
 
-// Function Collects Usage Statistics From MongoDB And Returns Them To Client
+// Function Returns Search Engine Statistics To Client
 func metrix(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 

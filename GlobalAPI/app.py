@@ -91,7 +91,7 @@ class ResultsAPI(Resource):
         time.sleep(0.5)  # Delay Allows SearchEngine Time To Return Response
 
         results = redis_results(identifier)
-        results = json.dumps(results)
+        # results = json.dumps(results)
 
         response = {
             "status": "success",
