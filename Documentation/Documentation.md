@@ -79,7 +79,8 @@ Format = JSON
 ### Routes
 
 - POST `/api/v1/query` - Send query to `SearchEngine` Service
-- GET `/api/v1/results` - Retrieves Result from `SearchEngine` Service as JSON
+- GET `/api/v1/results` - Retrieves Results from `SearchEngine` Service as JSON
+- GET `/api/v1/metrix` - Retrieves `SearchEngine` usage statistics
 
 
 
@@ -91,7 +92,8 @@ Format = JSON
 ### Routes
 
 - POST `/api/v1/query` - Send query to `SearchEngine` Service
-- GET `/api/v1/results` - Retrieves Result from `SearchEngine` Service as JSON
+- GET `/api/v1/results` - Retrieves Results from `SearchEngine` Service as JSON
+- GET `/api/v1/metrix` - Retrieves `SearchEngine` usage statistics
 
 
 
@@ -99,15 +101,15 @@ Format = JSON
 
 ### DB 0
 
-**Stream A**
-
-- Messages: GlobalAPI -> SearchEngine
+- Type: JSON Stream
+- Traffic Type: Search Queries
+- Traffic Direction:  API -> `SearchEngine`
 
 ### DB 1
 
-**Set/Get**
-
-- Results: SearchEngine -> GlobalAPI
+- Type: JSON Set / Get
+- Traffic Type: Search Results
+- Traffic Direction: `SearchEngine` -> API
 
 
 
@@ -123,7 +125,7 @@ Stores URLs + Titles from `ContentScraper`
 >
 > "global_id": identifier - Unique 10 Character String
 >
-> "title":[ "First Blog Post"]
+> "title":[ "Sample Title"]
 >
 > "url": ["www.example.com/blogpost1"]
 >
@@ -143,7 +145,7 @@ Stores URLs + Titles  as ranked by BM25 from `SearchEngine`
 >
 > "global_id": identifier - Unique 10 Character String
 >
-> "title":[ "First Blog Post"]
+> "title":[ "Sample Title"]
 >
 > "url": ["www.example.com/blogpost1"]
 >
