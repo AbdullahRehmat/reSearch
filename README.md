@@ -30,12 +30,8 @@ Please read documentation present in the `Documentation` directory.
 
 - [ ] Standardise `.env` Files
 - [ ] Optimise Data Types used
-
-
-
-### Client: Website
-
-- [ ] Add Flask-Login to Website
+- [ ] Improve Website Interface
+- [ ] Write Android App
 
 
 
@@ -49,7 +45,6 @@ Please read documentation present in the `Documentation` directory.
 ### Service: Databases
 
 - [ ] Rename Database's
-- [ ] Add Passwords to Database
 
 
 
