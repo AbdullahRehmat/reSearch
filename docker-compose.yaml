@@ -1,33 +1,20 @@
 version: "3"
 
 services:
-  mongo-cs:
-    image: mongo
-    hostname: mongo-cs
-    container_name: MongoCS
-    restart: unless-stopped
-    volumes:
-      - ./MongoCS:/data/db
-    networks:
-      - backend
-    #expose:
-    #  - "27017"
-    ports:
-      - "27019:27017"
 
-  mongo-se:
+  mongo-db:
     image: mongo
-    hostname: mongo-se
-    container_name: MongoSE
+    hostname: mongo-db
+    container_name: MongoDB
     restart: unless-stopped
     volumes:
-      - ./MongoSE:/data/db
+      - ./MongoDB:/data/db
     networks:
       - backend
     #expose:
-    #  - "27017"
+    #  - "27020"
     ports:
-      - "27018:27017"
+      - "27020:27017"
 
   redis-api:
     hostname: redis-api
@@ -41,16 +28,16 @@ services:
     ports:
       - 6379:6379
 
-  #content-scraper:
-  #  hostname: content-scraper
-  #  container_name: ContentScraper
-  #  build: ./ContentScraper
-  #  volumes:
-  #    - ./ContentScraper:/usr/src/app
-  #  networks:
-  #    - backend
-  #  depends_on:
-  #    - mongo-cs
+  content-scraper:
+    hostname: content-scraper
+    container_name: ContentScraper
+    build: ./ContentScraper
+    volumes:
+      - ./ContentScraper:/usr/src/app
+    networks:
+      - backend
+    depends_on:
+      - mongo-db
 
   global-api:
     hostname: global-api
@@ -68,8 +55,7 @@ services:
       - "8000:80"
     depends_on:
       - redis-api
-      - mongo-cs
-      - mongo-se
+      - mongo-db
 
   go-api:
     hostname: go-api
@@ -85,8 +71,7 @@ services:
       - "5000:80"
     depends_on:
       - redis-api
-      - mongo-cs
-      - mongo-se
+      - mongo-db
 
   search-engine:
     hostname: search-engine
@@ -99,8 +84,7 @@ services:
       - redis-api
       - global-api
       - go-api
-      - mongo-se
-      - mongo-cs
+      - mongo-db
 
   website:
     hostname: website
