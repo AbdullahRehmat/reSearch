@@ -22,13 +22,9 @@ redis_password = os.getenv("REDIS_PASSWORD")
 
 # MongoDB General Settings
 mongo_port = os.getenv("MONGO_PORT")
-# MongoDB DB1 .env Variables
-mongo_host_1 = os.getenv("MONGO_HOST_1")
+mongo_host = os.getenv("MONGO_HOST")
 mongo_db_1 = os.getenv("MONGO_DB_1")
 mongo_col_1 = os.getenv("MONGO_COL_1")
-
-# MongoDB DB2 .env Variables
-mongo_host_2 = os.getenv("MONGO_HOST_2")
 mongo_db_2 = os.getenv("MONGO_DB_2")
 mongo_col_2 = os.getenv("MONGO_COL_2")
 
@@ -40,15 +36,12 @@ r1 = redis.Redis(host=redis_host, port=redis_port,
                  password=redis_password, db=1, decode_responses=True)
 
 # Connect to MongoSE Database
-conn1 = pymongo.MongoClient(
-    host='mongodb://' + mongo_host_1 + ':' + str(mongo_port) + '/')
-db1 = conn1[mongo_db_1]
-col1 = db1[mongo_col_1]
-
-conn2 = pymongo.MongoClient(
-    host='mongodb://' + mongo_host_2 + ':' + str(mongo_port) + '/')
-db2 = conn2[mongo_db_2]
-col2 = db2[mongo_col_2]
+conn = pymongo.MongoClient(
+    host='mongodb://' + mongo_host + ':' + str(mongo_port) + '/')
+db_1 = conn[mongo_db_1]
+col1 = db_1[mongo_col_1]
+db_2 = conn[mongo_db_2]
+col2 = db_2[mongo_col_2]
 
 
 def redis_results(identifier):

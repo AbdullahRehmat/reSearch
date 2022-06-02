@@ -19,6 +19,10 @@ class Corpus():
 
         return self.corpus
 
+    # def correct_corpus(self) -> None:
+    #     """ Corrects Spelling Of Corpus' Titles """
+    #     pass
+
 
 class SearchEngine():
     def __init__(self, mongo_col_1, mongo_col_2, redis, corpus, stream_data) -> None:
@@ -101,15 +105,10 @@ if __name__ == "__main__":
 
     # MongoDB General Settings
     mongo_port = os.getenv("MONGO_PORT")
-
-    # MongoDB DB1 .env Variables
-    mongo_host_1 = os.getenv("MONGO_HOST_1")
+    mongo_host = os.getenv("MONGO_HOST")
     mongo_db_1 = os.getenv("MONGO_DB_1")
-    mongo_col_1 = os.getenv("MONGO_COL_1")
-
-    # MongoDB DB2 .env Variables
-    mongo_host_2 = os.getenv("MONGO_HOST_2")
     mongo_db_2 = os.getenv("MONGO_DB_2")
+    mongo_col_1 = os.getenv("MONGO_COL_1")
     mongo_col_2 = os.getenv("MONGO_COL_2")
 
     # Connect to Redis Streams
@@ -121,16 +120,12 @@ if __name__ == "__main__":
     rdb1 = redis.Redis(host=redis_host, port=redis_port,
                        password=redis_password, db=1, decode_responses=True)
 
-    # Connect To MongoSE Database
-    conn1 = pymongo.MongoClient(
-        host=f"mongodb://{mongo_host_1}:{str(mongo_port)}/")
-    db1 = conn1[mongo_db_1]
+    # Connect To MongoDB Database
+    conn = pymongo.MongoClient(
+        host=f"mongodb://{mongo_host}:{str(mongo_port)}/")
+    db1 = conn[mongo_db_1]
     col1 = db1[mongo_col_1]
-
-    # Connect To MongoCS Database
-    conn2 = pymongo.MongoClient(
-        host=f"mongodb://{mongo_host_2}:{str(mongo_port)}/")
-    db2 = conn2[mongo_db_2]
+    db2 = conn[mongo_db_2]
     col2 = db2[mongo_col_2]
 
     # Create Corpus

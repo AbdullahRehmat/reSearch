@@ -60,20 +60,21 @@ func MongoDB(host, port string) *mongo.Client {
 // Function Returns Search Engine Stats
 func dbStats() (x, y, z int64) {
 
-	db1 := MongoDB("mongo-se", "27017")
-	defer db1.Disconnect(MCtx)
-	x, err := db1.Database("SearchEngineDB").Collection("Results-C1").EstimatedDocumentCount(MCtx)
+	mongo := MongoDB("mongo-db", "27017")
+	defer mongo.Disconnect(MCtx)
+	x, err := mongo.Database("SearchEngineDB").Collection("Results-C1").EstimatedDocumentCount(MCtx)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	y, err = mongo.Database("ContentScraperDB").Collection("ScrapedData-C1").EstimatedDocumentCount(MCtx)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	db2 := MongoDB("mongo-cs", "27017")
-	defer db1.Disconnect(MCtx)
-	y, err = db2.Database("ContentScraperDB").Collection("ScrapedData-C1").EstimatedDocumentCount(MCtx)
-
-	db3 := RedisDB(1)
-	z = db3.DBSize(RCtx).Val()
+	redis := RedisDB(1)
+	z = redis.DBSize(RCtx).Val()
 
 	if err != nil {
 		log.Fatal(err)
