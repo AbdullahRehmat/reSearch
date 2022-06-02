@@ -56,6 +56,7 @@ class MongoPipeline(object):
         s = SpellChecker()
         item["title"] = [s.spell_checker(str(item["title"][0]))]
 
+        # Add Item to Database
         self.db[self.collection_name].insert(dict(item))
         logging.debug("Post added to MongoDB")
 

@@ -16,7 +16,7 @@ ITEM_PIPELINES = {
     'data.pipelines.MongoPipeline': 300,
 }
 
-MONGO_URI = 'mongodb://mongo-cs:27017/'
+MONGO_URI = 'mongodb://mongo-db:27017/'
 MONGO_DATABASE = 'ContentScraperDB'
 
 
