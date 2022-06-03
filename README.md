@@ -37,14 +37,13 @@ Please read documentation present in the `Documentation` directory.
 
 ### Service: APIs
 
-- [ ] Add `.env` file to GoAPI
 - [ ] Add Authentication to all API endpoints
 
 
 
 ### Service: Databases
 
-- [ ] Rename Database's
+- [ ] Add Database Passwords
 
 
 
