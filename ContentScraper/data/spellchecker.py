@@ -1,10 +1,16 @@
+import json
 import unicodedata
-from data.wordlist import dictionary
 
 
 class SpellChecker:
     def __init__(self) -> None:
-        pass
+        self.wl_addr = "wordlist.json"
+        self.wordlist = {}
+
+    def _load_wordlist(self) -> None:
+        file = open(self.wl_addr)
+        data = json.load(file)
+        self.wordlist = data["dictionary"]
 
     def strip_punctuation(self, text: str) -> str:
         punctuation = "!#$%'*+,./;<=>?@[\]^_`{|}~"
@@ -15,9 +21,9 @@ class SpellChecker:
     def strip_accents(self, text: str) -> str:
         nfkd_form = unicodedata.normalize("NFKD", text)
         ascii_form = nfkd_form.encode("ASCII", "ignore")
-        new_text = ascii_form.decode("utf-8")
+        new_text = str(ascii_form.decode("utf-8"))
 
-        return str(new_text)
+        return new_text
 
     def format_spaces(self, text: str) -> str:
         if "  " in text:
@@ -28,12 +34,12 @@ class SpellChecker:
             return text
 
     def fix_spelling(self, text: str) -> str:
-        d = dictionary()
+        self._load_wordlist()
 
-        for k, v in d.items():
+        for k, v in self.wordlist.items():
             for i in v:
                 if i.lower() in text:
-                    new_text = text.replace(i.lower(), k.lower())
+                    new_text = text.replace(i.lower(), k.title())
                     return new_text
 
                 elif i.title() in text:
