@@ -16,6 +16,8 @@ import (
 const (
 	RedisAddr string = "redis-api:6379" // Redis Address
 	RedisPass string = "Password:)"     // Redis Password
+	MongoHost string = "mongo-db"       // Mongo Docker Hostname
+	MongoPort string = "27017"          // Mongo Host Port
 )
 
 var (
@@ -60,7 +62,7 @@ func MongoDB(host, port string) *mongo.Client {
 // Function Returns Search Engine Stats
 func dbStats() (x, y, z int64) {
 
-	mongo := MongoDB("mongo-db", "27017")
+	mongo := MongoDB(MongoHost, MongoPort)
 	defer mongo.Disconnect(MCtx)
 	x, err := mongo.Database("SearchEngineDB").Collection("Results-C1").EstimatedDocumentCount(MCtx)
 
