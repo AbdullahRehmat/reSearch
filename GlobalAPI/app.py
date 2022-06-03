@@ -1,7 +1,6 @@
 import os
 import time
 import redis
-import json
 import pymongo
 from dotenv import load_dotenv
 from flask import Flask

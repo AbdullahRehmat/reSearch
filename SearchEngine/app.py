@@ -4,6 +4,7 @@ import pymongo
 from dotenv import load_dotenv
 from rank_bm25 import BM25Plus
 from redis.commands.json.path import Path as JPath
+# from spellchecker import SpellChecker
 
 
 class Corpus():
@@ -21,7 +22,13 @@ class Corpus():
 
     # def correct_corpus(self) -> None:
     #     """ Corrects Spelling Of Corpus' Titles """
-    #     pass
+
+    #     s = SpellChecker()
+    #     corrected_corpus = []
+    #     for i in self.corpus:
+    #         corrected_corpus.append(s.spell_checker(i))
+
+    #     self.corpus = corrected_corpus
 
 
 class SearchEngine():
@@ -44,8 +51,13 @@ class SearchEngine():
         self.query_id = s["identifier"]
         self.query = s["query"]
 
+    # def correct_query(self) -> None:
+    #     """ Corrects Spelling Of Query """
+    #     s = SpellChecker()
+    #     self.query = s.spell_checker(self.query)
+
     def rank_corpus(self) -> None:
-        """Ranks Corpus According To Query Via BM25"""
+        """ Ranks Corpus According To Query Via BM25 """
 
         # Convert Query To Upper Case To Improve Search Results
         query = self.query.title()
@@ -78,7 +90,7 @@ class SearchEngine():
             self.results += [result]
 
     def send_results(self) -> None:
-        """Sends JSON Formatted Results To API Via Redis"""
+        """ Sends JSON Formatted Results To API Via Redis """
 
         results = {
             "id": self.query_id,
@@ -91,7 +103,8 @@ class SearchEngine():
 
         # Add Results To MongoDB Col1
         # ONLY USED BY METRIX SERVICE
-        self.colA.insert_one({"_id": self.query_id, "data": [self.results]})
+        self.colA.insert_one(
+            {"_id": self.query_id, "query": self.query, "data": self.results})
 
 
 if __name__ == "__main__":
@@ -107,8 +120,8 @@ if __name__ == "__main__":
     mongo_port = os.getenv("MONGO_PORT")
     mongo_host = os.getenv("MONGO_HOST")
     mongo_db_1 = os.getenv("MONGO_DB_1")
-    mongo_db_2 = os.getenv("MONGO_DB_2")
     mongo_col_1 = os.getenv("MONGO_COL_1")
+    mongo_db_2 = os.getenv("MONGO_DB_2")
     mongo_col_2 = os.getenv("MONGO_COL_2")
 
     # Connect to Redis Streams
@@ -123,13 +136,14 @@ if __name__ == "__main__":
     # Connect To MongoDB Database
     conn = pymongo.MongoClient(
         host=f"mongodb://{mongo_host}:{str(mongo_port)}/")
+
     db1 = conn[mongo_db_1]
     col1 = db1[mongo_col_1]
     db2 = conn[mongo_db_2]
     col2 = db2[mongo_col_2]
 
     # Create Corpus
-    c = Corpus(col2)
+    c = Corpus(col1)
     c = c.create_corpus()
 
     # Block Stream To Wait For Incomming Message
@@ -137,7 +151,7 @@ if __name__ == "__main__":
         stream_data = rdb0.xread({'streamA': "$"}, count=1, block=0)
 
         if stream_data != {}:
-            s = SearchEngine(col1, col2, rdb1, c, stream_data)
+            s = SearchEngine(col2, col1, rdb1, c, stream_data)
             s.parse_stream()
             s.rank_corpus()
             s.format_results()
