@@ -185,12 +185,15 @@ class SpiderTwentyThree(Spider):
         start_urls = []
 
         while i <= number:
-            start_urls.append(str(url) + str(number))
+            start_urls.append(str(url) + str(i))
             i += 1
-        
+
         return start_urls
 
-    start_urls = gen_start_urls("https://www.salafisounds.com/category/speakers/page/", 200)
+    start_urls = gen_start_urls(
+        "https://www.salafisounds.com/category/speakers/page/", 200)
+
+    print(start_urls)
 
     def parse(self, response):
         scrapedData = Selector(response).css('h3.mh-posts-list-title')
