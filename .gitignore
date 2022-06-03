@@ -1,6 +1,5 @@
-MongoSE/
+MongoDB/
 MongoCS/
-Testing/
 
 *workspace.code-workspace
 *__pycache__/
