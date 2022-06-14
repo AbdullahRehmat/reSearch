@@ -77,7 +77,7 @@ class SearchEngine():
         for title in self.ranked_titles:
 
             # Get Title's URL & Source
-            data = self.colB.find_one({"title": title}, {
+            data = self.colA.find_one({"title": title}, {
                 "_id": 0, "url": 1, "source": 1})
 
             # Format As JSON
@@ -103,7 +103,7 @@ class SearchEngine():
 
         # Add Results To MongoDB Col1
         # ONLY USED BY METRIX SERVICE
-        self.colA.insert_one(
+        self.colB.insert_one(
             {"_id": self.query_id, "query": self.query, "data": self.results})
 
 
@@ -151,7 +151,7 @@ if __name__ == "__main__":
         stream_data = rdb0.xread({'streamA': "$"}, count=1, block=0)
 
         if stream_data != {}:
-            s = SearchEngine(col2, col1, rdb1, c, stream_data)
+            s = SearchEngine(col1, col2, rdb1, c, stream_data)
             s.parse_stream()
             s.rank_corpus()
             s.format_results()
