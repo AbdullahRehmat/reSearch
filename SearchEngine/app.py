@@ -87,7 +87,7 @@ class SearchEngine():
                 "source": data["source"][0]
             }
 
-            self.results += [result]
+            self.results.append(result)
 
     def send_results(self) -> None:
         """ Sends JSON Formatted Results To API Via Redis """
