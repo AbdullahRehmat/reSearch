@@ -28,8 +28,6 @@ Please read documentation present in the `Documentation` directory.
 
 ### General
 
-- [ ] Standardise `.env` Files
-- [ ] Optimise Data Types used
 - [ ] Improve Website Interface
 - [ ] Write Android App
 
