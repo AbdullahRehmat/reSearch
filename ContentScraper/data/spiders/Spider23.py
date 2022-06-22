@@ -196,7 +196,7 @@ class SpiderTwentyThree(Spider):
     print(start_urls)
 
     def parse(self, response):
-        scrapedData = Selector(response).css('h3.mh-posts-list-title')
+        scrapedData = Selector(response).css('h3.mh-posts-grid-title')
 
         for data in scrapedData:
             item = DataItem()
