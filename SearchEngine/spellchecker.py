@@ -1,3 +1,4 @@
+import os
 import json
 import unicodedata
 
@@ -8,7 +9,8 @@ class SpellChecker:
         self.wordlist = {}
 
     def _load_wordlist(self) -> None:
-        file = open(self.wl_addr)
+        path = os.path.join(os.path.dirname(__file__), self.wl_addr)
+        file = open(path)
         data = json.load(file)
         self.wordlist = data["dictionary"]
 
