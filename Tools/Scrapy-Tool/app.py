@@ -1,34 +1,22 @@
 import scrapy
+from scrapy import Selector
 
 
 class TestSpider(scrapy.Spider):
-	name = 'testspider'
+    name = 'testspider'
 
-	start_urls = [
-		"http://www.shia.bs/authors/Admin.cfm",
-	]
+    start_urls = ["https://www.salafisounds.com/category/speakers/"]
 
-	def parse(self, response):
-		scrapedData = Selector(response).css('a.articleTitleListSmall')
+    def parse(self, response):
+        scrapedData = Selector(response).css('h3.mh-posts-grid-title')
 
-		for data in scrapedData:
-			item = DataItem()
-			item['title'] = data.css('a.articleTitleListSmall::text').get(),
-			item['source'] = 'Shia.bs - Article - Abu Iyyad',
-			item['url'] = data.css('a.articleTitleListSmall::attr(href)').get()
-			yield item
+        for data in scrapedData:
+            title = data.css('h3.mh-posts-grid-title > a::attr(title)').get()
+            url = data.css('h3.mh-posts-grid-title > a::attr(href)').get()
 
-
-   def parse(self, response):
-	  for href in response.css('a.articleTitleListSmall::attr(href)'):
-		 url = response.urljoin(href.extract())
-			yield scrapy.Request(url, callback = self.parse_dir_contents)
-
-   def parse_dir_contents(self, response):
-	  for data in response.css():
-			item = DataItem()
-			item['url'] = response.request.url
-			item['title'] = data.css('span.articleTitle::text').get(),
-			item['text'] = data.css('div.articleContent::text').get(),
-			item['source'] = 'Shia.bs - Article - Abu Iyyad',
-			yield item
+        print(" ")
+        print("#"*25)
+        print(title)
+        print(url)
+        print("#"*25)
+        print(" ")

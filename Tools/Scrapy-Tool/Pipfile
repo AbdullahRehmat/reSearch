@@ -4,13 +4,10 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-rank-bm25 = "*"
-pymongo = "*"
-redis = "*"
 scrapy = "*"
+autopep8 = "*"
 
 [dev-packages]
-autopep8 = "*"
 
 [requires]
 python_version = "3.8"
