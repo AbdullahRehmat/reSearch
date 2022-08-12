@@ -28,16 +28,16 @@ services:
     ports:
       - 6379:6379
 
-  #content-scraper:
-  #  hostname: content-scraper
-  #  container_name: ContentScraper
-  #  build: ./ContentScraper
-  #  volumes:
-  #    - ./ContentScraper:/usr/src/app
-  #  networks:
-  #    - backend
-  #  depends_on:
-  #    - mongo-db
+  # content-scraper:
+  #   hostname: content-scraper
+  #   container_name: ContentScraper
+  #   build: ./ContentScraper
+  #   volumes:
+  #     - ./ContentScraper:/usr/src/app
+  #   networks:
+  #     - backend
+  #   depends_on:
+  #     - mongo-db
 
   global-api:
     hostname: global-api
