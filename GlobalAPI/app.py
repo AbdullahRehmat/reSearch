@@ -86,6 +86,7 @@ class ResultsAPI(Resource):
         time_taken = redis_results(identifier, "time_taken")
 
         response = {
+            "api": "Global-API",
             "status": "success",
             "identifier": identifier,
             "time_taken": time_taken,

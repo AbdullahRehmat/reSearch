@@ -147,8 +147,10 @@ type ResultsData struct {
 }
 
 type ResultsResponse struct {
+	API        string        `json:"api"`
 	Status     string        `json:"status"`
 	Identifier string        `json:"identifier"`
+	TimeTaken  string        `json:"time_taken"`
 	Results    []ResultsData `json:"results"`
 }
 
@@ -176,9 +178,18 @@ func resultsAPI(w http.ResponseWriter, r *http.Request) {
 	var resultsJSON []ResultsData
 	json.Unmarshal([]byte(results), &resultsJSON)
 
+	time_taken, err := db.Do(RCtx, "JSON.GET", id, ".time_taken").Text()
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Fatal("Command Failed: ", err)
+	}
+
 	response := ResultsResponse{
+		API:        "Go-API",
 		Status:     "success",
 		Identifier: identifier,
+		TimeTaken:  time_taken,
 		Results:    resultsJSON,
 	}
 
