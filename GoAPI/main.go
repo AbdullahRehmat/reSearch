@@ -67,19 +67,19 @@ func dbStats() (x, y, z int64) {
 	x, err := mongo.Database("SearchEngineDB").Collection("Results-C1").EstimatedDocumentCount(MCtx)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("dbStats() SearchEngineDB Error - ", err)
 	}
 	y, err = mongo.Database("ContentScraperDB").Collection("ScrapedData-C1").EstimatedDocumentCount(MCtx)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("dbStats() ContentScraperDB Error - ", err)
 	}
 
 	redis := RedisDB(1)
 	z = redis.DBSize(RCtx).Val()
 
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("RedisDB(1) Error - ", err)
 	}
 
 	return x, y, z
