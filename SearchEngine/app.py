@@ -121,7 +121,7 @@ class SearchEngine():
             self.rank_corpus()
             self.format_results()
             end_time = datetime.datetime.now() - start_time
-            self.time_taken = str(float(end_time.microseconds / 1000)) + " Microseconds"
+            self.time_taken = str(float(end_time.microseconds / 1000)) + " ms"
             self.send_results()
 
 if __name__ == "__main__":
