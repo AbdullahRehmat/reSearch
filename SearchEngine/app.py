@@ -4,6 +4,7 @@ import pymongo
 from dotenv import load_dotenv
 from rank_bm25 import BM25Plus
 from redis.commands.json.path import Path as JPath
+import datetime
 # from spellchecker import SpellChecker
 
 
@@ -48,6 +49,7 @@ class SearchEngine():
         self.max_results = 30
         self.ranked_titles = ()
         self.results = []
+        self.time_taken = None
 
     def parse_stream(self) -> None:
         """ Parses Information From Redis Stream Message """
@@ -100,6 +102,7 @@ class SearchEngine():
         results = {
             "id": self.query_id,
             "query": self.query,
+            "time_taken": self.time_taken,
             "results": self.results
         }
 
@@ -110,7 +113,16 @@ class SearchEngine():
         # ONLY USED BY METRIX SERVICE
         self.colB.insert_one(
             {"_id": self.query_id, "query": self.query, "data": self.results})
+    
+    def run_search(self) -> None:
 
+            start_time = datetime.datetime.now()
+            self.parse_stream()
+            self.rank_corpus()
+            self.format_results()
+            end_time = datetime.datetime.now() - start_time
+            self.time_taken = str(float(end_time.microseconds / 1000)) + " Microseconds"
+            self.send_results()
 
 if __name__ == "__main__":
     # Load .env Variables From File
@@ -157,7 +169,4 @@ if __name__ == "__main__":
 
         if stream_data != {}:
             s = SearchEngine(col1, col2, rdb1, c, stream_data)
-            s.parse_stream()
-            s.rank_corpus()
-            s.format_results()
-            s.send_results()
+            s.run_search()

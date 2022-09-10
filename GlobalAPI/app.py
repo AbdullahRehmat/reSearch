@@ -43,8 +43,8 @@ db_2 = conn[mongo_db_2]
 col2 = db_2[mongo_col_2]
 
 
-def redis_results(identifier):
-    data = r1.json().get(str("id:" + identifier), JPath(".results"))
+def redis_results(identifier, id):
+    data = r1.json().get(str("id:" + identifier), JPath("." + id))
 
     return data
 
@@ -82,12 +82,13 @@ class ResultsAPI(Resource):
     def get(self, identifier):
         time.sleep(0.5)  # Delay Allows SearchEngine Time To Return Response
 
-        results = redis_results(identifier)
-        # results = json.dumps(results)
+        results = redis_results(identifier, "results")
+        time_taken = redis_results(identifier, "time_taken")
 
         response = {
             "status": "success",
             "identifier": identifier,
+            "time_taken": time_taken,
             "results": results
         }
 
