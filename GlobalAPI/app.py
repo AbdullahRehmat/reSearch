@@ -14,6 +14,10 @@ api = Api(app)
 # Load ENV Variables
 load_dotenv()
 
+# API Information
+api_name = os.getenv("API_NAME")
+api_version = os.getenv("API_VERSION")
+
 # Redis .env Variables
 redis_host = os.getenv("REDIS_HOST")
 redis_port = os.getenv("REDIS_PORT")
@@ -69,6 +73,8 @@ class QueryAPI(Resource):
         r0.xadd('streamA', fields=args)
 
         response = {
+            "api": api_name,
+            "version": api_version,
             "status": "success",
             "data": args
         }
@@ -86,7 +92,8 @@ class ResultsAPI(Resource):
         time_taken = redis_results(identifier, "time_taken")
 
         response = {
-            "api": "Global-API",
+            "api": api_name,
+            "version": api_version,
             "status": "success",
             "identifier": identifier,
             "time_taken": time_taken,
@@ -107,6 +114,8 @@ class Metrix(Resource):
 
         # Format Statistics
         response = {
+            "api": api_name,
+            "version": api_version,
             "status": "success",
             "data": {
                 "totalQueries": db1Count,

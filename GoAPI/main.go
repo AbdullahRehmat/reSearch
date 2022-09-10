@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -14,10 +15,12 @@ import (
 )
 
 const (
-	RedisAddr string = "redis-api:6379" // Redis Address
-	RedisPass string = "Password:)"     // Redis Password
-	MongoHost string = "mongo-db"       // Mongo Docker Hostname
-	MongoPort string = "27017"          // Mongo Host Port
+	APIName    string = "Go-API"
+	APIVersion string = "1.0.0"
+	RedisAddr  string = "redis-api:6379" // Redis Address
+	RedisPass  string = "Password:)"     // Redis Password
+	MongoHost  string = "mongo-db"       // Mongo Docker Hostname
+	MongoPort  string = "27017"          // Mongo Host Port
 )
 
 var (
@@ -91,8 +94,10 @@ type QueryData struct {
 }
 
 type QueryResponse struct {
-	Status string    `json:"status"`
-	Data   QueryData `json:"data"`
+	API     string    `json:"api"`
+	Version string    `json:"version"`
+	Status  string    `json:"status"`
+	Data    QueryData `json:"data"`
 }
 
 // Function Receives Query from Client
@@ -132,8 +137,10 @@ func queryAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response := QueryResponse{
-		Status: "success",
-		Data:   responseData,
+		API:     APIName,
+		Version: APIVersion,
+		Status:  "success",
+		Data:    responseData,
 	}
 
 	w.WriteHeader(http.StatusAccepted)
@@ -148,6 +155,7 @@ type ResultsData struct {
 
 type ResultsResponse struct {
 	API        string        `json:"api"`
+	Version    string        `json:"version"`
 	Status     string        `json:"status"`
 	Identifier string        `json:"identifier"`
 	TimeTaken  string        `json:"time_taken"`
@@ -179,6 +187,7 @@ func resultsAPI(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal([]byte(results), &resultsJSON)
 
 	time_taken, err := db.Do(RCtx, "JSON.GET", id, ".time_taken").Text()
+	time_taken = strings.Trim(time_taken, "\"")
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -186,7 +195,8 @@ func resultsAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response := ResultsResponse{
-		API:        "Go-API",
+		API:        APIName,
+		Version:    APIVersion,
 		Status:     "success",
 		Identifier: identifier,
 		TimeTaken:  time_taken,
@@ -204,8 +214,10 @@ type MetrixData struct {
 }
 
 type MetrixResponse struct {
-	Status string     `json:"status"`
-	Data   MetrixData `json:"data"`
+	API     string     `json:"api"`
+	Version string     `json:"version"`
+	Status  string     `json:"status"`
+	Data    MetrixData `json:"data"`
 }
 
 // Function Returns Search Engine Statistics To Client
@@ -221,8 +233,10 @@ func metrix(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response := MetrixResponse{
-		Status: "success",
-		Data:   responseData,
+		API:     APIName,
+		Version: APIVersion,
+		Status:  "success",
+		Data:    responseData,
 	}
 
 	w.WriteHeader(http.StatusOK)
