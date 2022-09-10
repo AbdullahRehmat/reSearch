@@ -43,7 +43,7 @@ class ApiConn():
 
         return api
 
-    def get_results():
+    def get_response():
         """ Collects response from API via unique ID """
 
         if 'identifier' in session:
@@ -53,9 +53,10 @@ class ApiConn():
                 f"http://{app.config['API_HOST']}/api/v1/results/{identifier}")
 
             data = get(url).json()
-            data = data["results"]
+            time_taken = data["time_taken"]
+            results = data["results"]
 
-            return data
+            return str(time_taken), results
 
         else:
             return "No Identifier was found... \n", 400
@@ -92,8 +93,9 @@ def index():
 @app.route("/results")
 def results():
     query = session['query']
-    results = list(ApiConn.get_results())
-    return render_template('results.html', results=results, query=query)
+    time_taken, results = ApiConn.get_response()
+
+    return render_template('results.html', time_taken=time_taken, results=results, query=query)
 
 
 @app.route("/sources")
