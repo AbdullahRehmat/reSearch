@@ -30,6 +30,11 @@ class Corpus():
 
     #     self.corpus = corrected_corpus
 
+    # def yield_corpus(self) -> list:
+    #     """ Returns Corpus As List """
+
+    #     return self.corpus
+
 
 class SearchEngine():
     def __init__(self, mongo_col_1, mongo_col_2, redis, corpus, stream_data) -> None:
