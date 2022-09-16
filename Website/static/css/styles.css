@@ -30,8 +30,7 @@ html {
   --selection-color: #ffffff;
 }
 
-::selection 
-::-moz-selection {
+::selection ::-moz-selection {
   color: var(--background-color);
   background-color: var(--selection-color);
 }
@@ -44,18 +43,10 @@ body {
   display: block;
 }
 
-#page-container {
-  position: relative;
-  min-height: 100vh;
-}
-
-#content-wrap {
-  padding-bottom: 2.3rem;
-}
-
-#index-search-section {
+#index-search {
   margin: auto;
   text-align: center;
+  height: calc(100vh - 2.3rem);
 }
 
 #index-title {
@@ -64,7 +55,7 @@ body {
   margin-bottom: 3vh;
 }
 
-#version {
+#index-version {
   font-size: 15px;
   color: var(--accent-color);
 }
@@ -74,7 +65,7 @@ body {
   padding: 11px;
   font-size: 17px;
   margin-bottom: 3vh;
-  border-radius: 5px;
+  border-radius: 10px;
   transition: box-shadow 0.3s;
   border: 1px solid var(--query-border-color);
 }
@@ -174,7 +165,7 @@ body {
   margin-top: 10px;
   padding-top: 20px;
   margin-bottom: 10px;
-  border-radius: 15px;
+  border-radius: var(--border-radius);
   text-align: center;
   align-self: stretch;
   background-color: var(--admin-item-color);
@@ -193,17 +184,31 @@ body {
   font-size: 30px;
 }
 
-#theme-toggle {
-  position: fixed;
+#buttons {
+  width: 100%;
+  position: absolute;
   top: 0;
-  right: 0;
-  padding-right: 1%;
-  padding-top: 1%;
+  left: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  justify-content: flex-end;
+}
+
+.button {
+  padding-top: 0.75rem;
+  padding-right: 0.75rem;
   font-size: 22px;
   color: var(--theme-toggle-color);
 }
 
-#theme-toggle:hover {
+.button > a {
+  color: var(--theme-toggle-color);
+}
+
+.button > a:hover {
+  cursor: default;
   transition: 0.15s;
   -o-transition: 0.15s;
   -ms-transition: 0.15s;
@@ -263,20 +268,13 @@ footer {
   width: 100%;
   height: 2.3rem;
   margin: 0;
-  position: absolute;
-  bottom: 0;
-  background-color: var(--footer-color);
-}
-
-.footer-container {
-  height: 2.3rem;
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
   align-items: center;
   align-content: center;
-  justify-content: flex-start;
-  padding-left: 1.5rem;
+  justify-content: center;
+  background-color: var(--footer-color);
 }
 
 .footer-item {
@@ -332,6 +330,5 @@ footer {
 
   .footer-container {
     height: 2.3rem;
-    padding-left: 1.3rem;
   }
 }

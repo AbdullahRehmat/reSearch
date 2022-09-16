@@ -1,6 +1,13 @@
-{% extends "layout.html" %} {% block head %} {% endblock %} {% block title %}
-{{query}} - reSearch {% endblock %} {% block body %}
+{% extends "layout.html" %} 
 
+{% block head %}
+{% endblock %} 
+
+{% block title %}
+{{query}} - reSearch
+{% endblock %} 
+
+{% block body %}
 <section id="results-section">
   <div class="page-heading">
     <div class="page-title">
@@ -19,7 +26,6 @@
     {% endfor %}
   </div>
 </section>
-
 {% endblock %}
 
 {% block time_taken %}

@@ -12,7 +12,7 @@
     />
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+      href="https://unicons.iconscout.com/release/v4.0.0/css/line.css"
     />
 
     <!-- Internal Dependencies -->
@@ -28,50 +28,43 @@
     {% block head %} {% endblock %}
     <title>{% block title %} {% endblock %}</title>
   </head>
+
   <body>
-    <div id="page-container">
-      <div id="content-wrap">{% block body %} {% endblock %}</div>
-      <footer id="footer-index">
-        <div id="theme-toggle">
-          <a onclick="toggleTheme()">
-            <i class="fa fa-moon-o"></i>
-          </a>
-        </div>
-
-        <div class="footer-container">
-          <div class="footer-item">
-            <p>A.Rehmat &copy; 2021</p>
-          </div>
-
-          <div class="footer-item">
-            <p>
-              <a href="{{ url_for('index') }}" class="footer-item-link"
-                >Search</a
-              >
-            </p>
-          </div>
-
-          <div class="footer-item">
-            <p>
-              <a href="{{ url_for('sources') }}" class="footer-item-link"
-                >Sources</a
-              >
-            </p>
-          </div>
-
-          <div class="footer-item">
-            <p>
-              <a href="{{ url_for('legal') }}" class="footer-item-link"
-                >Legal</a
-              >
-            </p>
-          </div>
-
-          <div class="footer-item">
-            <p>{% block time_taken %} {% endblock %}</p>
-          </div>
-        </div>
-      </footer>
+    <div id="buttons">
+      <div class="button">
+        <a href="{{ url_for('index') }}">
+          <i class="uil uil-search"></i>
+        </a>
+      </div>
+      <div class="button">
+        <a onclick="toggleTheme()">
+          <i class="uil uil-moon"></i>
+        </a>
+      </div>
     </div>
+
+    <div id="content-wrapper">{% block body %} {% endblock %}</div>
+
+    <footer>
+      <div class="footer-item">
+        <p>reSearch &copy; 2022</p>
+      </div>
+      <div class="footer-item">
+        <p>
+          <a href="{{ url_for('sources') }}" class="footer-item-link"
+            >Sources</a
+          >
+        </p>
+      </div>
+      <div class="footer-item">
+        <p>
+          <a href="{{ url_for('legal') }}" class="footer-item-link">Legal</a>
+        </p>
+      </div>
+
+      <div class="footer-item">
+        <p>{% block time_taken %} {% endblock %}</p>
+      </div>
+    </footer>
   </body>
 </html>
