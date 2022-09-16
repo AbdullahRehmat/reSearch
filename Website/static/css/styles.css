@@ -118,8 +118,8 @@ body {
   display: block;
   padding-top: 0.25em;
   padding-bottom: 0.25em;
+  font-size: 17.5px;
   text-decoration: none;
-  font-size: 16px;
   color: var(--primary-text-color);
 }
 
