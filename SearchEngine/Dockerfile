@@ -8,8 +8,8 @@ RUN apt-get update \
 
 RUN pip install pipenv
 COPY Pipfile* ./
-RUN pipenv lock --requirements > requirements.txt
+RUN pipenv requirements > requirements.txt
 RUN pip install -r requirements.txt
 
 COPY . .
-CMD ["python", "-u", "app.py"]
+CMD ["python3", "-u", "app.py"]
