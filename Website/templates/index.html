@@ -8,10 +8,10 @@ reSearch
 {% endblock %}
 
 {% block body %}
-<section id="index-search">
-	<div id="index-title">reSearch<span id="index-version">Alpha</span></div>
+<section id="search-section">
+	<div id="search-title">reSearch<span id="search-version">Alpha</span></div>
 
-	<div id="index-search-box">
+	<div id="search-box">
 		<form method="POST" action="/">
 			{{ form.csrf_token }} {{ form.query(autocomplete="off") }}
 			<input type="submit" value="Go" id="submit-button" />

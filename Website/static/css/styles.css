@@ -43,19 +43,19 @@ body {
   display: block;
 }
 
-#index-search {
+#search-section {
   margin: auto;
   text-align: center;
   height: calc(100vh - 2.3rem);
 }
 
-#index-title {
+#search-title {
   font-size: 50px;
   padding-top: 30vh;
   margin-bottom: 3vh;
 }
 
-#index-version {
+#search-version {
   font-size: 15px;
   color: var(--accent-color);
 }
@@ -147,6 +147,10 @@ body {
   color: var(--accent-color);
 }
 
+#admin-section {
+  height: calc(100vh - 2.3rem);
+}
+
 .admin-container {
   width: 97vw;
   margin: auto;
@@ -165,7 +169,7 @@ body {
   margin-top: 10px;
   padding-top: 20px;
   margin-bottom: 10px;
-  border-radius: var(--border-radius);
+  border-radius: 10px;
   text-align: center;
   align-self: stretch;
   background-color: var(--admin-item-color);
