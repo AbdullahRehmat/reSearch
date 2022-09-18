@@ -35,6 +35,11 @@ html {
   background-color: var(--selection-color);
 }
 
+@font-face {
+  font-family: "Roboto";
+  src: url("/Website/static/fonts/Roboto-Regular.ttf");
+}
+
 body {
   width: 100%;
   height: 100%;
