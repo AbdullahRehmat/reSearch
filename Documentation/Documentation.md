@@ -115,7 +115,7 @@ Format = JSON
 
 ## Docs: MongoDB
 
-### MongoCS
+### ContentScraperDB
 
 Stores URLs + Titles from `ContentScraper`
 
@@ -135,7 +135,13 @@ Stores URLs + Titles from `ContentScraper`
 
 
 
-### MongoSE
+#### Collections
+
+- `scrapedData` - List of all scraped URLs with titles corrected by `SpellChecker`
+
+
+
+### SearchEngineDB
 
 Stores URLs + Titles  as ranked by BM25 from `SearchEngine`
 
@@ -153,3 +159,8 @@ Stores URLs + Titles  as ranked by BM25 from `SearchEngine`
 >
 > }
 
+
+
+#### Collections
+
+- `returnedResults` - List of all results generated
