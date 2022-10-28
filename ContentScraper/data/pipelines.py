@@ -18,7 +18,7 @@ from data.spellchecker import SpellChecker
 
 class MongoPipeline(object):
 
-    collection_name = 'ScrapedData-C1'
+    collection_name = 'scrapedData'
 
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = mongo_uri

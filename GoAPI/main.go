@@ -67,12 +67,12 @@ func dbStats() (x, y, z int64) {
 
 	mongo := MongoDB(MongoHost, MongoPort)
 	defer mongo.Disconnect(MCtx)
-	x, err := mongo.Database("SearchEngineDB").Collection("Results-C1").EstimatedDocumentCount(MCtx)
+	x, err := mongo.Database("SearchEngineDB").Collection("returnedResults").EstimatedDocumentCount(MCtx)
 
 	if err != nil {
 		log.Fatal("dbStats() SearchEngineDB Error - ", err)
 	}
-	y, err = mongo.Database("ContentScraperDB").Collection("ScrapedData-C1").EstimatedDocumentCount(MCtx)
+	y, err = mongo.Database("ContentScraperDB").Collection("scrapedData").EstimatedDocumentCount(MCtx)
 
 	if err != nil {
 		log.Fatal("dbStats() ContentScraperDB Error - ", err)
