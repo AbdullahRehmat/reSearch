@@ -1,3 +1,4 @@
+from cgitb import text
 import os
 import redis
 import pymongo
@@ -5,13 +6,14 @@ from dotenv import load_dotenv
 from rank_bm25 import BM25Plus
 from redis.commands.json.path import Path as JPath
 import datetime
-# from spellchecker import SpellChecker
+from spellchecker import SpellChecker
 
 
 class Corpus():
     def __init__(self, mongo_col) -> None:
         self.col = mongo_col
         self.corpus = []
+        self.corrected_corpus = []
 
     def create_corpus(self) -> None:
         """ Creates Corpus Of Titles From A MongoDB Collection"""
@@ -19,22 +21,39 @@ class Corpus():
         for data in self.col.find():
             self.corpus += data["title"]
 
+        return None
+
+    def correct_corpus(self) -> None:
+        """ Corrects Spelling Of Corpus' Titles """
+
+        # for Title in Corpus:
+        #      Get & Correct Title
+        #      Replace Old Title With New
+
+        s = SpellChecker()
+
+        for i in self.corpus:
+            self.corrected_corpus.append(s.spell_checker(i))
+
+        return None
+
+    def check_corpus(self) -> None:
+        """ Compare Original Vs Corrected Corpus """
+
+        conn = pymongo.MongoClient(host=f"mongodb://mongo-db:27017/")
+        db3 = conn["SpellCheckerDB"]
+        col3 = db3["parity"]
+
+        diff = set(self.corpus + self.corrected_corpus)
+        for i in diff:
+            col3.insert_one({"type": "DIFF", "data": str(i)})
+
+        return None
+
+    def yield_corpus(self) -> list:
+        """ Returns Corpus As List """
+
         return self.corpus
-
-    # def correct_corpus(self) -> None:
-    #     """ Corrects Spelling Of Corpus' Titles """
-
-    #     s = SpellChecker()
-    #     corrected_corpus = []
-    #     for i in self.corpus:
-    #         corrected_corpus.append(s.spell_checker(i))
-
-    #     self.corpus = corrected_corpus
-
-    # def yield_corpus(self) -> list:
-    #     """ Returns Corpus As List """
-
-    #     return self.corpus
 
 
 class SearchEngine():
@@ -113,16 +132,23 @@ class SearchEngine():
         # ONLY USED BY METRIX SERVICE
         self.colB.insert_one(
             {"_id": self.query_id, "query": self.query, "data": self.results})
-    
+
     def run_search(self) -> None:
 
-            start_time = datetime.datetime.now()
-            self.parse_stream()
-            self.rank_corpus()
-            self.format_results()
-            end_time = datetime.datetime.now() - start_time
-            self.time_taken = str(float(end_time.microseconds / 1000)) + " ms"
-            self.send_results()
+        # Start Query Timer
+        start_time = datetime.datetime.now()
+        # Collect Query From Redis Stream
+        self.parse_stream()
+        # Rank Corpus According To Query
+        self.rank_corpus()
+        # Format Most Relavant Titles From Corpus As HTML5
+        self.format_results()
+        # End Query Timer
+        end_time = datetime.datetime.now() - start_time
+        self.time_taken = str(float(end_time.microseconds / 1000)) + " ms"
+        # Return Results
+        self.send_results()
+
 
 if __name__ == "__main__":
     # Load .env Variables From File
@@ -161,7 +187,10 @@ if __name__ == "__main__":
 
     # Create Corpus
     c = Corpus(col1)
-    c = c.create_corpus()
+    c.create_corpus()
+    # c.correct_corpus()
+    # c.check_corpus()
+    c = c.yield_corpus()
 
     # Block Stream To Wait For Incomming Message
     while True:
