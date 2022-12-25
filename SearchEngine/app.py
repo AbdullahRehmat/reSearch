@@ -19,7 +19,7 @@ class Corpus():
         """ Creates Corpus Of Titles From A MongoDB Collection"""
 
         for data in self.col.find():
-            self.corpus += data["title"]
+            self.corpus.append(data["title"])
 
         return None
 
@@ -110,7 +110,7 @@ class SearchEngine():
             result = {
                 "title": title,
                 "url": data["url"],
-                "source": data["source"][0]
+                "source": data["source"]
             }
 
             self.results.append(result)
