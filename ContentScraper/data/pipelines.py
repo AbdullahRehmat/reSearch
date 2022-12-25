@@ -4,7 +4,7 @@
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 
 
-# useful for handling different item types with a single interface
+# Useful for handling different item types with a single interface
 import logging
 import pymongo
 from itemadapter import ItemAdapter
@@ -18,7 +18,8 @@ from data.spellchecker import SpellChecker
 
 class MongoPipeline(object):
 
-    collection_name = 'scrapedData'
+    # collection_name = 'scrapedData'
+    collection_name = 'scrapedDataNCS'
 
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = mongo_uri
@@ -33,8 +34,8 @@ class MongoPipeline(object):
         )
 
     def open_spider(self, spider):
-        # Initializing spider
-        # Opening DB connection
+        # Initializing Spider
+        # Opening DB Connection
         self.client = pymongo.MongoClient(self.mongo_uri)
         self.db = self.client[self.mongo_db]
 
@@ -46,17 +47,11 @@ class MongoPipeline(object):
         self.client.close()
 
     def process_item(self, item, spider):
-
-        # Item <- Dict
-        # Item["title"] <- Set
-        # Item["url"] <- Set
-        # Item["source"] <- Str
-
         # Spell Check Title
         s = SpellChecker()
-        item["title"] = [s.spell_checker(str(item["title"][0]))]
+        item["title"] = s.spell_checker(item["title"])
 
-        # Add Item to Database
+        # Add Item To Database
         self.db[self.collection_name].insert(dict(item))
         logging.debug("Post added to MongoDB")
 
