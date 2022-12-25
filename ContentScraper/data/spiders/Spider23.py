@@ -32,8 +32,8 @@ class SpiderTwentyThree(Spider):
         for data in scrapedData:
             item = DataItem()
             item['title'] = data.css(
-                'h3.mh-posts-grid-title > a::attr(title)').get(),
-            item['source'] = 'Salafi Sounds - Audio',
+                'h3.mh-posts-grid-title > a::attr(title)').get()
+            item['source'] = 'Salafi Sounds - Audio'
             item['url'] = data.css(
                 'h3.mh-posts-grid-title > a::attr(href)').get()
             yield item

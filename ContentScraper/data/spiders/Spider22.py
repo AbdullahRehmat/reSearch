@@ -19,8 +19,8 @@ class SpiderTwentyTwo(Spider):
 
         for data in scrapedData:
             item = DataItem()
-            item['title'] = data.css('a.uk-link-reset::text').get(),
-            item['source'] = 'Salafi Publications - Article',
+            item['title'] = data.css('a.uk-link-reset::text').get()
+            item['source'] = 'Salafi Publications - Article'
             item['url'] = "https://www.salafipubs.com/" + \
                 data.css('a.uk-link-reset::attr(href)').get()
             yield item
