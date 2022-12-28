@@ -57,6 +57,8 @@ class SearchEngine():
         self.query_id = s["identifier"]
         self.query = s["query"]
 
+        return None
+
     def correct_query(self) -> None:
         """ Corrects Spelling Of Query """
 
@@ -100,6 +102,8 @@ class SearchEngine():
 
             self.results.append(result)
 
+        return None
+
     def send_results(self) -> None:
         """ Sends JSON Formatted Results To API Via Redis """
 
@@ -118,6 +122,8 @@ class SearchEngine():
         self.output_col.insert_one(
             {"_id": self.query_id, "query": self.query, "data": self.results})
 
+        return None
+
     def run_search(self) -> None:
 
         # Start Query Timer
@@ -135,6 +141,8 @@ class SearchEngine():
         self.time_taken = str(float(end_time.microseconds / 1000)) + " ms"
         # Return Results
         self.send_results()
+
+        return None
 
 
 if __name__ == "__main__":
