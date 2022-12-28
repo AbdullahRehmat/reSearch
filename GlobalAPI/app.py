@@ -88,6 +88,7 @@ class ResultsAPI(Resource):
     def get(self, identifier):
         time.sleep(0.5)  # Delay Allows SearchEngine Time To Return Response
 
+        query = redis_results(identifier, "query")
         results = redis_results(identifier, "results")
         time_taken = redis_results(identifier, "time_taken")
 
@@ -97,6 +98,7 @@ class ResultsAPI(Resource):
             "status": "success",
             "identifier": identifier,
             "time_taken": time_taken,
+            "query": query,
             "results": results
         }
 
