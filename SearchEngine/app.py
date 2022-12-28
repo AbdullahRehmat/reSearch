@@ -1,4 +1,3 @@
-from cgitb import text
 import os
 import redis
 import pymongo
@@ -26,27 +25,8 @@ class Corpus():
     def correct_corpus(self) -> None:
         """ Corrects Spelling Of Corpus' Titles """
 
-        # for Title in Corpus:
-        #      Get & Correct Title
-        #      Replace Old Title With New
-
-        s = SpellChecker()
-
-        for i in self.corpus:
-            self.corrected_corpus.append(s.spell_checker(i))
-
-        return None
-
-    def check_corpus(self) -> None:
-        """ Compare Original Vs Corrected Corpus """
-
-        conn = pymongo.MongoClient(host=f"mongodb://mongo-db:27017/")
-        db3 = conn["SpellCheckerDB"]
-        col3 = db3["parity"]
-
-        diff = set(self.corpus + self.corrected_corpus)
-        for i in diff:
-            col3.insert_one({"type": "DIFF", "data": str(i)})
+        # For Title In Corpus:
+        #      Find Title & Replace With New Title
 
         return None
 
@@ -57,9 +37,9 @@ class Corpus():
 
 
 class SearchEngine():
-    def __init__(self, mongo_col_1, mongo_col_2, redis, corpus, stream_data) -> None:
-        self.colA = mongo_col_1
-        self.colB = mongo_col_2
+    def __init__(self, input_col, output_col, redis, stream_data, corpus) -> None:
+        self.input_col = input_col
+        self.output_col = output_col
         self.rdb = redis
         self.stream = stream_data
         self.corpus = corpus
@@ -77,10 +57,13 @@ class SearchEngine():
         self.query_id = s["identifier"]
         self.query = s["query"]
 
-    # def correct_query(self) -> None:
-    #     """ Corrects Spelling Of Query """
-    #     s = SpellChecker()
-    #     self.query = s.spell_checker(self.query)
+    def correct_query(self) -> None:
+        """ Corrects Spelling Of Query """
+
+        s = SpellChecker()
+        self.query = s.spell_checker(self.query)
+
+        return None
 
     def rank_corpus(self) -> None:
         """ Ranks Corpus According To Query Via BM25 """
@@ -97,13 +80,15 @@ class SearchEngine():
         self.ranked_titles = tuple(bm25.get_top_n(
             tokenized_query, self.corpus, n=self.max_results))
 
+        return None
+
     def format_results(self) -> None:
         """ Formats Result's Title, URL & Source"""
 
         for title in self.ranked_titles:
 
             # Get Title's URL & Source
-            data = self.colA.find_one({"title": title}, {
+            data = self.input_col.find_one({"title": title}, {
                 "_id": 0, "url": 1, "source": 1})
 
             # Format As JSON
@@ -130,7 +115,7 @@ class SearchEngine():
 
         # Add Results To MongoDB Col1
         # ONLY USED BY METRIX SERVICE
-        self.colB.insert_one(
+        self.output_col.insert_one(
             {"_id": self.query_id, "query": self.query, "data": self.results})
 
     def run_search(self) -> None:
@@ -139,6 +124,8 @@ class SearchEngine():
         start_time = datetime.datetime.now()
         # Collect Query From Redis Stream
         self.parse_stream()
+        # Correct Spelling Of Query
+        self.correct_query()
         # Rank Corpus According To Query
         self.rank_corpus()
         # Format Most Relavant Titles From Corpus As HTML5
@@ -151,15 +138,13 @@ class SearchEngine():
 
 
 if __name__ == "__main__":
-    # Load .env Variables From File
+    # Load Enviroment Variables
     load_dotenv()
 
-    # Redis .env Variables
     redis_host = os.getenv("REDIS_HOST")
     redis_port = os.getenv("REDIS_PORT")
     redis_password = os.getenv("REDIS_PASSWORD")
 
-    # MongoDB General Settings
     mongo_port = os.getenv("MONGO_PORT")
     mongo_host = os.getenv("MONGO_HOST")
     mongo_db_1 = os.getenv("MONGO_DB_1")
@@ -167,7 +152,7 @@ if __name__ == "__main__":
     mongo_db_2 = os.getenv("MONGO_DB_2")
     mongo_col_2 = os.getenv("MONGO_COL_2")
 
-    # Connect to Redis Streams
+    # Database Connection: Redis
     # r0 -> Incoming Query Stream
     rdb0 = redis.Redis(host=redis_host, port=redis_port,
                        password=redis_password, db=0, decode_responses=True)
@@ -176,26 +161,25 @@ if __name__ == "__main__":
     rdb1 = redis.Redis(host=redis_host, port=redis_port,
                        password=redis_password, db=1, decode_responses=True)
 
-    # Connect To MongoDB Database
+    # Database Connection: MongoDB
     conn = pymongo.MongoClient(
         host=f"mongodb://{mongo_host}:{str(mongo_port)}/")
 
-    db1 = conn[mongo_db_1]
-    col1 = db1[mongo_col_1]
-    db2 = conn[mongo_db_2]
-    col2 = db2[mongo_col_2]
+    db1 = conn[mongo_db_1]      # ContentScraperDB
+    col1 = db1[mongo_col_1]     # scrapedData
+    db2 = conn[mongo_db_2]      # SearchEngineDB
+    col2 = db2[mongo_col_2]     # returnedResults
 
     # Create Corpus
     c = Corpus(col1)
     c.create_corpus()
     # c.correct_corpus()
-    # c.check_corpus()
     c = c.yield_corpus()
 
-    # Block Stream To Wait For Incomming Message
+    # Block Redis Stream & Wait For Incoming Message
     while True:
         stream_data = rdb0.xread({'streamA': "$"}, count=1, block=0)
 
         if stream_data != {}:
-            s = SearchEngine(col1, col2, rdb1, c, stream_data)
+            s = SearchEngine(col1, col2, rdb1, stream_data, c)
             s.run_search()
