@@ -15,7 +15,7 @@ class Corpus():
         self.corrected_corpus = []
 
     def create_corpus(self) -> None:
-        """ Creates Corpus Of Titles From A MongoDB Collection"""
+        """ Creates Corpus Of Titles From MongoDB Collection"""
 
         for data in self.col.find():
             self.corpus.append(data["title"])
@@ -31,7 +31,7 @@ class Corpus():
         return None
 
     def yield_corpus(self) -> list:
-        """ Returns Corpus As List """
+        """ Returns Corpus As List Of Titles """
 
         return self.corpus
 
@@ -51,7 +51,7 @@ class SearchEngine():
         self.time_taken = None
 
     def parse_stream(self) -> None:
-        """ Parses Information From Redis Stream Message """
+        """ Parses Redis Stream Message """
 
         s = self.stream[0][1][0][1]
         self.query_id = s["identifier"]
@@ -68,7 +68,7 @@ class SearchEngine():
         return None
 
     def rank_corpus(self) -> None:
-        """ Ranks Corpus According To Query Via BM25 """
+        """ Ranks Corpus According To Query"""
 
         # Convert Query To Upper Case To Improve Search Results
         query = self.query.title()
@@ -125,6 +125,7 @@ class SearchEngine():
         return None
 
     def run_search(self) -> None:
+        """ Runs Complete Search & Times Functions """
 
         # Start Query Timer
         start_time = datetime.datetime.now()

@@ -48,12 +48,16 @@ col2 = db_2[mongo_col_2]
 
 
 def redis_results(identifier, id):
+    """ Collects Results From Redis  """
+
     data = r1.json().get(str("id:" + identifier), JPath("." + id))
 
     return data
 
 
 def mongo_results(identifier):
+    """ Collects Results From MongoDB """
+
     for i in col1.find({"_id": identifier}):
         data = i['data'][0]
 
@@ -61,7 +65,7 @@ def mongo_results(identifier):
 
 
 class QueryAPI(Resource):
-    """ Function Receives Query from Client """
+    """ Receives Query From Client """
 
     def post(self):
         parser = reqparse.RequestParser()
@@ -83,10 +87,10 @@ class QueryAPI(Resource):
 
 
 class ResultsAPI(Resource):
-    """ Function Collects Results From Redis And Returns Them To Client """
+    """ Returns Results From Redis """
 
     def get(self, identifier):
-        time.sleep(0.5)  # Delay Allows SearchEngine Time To Return Response
+        time.sleep(0.5)  # Allows SearchEngine Time To Return Response
 
         query = redis_results(identifier, "query")
         results = redis_results(identifier, "results")
@@ -106,7 +110,7 @@ class ResultsAPI(Resource):
 
 
 class Metrix(Resource):
-    """ Function Collects Usage Statistics From MongoDB And Returns Them To Client """
+    """ Returns MongoDB Usage Statistics """
 
     def get(self):
         # Get Statistics from Databases
@@ -129,7 +133,7 @@ class Metrix(Resource):
         return response, 200
 
 
-# Create routes
+# Create Routes
 api.add_resource(QueryAPI, "/api/v1/query")
 api.add_resource(ResultsAPI, "/api/v1/results/<identifier>")
 api.add_resource(Metrix, "/api/v1/metrix")
