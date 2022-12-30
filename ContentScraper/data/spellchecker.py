@@ -15,7 +15,7 @@ class SpellChecker:
         self.wordlist = data["dictionary"]
 
     def strip_punctuation(self, text: str) -> str:
-        punctuation = "!#$%'*+,./;<=>?@[\]^_`{|}~"
+        punctuation = "!#$%'*+,./;<=>?@[\]^_`{|}~()"
         new_text = text.translate(str.maketrans("", "", punctuation))
 
         return new_text
@@ -66,7 +66,7 @@ class SpellChecker:
 
 if __name__ == "__main__":
 
-    print("Running Library As Stand-Alone File...")
+    print("Library Running In TEST MODE...")
     input_text = input("Enter Text: ")
 
     s = SpellChecker()
