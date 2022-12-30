@@ -9,18 +9,24 @@ class SpellChecker:
         self.wordlist = {}
 
     def _load_wordlist(self) -> None:
+        """ Loads JSON Wordlist From Local Directory """
+
         path = os.path.join(os.path.dirname(__file__), self.wl_addr)
         file = open(path)
         data = json.load(file)
         self.wordlist = data["dictionary"]
 
     def strip_punctuation(self, text: str) -> str:
+        """ Strips Excess Punctuation """
+
         punctuation = "!#$%'*+,./;<=>?@[\]^_`{|}~()"
         new_text = text.translate(str.maketrans("", "", punctuation))
 
         return new_text
 
     def strip_accents(self, text: str) -> str:
+        """ Strips Accent Marks From Letters """
+
         nfkd_form = unicodedata.normalize("NFKD", text)
         ascii_form = nfkd_form.encode("ASCII", "ignore")
         new_text = str(ascii_form.decode("utf-8"))
@@ -28,6 +34,8 @@ class SpellChecker:
         return new_text
 
     def format_spaces(self, text: str) -> str:
+        """ Removes Double Spaces """
+
         if "  " in text:
             new_text = text.replace("  ", " ")
             return new_text
@@ -36,6 +44,8 @@ class SpellChecker:
             return text
 
     def fix_spelling(self, text: str) -> str:
+        """ Correct Spelling In Accordance To Provided Wordlist """
+
         self._load_wordlist()
 
         for k, v in self.wordlist.items():
@@ -52,6 +62,7 @@ class SpellChecker:
             return text
 
     def spell_checker(self, text: str) -> str:
+        """ Runs All Functions On Provided Text """
 
         if type(text) != str:
             return str(text)
