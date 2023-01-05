@@ -18,11 +18,12 @@ class Corpus():
 
         s = SpellChecker()
 
+        # Collect Title From Col & Append To Corpus
         for data in self.col.find():
             self.corpus.append(data["title"])
 
         for title in self.corpus:
-            new_title = s.spell_checker(title)
+            new_title = s.run_spell_checker(title)
 
             if new_title == title:
                 pass
@@ -39,6 +40,9 @@ class Corpus():
     def create_corpus(self) -> None:
         """ Creates Corpus Of Titles From MongoDB Collection"""
 
+        # Empty Corpus
+        self.corpus = []
+
         for data in self.col.find():
             self.corpus.append(data["title"])
 
@@ -51,33 +55,20 @@ class Corpus():
 
 
 class SearchEngine():
-    def __init__(self, input_col, output_col, redis, stream_data, corpus) -> None:
-        self.input_col = input_col
-        self.output_col = output_col
-        self.rdb = redis
-        self.stream = stream_data
+    def __init__(self, mongo_col, corpus, identifier, query) -> None:
+        self.mongo_col = mongo_col
+        self.identifier = identifier
+        self.query = query
         self.corpus = corpus
-        self.query_id = ""
-        self.query = ""
-        self.max_results = 50       # Number Of Results Returned
-        self.ranked_titles = ()
+        self.max_results = 45           # Number Of Results Returned
+        self.ranked_corpus = ()
         self.results = []
-        self.time_taken = None
-
-    def parse_stream(self) -> None:
-        """ Parses Redis Stream Message """
-
-        s = self.stream[0][1][0][1]
-        self.query_id = s["identifier"]
-        self.query = s["query"]
-
-        return None
 
     def correct_query(self) -> None:
         """ Corrects Spelling Of Query """
 
         s = SpellChecker()
-        self.query = s.spell_checker(self.query)
+        self.query = s.run_spell_checker(self.query)
 
         return None
 
@@ -92,20 +83,20 @@ class SearchEngine():
         tokenized_corpus = [title.split(" ") for title in self.corpus]
         bm25 = BM25Plus(tokenized_corpus)
 
-        # Return Set Number Of Most Relevant Titles
-        self.ranked_titles = tuple(bm25.get_top_n(
-            tokenized_query, self.corpus, n=self.max_results))
+        # Return n Most Relevant Titles
+        self.ranked_corpus = tuple(bm25.get_top_n(
+            tokenized_query, self.corpus, self.max_results))
 
         return None
 
     def format_results(self) -> None:
-        """ Formats Result's Title, URL & Source"""
+        """ Formats Result's Title, URL & Source As Valid HTML5"""
 
-        for title in self.ranked_titles:
+        for title in self.ranked_corpus:
 
             # Get Title's URL & Source
-            data = self.input_col.find_one({"title": title}, {
-                "_id": 0, "url": 1, "source": 1})
+            data = self.mongo_col.find_one(
+                {"title": title}, {"_id": 0, "url": 1, "source": 1})
 
             # Format As JSON
             result = {
@@ -118,46 +109,19 @@ class SearchEngine():
 
         return None
 
-    def send_results(self) -> None:
-        """ Sends JSON Formatted Results To API Via Redis """
+    def yield_results(self, time_taken: int) -> dict:
+        """ Returns Results Dict As Valid JSON """
+
+        time_taken = str(round(float(time_taken / 1000), 2)) + " ms"
 
         results = {
-            "id": self.query_id,
+            "id": self.identifier,
             "query": self.query,
-            "time_taken": self.time_taken,
+            "time_taken": time_taken,
             "results": self.results
         }
 
-        # Return Results To API Via REDIS DB1
-        self.rdb.json().set(str("id:" + self.query_id), JPath.rootPath(), results)
-
-        # Add Results To MongoDB Col1
-        # ONLY USED BY METRIX SERVICE
-        self.output_col.insert_one(
-            {"_id": self.query_id, "query": self.query, "data": self.results})
-
-        return None
-
-    def run_search(self) -> None:
-        """ Runs Complete Search & Times Functions """
-
-        # Start Query Timer
-        start_time = datetime.datetime.now()
-        # Collect Query From Redis Stream
-        self.parse_stream()
-        # Correct Spelling Of Query
-        self.correct_query()
-        # Rank Corpus According To Query
-        self.rank_corpus()
-        # Format Most Relavant Titles From Corpus As HTML5
-        self.format_results()
-        # End Query Timer
-        end_time = datetime.datetime.now() - start_time
-        self.time_taken = str(float(end_time.microseconds / 1000)) + " ms"
-        # Return Results
-        self.send_results()
-
-        return None
+        return results
 
 
 if __name__ == "__main__":
@@ -195,14 +159,40 @@ if __name__ == "__main__":
 
     # Create Corpus
     c = Corpus(col1)
-    c.correct_titles()
-    c.create_corpus()
-    c = c.yield_corpus()
+    c.correct_titles()          # Standardise Spelling Of All Titles
+    c.create_corpus()           # Create Corpus Of Titles
+    c = c.yield_corpus()        # Return Corpus
 
-    # Block Redis Stream & Wait For Incoming Message
+    # Block Redis Stream Until Message Arrives
     while True:
-        stream_data = rdb0.xread({'streamA': "$"}, count=1, block=0)
+        stream = rdb0.xread({'streamA': "$"}, count=1, block=0)
 
-        if stream_data != {}:
-            s = SearchEngine(col1, col2, rdb1, stream_data, c)
-            s.run_search()
+        if stream != {}:
+
+            # Parse Stream Data
+            identifier = stream[0][1][0][1]["identifier"]
+            query = stream[0][1][0][1]["query"]
+
+            # Start Query Timer
+            start_time = datetime.datetime.now()
+
+            # Call Search Engine
+            s = SearchEngine(col1, c, identifier, query)
+
+            s.correct_query()       # Standardise Query Spelling
+            s.rank_corpus()         # Rank Corpus According To Query
+            s.format_results()      # Format Results As JSON
+
+            # Calculate Time Taken
+            time_taken = datetime.datetime.now() - start_time
+
+            # Provide Time Taken & Collect Results
+            results = s.yield_results(time_taken.microseconds)
+
+            # Return Results To API
+            rdb1.json().set(str("id:" + identifier), JPath.rootPath(), results)
+
+            # Add Results To MongoDB Collection
+            # ONLY USED BY METRIX SERVICE
+            col2.insert_one(
+                {"_id": identifier, "query": query, "data": results})
