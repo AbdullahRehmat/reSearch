@@ -1,0 +1,20 @@
+TASK LIST: reSearch
+	
+	- Optimise Program Code
+	- Move SpellChecker() to SearchEngine Microservice
+	- Scrape All Sites For Last Time
+	- Identifiers Reset On Restart
+
+	-----------------------------------------------------------------
+	
+	Collection:	scrapedData		-> 3810 Articles Scraped & Stored
+	
+	-----------------------------------------------------------------
+	
+	MongoDB
+	
+			SearchEngineDB
+			ContentScraperDB
+							scrapedData		-> [Title + URL + Source]
+							
+	-----------------------------------------------------------------
