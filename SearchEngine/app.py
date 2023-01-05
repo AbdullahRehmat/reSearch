@@ -1,10 +1,10 @@
 import os
 import redis
 import pymongo
+import datetime
 from dotenv import load_dotenv
 from rank_bm25 import BM25Plus
 from redis.commands.json.path import Path as JPath
-import datetime
 from spellchecker import SpellChecker
 
 
@@ -12,21 +12,35 @@ class Corpus():
     def __init__(self, mongo_col) -> None:
         self.col = mongo_col
         self.corpus = []
-        self.corrected_corpus = []
+
+    def correct_titles(self) -> None:
+        """ Corrects Spelling Of Titles In MongoDB Col """
+
+        s = SpellChecker()
+
+        for data in self.col.find():
+            self.corpus.append(data["title"])
+
+        for title in self.corpus:
+            new_title = s.spell_checker(title)
+
+            if new_title == title:
+                pass
+
+            else:
+                self.col.update_one({"title": title}, {
+                                    "$set": {"title": new_title}})
+
+        # Empty Corpus
+        self.corpus = []
+
+        return None
 
     def create_corpus(self) -> None:
         """ Creates Corpus Of Titles From MongoDB Collection"""
 
         for data in self.col.find():
             self.corpus.append(data["title"])
-
-        return None
-
-    def correct_corpus(self) -> None:
-        """ Corrects Spelling Of Corpus' Titles """
-
-        # For Title In Corpus:
-        #      Find Title & Replace With New Title
 
         return None
 
@@ -181,8 +195,8 @@ if __name__ == "__main__":
 
     # Create Corpus
     c = Corpus(col1)
+    c.correct_titles()
     c.create_corpus()
-    # c.correct_corpus()
     c = c.yield_corpus()
 
     # Block Redis Stream & Wait For Incoming Message

@@ -9,7 +9,6 @@ import logging
 import pymongo
 from itemadapter import ItemAdapter
 from scrapy.http.request.form import _urlencode
-from data.spellchecker import SpellChecker
 
 # class DataPipeline:
 #    def process_item(self, item, spider):
@@ -46,10 +45,6 @@ class MongoPipeline(object):
         self.client.close()
 
     def process_item(self, item, spider):
-        # Spell Check Title
-        s = SpellChecker()
-        item["title"] = s.spell_checker(item["title"])
-
         # Add Item To Database
         self.db[self.collection_name].insert(dict(item))
         logging.debug("Post added to MongoDB")
