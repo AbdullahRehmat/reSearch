@@ -1,9 +1,9 @@
 import requests
 
-id_start = 31000
-id_end = 32000
+id_start = int(input("Enter Start ID [str]: "))
+id_end = id_start + 500
 
-url_go_api = "localhost:5000/api/v1/query"
+url_go_api = "http://localhost:5000/api/v1/query"
 url_global_api = "localhost:8000/api/v1/query"
 
 
