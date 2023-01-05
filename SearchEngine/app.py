@@ -59,7 +59,7 @@ class SearchEngine():
         self.corpus = corpus
         self.query_id = ""
         self.query = ""
-        self.max_results = 30
+        self.max_results = 50       # Number Of Results Returned
         self.ranked_titles = ()
         self.results = []
         self.time_taken = None
