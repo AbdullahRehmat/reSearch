@@ -1,4 +1,13 @@
 {
+  "version": "1.0.0",
+  "author": "Abdullah Rehmat",
+  "last_updated": "06-01-2023",
+
+  "rules": {
+    "1": "Dictionary Keys = Correctly Spelled Word In Uppercase",
+    "2": "Dictionary Values = Incorrectly Spelled Versions Of Key In Lowercase"
+  },
+
   "dictionary": {
     "Allah": ["allah", "allaah"],
     "Abi": ["abee"],
