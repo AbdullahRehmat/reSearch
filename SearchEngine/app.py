@@ -109,15 +109,15 @@ class SearchEngine():
 
         return None
 
-    def yield_results(self, time_taken: int) -> dict:
+    def yield_results(self, time_taken_ms: int) -> dict:
         """ Returns Results Dict As Valid JSON """
 
-        time_taken = str(round(float(time_taken / 1000), 2)) + " ms"
+        time_taken_ms = str(round(float(time_taken_ms / 1000), 2)) + " ms"
 
         results = {
             "id": self.identifier,
             "query": self.query,
-            "time_taken": time_taken,
+            "time_taken": time_taken_ms,
             "results": self.results
         }
 
@@ -184,10 +184,10 @@ if __name__ == "__main__":
             s.format_results()      # Format Results As JSON
 
             # Calculate Time Taken
-            time_taken = datetime.datetime.now() - start_time
+            time_taken_ms = datetime.datetime.now() - start_time
 
             # Provide Time Taken & Collect Results
-            results = s.yield_results(time_taken.microseconds)
+            results = s.yield_results(time_taken_ms.microseconds)
 
             # Return Results To API
             rdb1.json().set(str("id:" + identifier), JPath.rootPath(), results)
