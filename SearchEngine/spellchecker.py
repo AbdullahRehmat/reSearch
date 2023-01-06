@@ -5,19 +5,19 @@ import unicodedata
 
 class SpellChecker:
     def __init__(self) -> None:
-        self.wl_addr = "wordlist.json"
+        self.wl_file = "wordlist.json"
         self.wordlist = {}
 
     def _load_wordlist(self) -> None:
         """ Loads JSON Wordlist From Local Directory """
 
-        path = os.path.join(os.path.dirname(__file__), self.wl_addr)
+        path = os.path.join(os.path.dirname(__file__), self.wl_file)
         file = open(path)
         data = json.load(file)
         self.wordlist = data["dictionary"]
 
     def strip_punctuation(self, text: str) -> str:
-        """ Strips Excess Punctuation """
+        """ Removes Excess Punctuation """
 
         punctuation = "!#$%'*+,./;<=>?@[\]^_`{|}~()"
         new_text = text.translate(str.maketrans("", "", punctuation))
@@ -25,7 +25,7 @@ class SpellChecker:
         return new_text
 
     def strip_accents(self, text: str) -> str:
-        """ Strips Accent Marks From Letters """
+        """ Removes Accent Marks From Letters """
 
         nfkd_form = unicodedata.normalize("NFKD", text)
         ascii_form = nfkd_form.encode("ASCII", "ignore")
@@ -34,19 +34,29 @@ class SpellChecker:
         return new_text
 
     def format_spaces(self, text: str) -> str:
-        """ Removes Double Spaces """
+        """ Removes Double, Leading & Trailing Spaces """
 
+        # Remove Double Spaces
         if "  " in text:
-            new_text = text.replace("  ", " ")
-            return new_text
+            text = text.replace("  ", " ")
 
         else:
-            return text
+            pass
+
+        # Remove Leading & Trailing Spaces
+        new_text = text.strip()
+
+        return new_text
 
     def fix_spelling(self, text: str) -> str:
         """ Correct Spelling In Accordance To Provided Wordlist """
 
+        # Loads JSON Wordlist File Into Memory
         self._load_wordlist()
+
+        # k = correctly spelled word
+        # v = list of incorrectly spelled versions of "k"
+        # i = iterate through list "v"
 
         for k, v in self.wordlist.items():
             for i in v:
