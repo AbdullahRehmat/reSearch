@@ -1,7 +1,7 @@
 import os
+import time
 import redis
 import pymongo
-import datetime
 from dotenv import load_dotenv
 from rank_bm25 import BM25Plus
 from redis.commands.json.path import Path as JPath
@@ -33,7 +33,7 @@ class Corpus():
                                     "$set": {"title": new_title}})
 
         # Empty Corpus
-        self.corpus = []
+        del self.corpus[:]
 
         return None
 
@@ -41,7 +41,7 @@ class Corpus():
         """ Creates Corpus Of Titles From MongoDB Collection"""
 
         # Empty Corpus
-        self.corpus = []
+        del self.corpus[:]
 
         for data in self.col.find():
             self.corpus.append(data["title"])
@@ -112,7 +112,7 @@ class SearchEngine():
     def yield_results(self, time_taken_ms: int) -> dict:
         """ Returns Results Dict As Valid JSON """
 
-        time_taken_ms = str(round(float(time_taken_ms / 1000), 2)) + " ms"
+        time_taken_ms = str(round(time_taken_ms, 2)) + " ms"
 
         results = {
             "id": self.identifier,
@@ -174,7 +174,7 @@ if __name__ == "__main__":
             query = stream[0][1][0][1]["query"]
 
             # Start Query Timer
-            start_time = datetime.datetime.now()
+            start_time = time.perf_counter()
 
             # Call Search Engine
             s = SearchEngine(col1, c, identifier, query)
@@ -183,11 +183,11 @@ if __name__ == "__main__":
             s.rank_corpus()         # Rank Corpus According To Query
             s.format_results()      # Format Results As JSON
 
-            # Calculate Time Taken
-            time_taken_ms = datetime.datetime.now() - start_time
+            # Calculate Time Taken In Milliseconds
+            time_taken_ms = (time.perf_counter() - start_time) * 1000
 
             # Provide Time Taken & Collect Results
-            results = s.yield_results(time_taken_ms.microseconds)
+            results = s.yield_results(time_taken_ms)
 
             # Return Results To API
             rdb1.json().set(str("id:" + identifier), JPath.rootPath(), results)
