@@ -71,7 +71,7 @@ class SpellChecker:
         else:
             return text
 
-    def spell_checker(self, text: str) -> str:
+    def run_spell_checker(self, text: str) -> str:
         """ Runs All Functions On Provided Text """
 
         if type(text) != str:
@@ -91,5 +91,5 @@ if __name__ == "__main__":
     input_text = input("Enter Text: ")
 
     s = SpellChecker()
-    corrected_text = s.spell_checker(input_text)
+    corrected_text = s.run_spell_checker(input_text)
     print("Corrected Text: " + corrected_text)
