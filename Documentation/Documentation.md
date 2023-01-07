@@ -5,13 +5,15 @@
 ## User Guide
 
 - Install [Docker-Compose](https://docs.docker.com/compose/)
-- Execute `./start.sh` and view Web Interface `http://localhost`
+
+- Download Latest Release
+- Create Sub-Directory `./MongoDB`
+- Execute `./start.sh`
+- View Web Interface At: `http://localhost/index`
 
 
 
-## Services
-
-### NGINX
+## NGINX
 
 - NGINX + Gunicorn
 
@@ -19,7 +21,7 @@
 
 
 
-### Website
+## Website
 
 User Web Interface
 
@@ -34,57 +36,21 @@ User Web Interface
 
 
 
-### Global API
 
-- Handles Communication between Front and Backend
-- Original API written in Python
+## Search Engine
 
-
-
-### Go API
-
-- Handles Communication between Front and Backend
-
-- `GlobalAPI` alternative written in Go
-
-
-
-### Redis API
-
-- Redis + RedisJSON Module + Streams
-
-- Handles Backend Inter-Service Communication
+- Ranks a corpus of titles according to the incoming query using BM25 and returns them to the API via Redis Streams
 
 
 
 
-### Search Engine
+## Content Scraper
 
-- Ranks stored data according to Query and returns results to `Global API` via **Stream-B**
-
-
-
-
-### Content Scraper
-
-- Scrapes listed sites, collects required data & stores it in the `MongoCS` Database
+- Scrapes listed sites, collects required data & stores it in MongoDB
 
 
 
-## Docs: GlobalAPI
-
-Python (`Flask`) based API Communication between Frontend and Backend Services. 
-Format = JSON
-
-### Routes
-
-- POST `/api/v1/query` - Send query to `SearchEngine` Service
-- GET `/api/v1/results` - Retrieves Results from `SearchEngine` Service as JSON
-- GET `/api/v1/metrix` - Retrieves `SearchEngine` usage statistics
-
-
-
-## Docs: GoAPI
+## GoAPI
 
 GoLang (`gorilla/mux`) based API for communication between Frontend & Backend Services. 
 Format = JSON
@@ -97,7 +63,22 @@ Format = JSON
 
 
 
-## Docs: Redis
+## GlobalAPI
+
+Python (`Flask`) based API Communication between Frontend and Backend Services. 
+Format = JSON
+
+### Routes
+
+- POST `/api/v1/query` - Send query to `SearchEngine` Service
+- GET `/api/v1/results` - Retrieves Results from `SearchEngine` Service as JSON
+- GET `/api/v1/metrix` - Retrieves `SearchEngine` usage statistics
+
+
+
+## Redis
+
+Redis Database with RedisJSON module. Allows for communication between `SearchEngine` & API's
 
 ### DB 0
 
@@ -113,7 +94,7 @@ Format = JSON
 
 
 
-## Docs: MongoDB
+## MongoDB
 
 ### ContentScraperDB
 
