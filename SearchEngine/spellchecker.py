@@ -1,3 +1,9 @@
+"""
+    Basic Spell Checker & Punctuation Stripper
+    Used To Standarise Spelling According To 
+    Provided JSON Dictionary.
+"""
+
 import os
 import json
 import unicodedata

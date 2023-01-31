@@ -1,3 +1,9 @@
+"""
+    BM25 Based Search Engine Microservice That Ranks
+    Corpus According To Latest Query Recieved Via Redis
+    Streams.
+"""
+
 import os
 import time
 import redis

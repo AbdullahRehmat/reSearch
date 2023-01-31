@@ -1,3 +1,9 @@
+"""
+    Flask Based API That Forwards Incoming Query's To 
+    The SearchEngine  Microservice & Returns Corresponding 
+    Results As Valid JSON.
+"""
+
 import os
 import time
 import redis
