@@ -3,15 +3,13 @@ import time
 import redis
 import pymongo
 from dotenv import load_dotenv
-from flask import Flask
-from flask_restful import Resource, Api, reqparse
+from flask import Flask, request
 from redis.commands.json.path import Path as JPath
 
-# Init Flask & API
+# Initialise Flask App
 app = Flask(__name__)
-api = Api(app)
 
-# Load ENV Variables
+# Load Enviroment Variables
 load_dotenv()
 
 # API Information
@@ -31,14 +29,14 @@ mongo_col_1 = os.getenv("MONGO_COL_1")
 mongo_db_2 = os.getenv("MONGO_DB_2")
 mongo_col_2 = os.getenv("MONGO_COL_2")
 
-# Redis Streams
+# Database Connection: Redis Streams
 r0 = redis.Redis(host=redis_host, port=redis_port,
                  password=redis_password, db=0, decode_responses=True)
 
 r1 = redis.Redis(host=redis_host, port=redis_port,
                  password=redis_password, db=1, decode_responses=True)
 
-# Connect to MongoSE Database
+# Database Connection: MongoDB
 conn = pymongo.MongoClient(
     host='mongodb://' + mongo_host + ':' + str(mongo_port) + '/')
 db_1 = conn[mongo_db_1]
@@ -48,7 +46,7 @@ col2 = db_2[mongo_col_2]
 
 
 def redis_results(identifier, id):
-    """ Collects Results From Redis  """
+    """ Collects Results As JSON From Redis  """
 
     data = r1.json().get(str("id:" + identifier), JPath("." + id))
 
@@ -56,42 +54,111 @@ def redis_results(identifier, id):
 
 
 def mongo_results(identifier):
-    """ Collects Results From MongoDB """
+    """ Collects Results As JSON From MongoDB """
 
     for i in col1.find({"_id": identifier}):
         data = i['data'][0]
 
     return data
 
+# Define API Routes
 
-class QueryAPI(Resource):
-    """ Receives Query From Client """
 
-    def post(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('identifier', required=True)
-        parser.add_argument('query', required=True)
-        args = parser.parse_args()
+@app.route("/")
+def index():
+    """ Provides API Usage Information """
 
-        # Sends Message: API -> Stream -> SearchEngine
-        r0.xadd('streamA', fields=args)
+    #
+    # NEEDS TO BE IMPLEMENTED!
+    #
+
+    response = "reSearch Service: GlobalAPI - Version " + str(api_version)
+
+    return response, 200
+
+
+@app.route("/api/v1/query", methods=["POST"])
+def api_query():
+    """ Receives Query From Client & Sends To SearchEngine"""
+
+    identifier = request.json.get("identifier")
+    query = request.json.get("query")
+
+    if identifier == None and query == None:
 
         response = {
             "api": api_name,
             "version": api_version,
-            "status": "success",
-            "data": args
+            "status": "ERROR: Identifier & Query Missing"
         }
 
-        return response, 202
+        status_code = 400
+
+    elif identifier == None:
+
+        response = {
+            "api": api_name,
+            "version": api_version,
+            "status": "ERROR: No Idenfitifer"
+        }
+
+        status_code = 400
+
+    elif query == None:
+
+        response = {
+            "api": api_name,
+            "version": api_version,
+            "status": "ERROR: No Query",
+        }
+
+        status_code = 400
+
+    else:
+        status = "SUCCESS"
+        status_code = 202
+
+        data = {
+            "identifier": identifier,
+            "query": query
+        }
+
+        # Send Query: API -> Redis Stream -> SearchEngine
+        r0.xadd("streamA", fields=data)
+
+        response = {
+            "api": api_name,
+            "version": api_version,
+            "status": status,
+            "data": data
+        }
+
+    return response, status_code
 
 
-class ResultsAPI(Resource):
-    """ Returns Results From Redis """
+@app.route("/api/v1/results/<identifier>", methods=["GET"])
+def api_results(identifier):
+    """ Returns Results As JSON Provided Identifier Is Valid """
 
-    def get(self, identifier):
-        time.sleep(0.5)  # Allows SearchEngine Time To Return Response
+    if identifier == None:
+        status = "ERROR: No Identifier"
+        status_code = 400
 
+        response = {
+            "api": api_name,
+            "version": api_version,
+            "status": status
+        }
+
+    else:
+        status = "SUCCESS"
+        status_code = 200
+
+        # Allow SearchEngine Time To Process Query
+        time.sleep(0.5)
+
+        # Fetch Results From Redis
+        # REFACTOR: CALL redis_results ONCE THEN PARSE DATA
         query = redis_results(identifier, "query")
         results = redis_results(identifier, "results")
         time_taken = redis_results(identifier, "time_taken")
@@ -99,41 +166,35 @@ class ResultsAPI(Resource):
         response = {
             "api": api_name,
             "version": api_version,
-            "status": "success",
+            "status": status,
             "identifier": identifier,
             "time_taken": time_taken,
             "query": query,
             "results": results
         }
 
-        return response, 200
+    return response, status_code
 
 
-class Metrix(Resource):
-    """ Returns MongoDB Usage Statistics """
+@app.route("/api/v1/metrix", methods=["GET"])
+def api_metrix():
+    """ Returns Search Engine Usage Statistics """
 
-    def get(self):
-        # Get Statistics from Databases
-        db1Count = col1.estimated_document_count()
-        db2Count = col2.estimated_document_count()
-        db3Count = r1.dbsize()
+    # Get Statistics From Databases
+    db1Count = col1.estimated_document_count()
+    db2Count = col2.estimated_document_count()
+    db3Count = r1.dbsize()
 
-        # Format Statistics
-        response = {
-            "api": api_name,
-            "version": api_version,
-            "status": "success",
-            "data": {
-                "totalQueries": db1Count,
-                "totalArticles": db2Count,
-                "liveQueries": db3Count
-            }
+    # Format Statistics
+    response = {
+        "api": api_name,
+        "version": api_version,
+        "status": "success",
+        "data": {
+            "totalQueries": db1Count,
+            "totalArticles": db2Count,
+            "liveQueries": db3Count
         }
+    }
 
-        return response, 200
-
-
-# Create Routes
-api.add_resource(QueryAPI, "/api/v1/query")
-api.add_resource(ResultsAPI, "/api/v1/results/<identifier>")
-api.add_resource(Metrix, "/api/v1/metrix")
+    return response, 200
