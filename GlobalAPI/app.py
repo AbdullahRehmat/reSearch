@@ -3,11 +3,12 @@ import time
 import redis
 import pymongo
 from dotenv import load_dotenv
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from redis.commands.json.path import Path as JPath
 
 # Initialise Flask App
 app = Flask(__name__)
+app.config['JSON_SORT_KEYS'] = False
 
 # Load Enviroment Variables
 load_dotenv()
@@ -62,9 +63,8 @@ def mongo_results(identifier):
     return data
 
 # Define API Routes
-
-
-@app.route("/")
+@app.route("/api/v1/")
+@app.route("/api/v1/docs")
 def index():
     """ Provides API Usage Information """
 
@@ -133,7 +133,7 @@ def api_query():
             "data": data
         }
 
-    return response, status_code
+    return jsonify(response), status_code
 
 
 @app.route("/api/v1/results/<identifier>", methods=["GET"])
@@ -173,7 +173,7 @@ def api_results(identifier):
             "results": results
         }
 
-    return response, status_code
+    return jsonify(response), status_code
 
 
 @app.route("/api/v1/metrix", methods=["GET"])
