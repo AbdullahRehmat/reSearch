@@ -17,3 +17,24 @@ TASK LIST: reSearch
 							scrapedData		-> [Title + URL + Source]
 							
 	-----------------------------------------------------------------
+  
+	API POST Request: 
+		
+		URL: 
+			
+			/api/v1/query
+	
+		JSON Payload: 
+
+			{
+				"identifier": "2006",
+				"query": "What is Islam?"
+			}
+
+	API GET Request: 
+		
+		URL:
+			
+			/api/v1/results/<identifier>
+
+
