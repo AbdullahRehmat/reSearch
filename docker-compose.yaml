@@ -39,13 +39,13 @@ services:
   #  depends_on:
   #    - mongo-db
 
-  global-api:
-    hostname: global-api
-    container_name: GlobalAPI
-    build: ./GlobalAPI
+  py-api:
+    hostname: py-api
+    container_name: PyAPI
+    build: ./PyAPI
     restart: unless-stopped
     volumes:
-      - ./GlobalAPI:/usr/src/app
+      - ./PyAPI:/usr/src/app
     networks:
       - frontend
       - backend
@@ -82,7 +82,7 @@ services:
       - backend
     depends_on:
       - redis-api
-      - global-api
+      - py-api
       - go-api
       - mongo-db
 
@@ -96,7 +96,7 @@ services:
     expose:
       - "8000"
     depends_on:
-      - global-api
+      - py-api
       - go-api
 
   nginx:
