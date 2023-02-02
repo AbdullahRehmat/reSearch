@@ -1,5 +1,5 @@
 """
-    Flask Based API That Forwards Incoming Query's To 
+    Flask Based REST API That Forwards Incoming Query's To 
     The SearchEngine  Microservice & Returns Corresponding 
     Results As Valid JSON.
 """
@@ -80,7 +80,8 @@ def index():
     # NEEDS TO BE IMPLEMENTED!
     #
 
-    response = "reSearch Service: GlobalAPI - Version " + str(api_version)
+    response = "reSearch Service: PyAPI - Version " + \
+        str(api_version) + " <br/> Documentation Coming Soon..."
 
     return response, 200
 
@@ -188,21 +189,20 @@ def api_results(identifier):
 def api_metrix():
     """ Returns Search Engine Usage Statistics """
 
-    # Get Statistics From Databases
+    # Fetch Statistics From Databases
     db1Count = col1.estimated_document_count()
     db2Count = col2.estimated_document_count()
     db3Count = r1.dbsize()
 
-    # Format Statistics
     response = {
         "api": api_name,
         "version": api_version,
-        "status": "success",
+        "status": "SUCCESS",
         "data": {
-            "liveQueries": db3Count,
-            "totalQueries": db1Count,
-            "totalArticles": db2Count
+            "liveQueries": db3Count,    # Queries That Have Not Timed Out
+            "totalQueries": db1Count,   # Number Of Queries Processed By SearchEngine
+            "totalArticles": db2Count   # Size Of SearchEngine Corpus
         }
     }
 
-    return response, 200
+    return jsonify(response), 200
