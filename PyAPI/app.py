@@ -72,7 +72,6 @@ def mongo_results(identifier):
 
 
 @app.route("/api/v1/")
-@app.route("/api/v1/docs")
 def index():
     """ Provides API Usage Information """
 
@@ -81,7 +80,7 @@ def index():
     #
 
     response = "reSearch Service: PyAPI - Version " + \
-        str(api_version) + " <br/> Documentation Coming Soon..."
+        str(api_version) + " <br/> https://github.com/AbdullahRehmat/reSearch/blob/main/Documentation/Documentation.md"
 
     return response, 200
 
