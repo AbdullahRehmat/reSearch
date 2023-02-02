@@ -18,8 +18,8 @@ services:
 
   redis:
     hostname: redis
-    container_name: RedisAPI
-    build: ./RedisAPI
+    container_name: Redis
+    build: ./Redis
     restart: unless-stopped
     networks:
       - backend
