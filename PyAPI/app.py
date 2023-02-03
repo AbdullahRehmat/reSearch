@@ -176,8 +176,8 @@ def api_results(identifier):
             "version": api_version,
             "status": status,
             "identifier": identifier,
-            "time_taken": time_taken,
             "query": query,
+            "time_taken": time_taken,
             "results": results
         }
 

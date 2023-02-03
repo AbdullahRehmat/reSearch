@@ -140,7 +140,7 @@ func queryAPI(w http.ResponseWriter, r *http.Request) {
 	response := queryResponse{
 		API:     APIName,
 		Version: APIVersion,
-		Status:  "success",
+		Status:  "SUCCESS",
 		Data:    responseData,
 	}
 
@@ -159,6 +159,7 @@ type resultsResponse struct {
 	Version    string        `json:"version"`
 	Status     string        `json:"status"`
 	Identifier string        `json:"identifier"`
+	Query      string        `json:"query"`
 	TimeTaken  string        `json:"time_taken"`
 	Results    []resultsData `json:"results"`
 }
@@ -202,6 +203,17 @@ func resultsAPI(w http.ResponseWriter, r *http.Request) {
 		// If Identifer Exists: Fetch Results
 		if exists {
 
+			// Collect Query From Redis
+			query, err := db.Do(rCtx, "JSON.GET", jsonID, ".query").Text()
+
+			if err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+				log.Fatal("Command Failed: ", err)
+			}
+
+			query = strings.Trim(query, "\"")
+
+			// Collect Results From Redis
 			results, err := db.Do(rCtx, "JSON.GET", jsonID, ".results").Text()
 
 			if err != nil {
@@ -212,19 +224,22 @@ func resultsAPI(w http.ResponseWriter, r *http.Request) {
 			var resultsJSON []resultsData
 			json.Unmarshal([]byte(results), &resultsJSON)
 
+			// Collect Time Taken From Redis
 			time_taken, err := db.Do(rCtx, "JSON.GET", jsonID, ".time_taken").Text()
-			time_taken = strings.Trim(time_taken, "\"")
 
 			if err != nil {
 				w.WriteHeader(http.StatusBadRequest)
 				log.Fatal("Command Failed: ", err)
 			}
 
+			time_taken = strings.Trim(time_taken, "\"")
+
 			response := resultsResponse{
 				API:        APIName,
 				Version:    APIVersion,
-				Status:     "success",
+				Status:     "SUCCESS",
 				Identifier: identifier,
+				Query:      query,
 				TimeTaken:  time_taken,
 				Results:    resultsJSON,
 			}
@@ -267,7 +282,7 @@ func metrix(w http.ResponseWriter, r *http.Request) {
 	response := metrixResponse{
 		API:     APIName,
 		Version: APIVersion,
-		Status:  "success",
+		Status:  "SUCCESS",
 		Data:    responseData,
 	}
 
