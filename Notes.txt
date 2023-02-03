@@ -6,7 +6,8 @@ TASK LIST: reSearch
 	
 	-----------------------------------------------------------------
 	
-	Collection:	scrapedData		-> 3810 Articles Scraped & Stored
+	Collection:	scrapedData		-> 3810 Articles Scraped & Stored [01/01/2023]
+								-> 3819 Articles Scraped & Stored [02/02/2023]
 	
 	-----------------------------------------------------------------
 	
