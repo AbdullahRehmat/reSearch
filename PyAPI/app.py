@@ -162,17 +162,8 @@ def api_results(identifier):
         status = "SUCCESS"
         status_code = 200
 
-        # Allow SearchEngine Time To Process Query
-        # time.sleep(0.5)
-
-        # Fetch Results From Redis
-        # REFACTOR: CALL redis_results ONCE THEN PARSE DATA
-        # query = redis_results(identifier, "query")
-        # results = redis_results(identifier, "results")
-        # time_taken = redis_results(identifier, "time_taken")
-
         # Wait Until Results Appear In Redis DB
-        while r1.exists(identifier) != 0:
+        while r1.exists("id:"+identifier) == 0:
             time.sleep(0.1)
 
         # Fetch Results From Redis
