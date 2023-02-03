@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/mux"
@@ -17,35 +16,35 @@ import (
 const (
 	APIName    string = "Go-API"
 	APIVersion string = "1.0.0"
-	RedisAddr  string = "redis-api:6379" // Redis Address
-	RedisPass  string = "Password:)"     // Redis Password
-	MongoHost  string = "mongo-db"       // Mongo Docker Hostname
-	MongoPort  string = "27017"          // Mongo Host Port
+	redisAddr  string = "redis:6379" // Redis Address
+	redisPass  string = "Password:)" // Redis Password
+	mongoHost  string = "mongo-db"   // Mongo Docker Hostname
+	mongoPort  string = "27017"      // Mongo Host Port
 )
 
 var (
-	RCtx = context.Background() // Redis
-	MCtx = context.TODO()       // MongoDB
+	rCtx = context.Background() // Redis
+	mCtx = context.TODO()       // MongoDB
 )
 
 // Redis DB Connection
-func RedisDB(x int) *redis.Client {
-	db := redis.NewClient(&redis.Options{
-		Addr:     RedisAddr,
-		Password: RedisPass,
+func redisDB(x int) *redis.Client {
+	client := redis.NewClient(&redis.Options{
+		Addr:     redisAddr,
+		Password: redisPass,
 		DB:       x,
 	})
 
-	err := db.Ping(RCtx).Err()
+	err := client.Ping(rCtx).Err()
 	if err != nil {
 		log.Fatal("Redis: Failed To Connect - ", err)
 	}
 
-	return db
+	return client
 }
 
-// MongoDB DB Connection
-func MongoDB(host, port string) *mongo.Client {
+// mongoDB DB Connection
+func mongoDB(host, port string) *mongo.Client {
 	clientOptions := options.Client().ApplyURI("mongodb://" + host + ":" + port + "/")
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 
@@ -65,21 +64,21 @@ func MongoDB(host, port string) *mongo.Client {
 // Function Returns Search Engine Stats
 func dbStats() (x, y, z int64) {
 
-	mongo := MongoDB(MongoHost, MongoPort)
-	defer mongo.Disconnect(MCtx)
-	x, err := mongo.Database("SearchEngineDB").Collection("returnedResults").EstimatedDocumentCount(MCtx)
+	mongo := mongoDB(mongoHost, mongoPort)
+	defer mongo.Disconnect(mCtx)
+	x, err := mongo.Database("SearchEngineDB").Collection("returnedResults").EstimatedDocumentCount(mCtx)
 
 	if err != nil {
 		log.Fatal("dbStats() SearchEngineDB Error - ", err)
 	}
-	y, err = mongo.Database("ContentScraperDB").Collection("scrapedData").EstimatedDocumentCount(MCtx)
+	y, err = mongo.Database("ContentScraperDB").Collection("scrapedData").EstimatedDocumentCount(mCtx)
 
 	if err != nil {
 		log.Fatal("dbStats() ContentScraperDB Error - ", err)
 	}
 
-	redis := RedisDB(1)
-	z = redis.DBSize(RCtx).Val()
+	redis := redisDB(1)
+	z = redis.DBSize(rCtx).Val()
 
 	if err != nil {
 		log.Fatal("RedisDB(1) Error - ", err)
@@ -88,23 +87,25 @@ func dbStats() (x, y, z int64) {
 	return x, y, z
 }
 
-type QueryData struct {
+type queryData struct {
 	Identifier string `json:"identifier"`
 	Query      string `json:"query"`
 }
 
-type QueryResponse struct {
+type queryResponse struct {
 	API     string    `json:"api"`
 	Version string    `json:"version"`
 	Status  string    `json:"status"`
-	Data    QueryData `json:"data"`
+	Data    queryData `json:"data"`
 }
 
 // Function Receives Query from Client
 func queryAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 
-	var body QueryData
+	// Check That Identifier & Query Parameters Exist
+
+	var body queryData
 
 	err := json.NewDecoder(r.Body).Decode(&body)
 
@@ -116,11 +117,11 @@ func queryAPI(w http.ResponseWriter, r *http.Request) {
 	identifier := body.Identifier
 	query := body.Query
 
-	db := RedisDB(0)
+	db := redisDB(0)
 	defer db.Close()
 
 	// Sends Message: API -> Stream -> SearchEngine
-	db.XAdd(RCtx, &redis.XAddArgs{
+	db.XAdd(rCtx, &redis.XAddArgs{
 		Stream:       "streamA",
 		MaxLen:       0,
 		MaxLenApprox: 0,
@@ -131,12 +132,12 @@ func queryAPI(w http.ResponseWriter, r *http.Request) {
 		},
 	})
 
-	responseData := QueryData{
+	responseData := queryData{
 		Identifier: identifier,
 		Query:      query,
 	}
 
-	response := QueryResponse{
+	response := queryResponse{
 		API:     APIName,
 		Version: APIVersion,
 		Status:  "success",
@@ -147,77 +148,108 @@ func queryAPI(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-type ResultsData struct {
+type resultsData struct {
 	Title  string `json:"title"`
 	URL    string `json:"url"`
 	Source string `json:"source"`
 }
 
-type ResultsResponse struct {
+type resultsResponse struct {
 	API        string        `json:"api"`
 	Version    string        `json:"version"`
 	Status     string        `json:"status"`
 	Identifier string        `json:"identifier"`
 	TimeTaken  string        `json:"time_taken"`
-	Results    []ResultsData `json:"results"`
+	Results    []resultsData `json:"results"`
 }
 
 // Function Collects Results From Redis And Returns Them To Client
 func resultsAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 
-	params := mux.Vars(r)
-	identifier := params["identifier"]
+	identifier, found := mux.Vars(r)["identifier"]
 
-	time.Sleep(500 * time.Millisecond) // Delay Allows SearchEngine Time To Return Response
+	// If Identifier Does Not Exit
+	if !found {
+		response := resultsResponse{
+			API:        APIName,
+			Version:    APIVersion,
+			Status:     "ERROR: No Identifier",
+			Identifier: identifier,
+		}
 
-	db := RedisDB(1)
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(response)
+	}
+
+	var jsonID string = "id:" + identifier
+
+	db := redisDB(1)
 	defer db.Close()
 
-	var id string = "id:" + identifier
+	// Wait Until Results Appear In Redis DB
+	for {
 
-	results, err := db.Do(RCtx, "JSON.GET", id, ".results").Text()
+		exists, err := db.Do(rCtx, "EXISTS", jsonID).Bool()
 
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		log.Fatal("Command Failed: ", err)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			log.Fatal("Command Failed: ", err)
+
+			break
+		}
+
+		// If Identifer Exists: Fetch Results
+		if exists {
+
+			results, err := db.Do(rCtx, "JSON.GET", jsonID, ".results").Text()
+
+			if err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+				log.Fatal("Command Failed: ", err)
+			}
+
+			var resultsJSON []resultsData
+			json.Unmarshal([]byte(results), &resultsJSON)
+
+			time_taken, err := db.Do(rCtx, "JSON.GET", jsonID, ".time_taken").Text()
+			time_taken = strings.Trim(time_taken, "\"")
+
+			if err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+				log.Fatal("Command Failed: ", err)
+			}
+
+			response := resultsResponse{
+				API:        APIName,
+				Version:    APIVersion,
+				Status:     "success",
+				Identifier: identifier,
+				TimeTaken:  time_taken,
+				Results:    resultsJSON,
+			}
+
+			w.WriteHeader(http.StatusOK)
+			json.NewEncoder(w).Encode(response)
+
+			break
+		}
+
 	}
 
-	var resultsJSON []ResultsData
-	json.Unmarshal([]byte(results), &resultsJSON)
-
-	time_taken, err := db.Do(RCtx, "JSON.GET", id, ".time_taken").Text()
-	time_taken = strings.Trim(time_taken, "\"")
-
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		log.Fatal("Command Failed: ", err)
-	}
-
-	response := ResultsResponse{
-		API:        APIName,
-		Version:    APIVersion,
-		Status:     "success",
-		Identifier: identifier,
-		TimeTaken:  time_taken,
-		Results:    resultsJSON,
-	}
-
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(response)
 }
 
-type MetrixData struct {
+type metrixData struct {
 	TotalQueries  int64 `json:"totalQueries"`
 	TotalArticles int64 `json:"totalArticles"`
 	LiveQueries   int64 `json:"liveQueries"`
 }
 
-type MetrixResponse struct {
+type metrixResponse struct {
 	API     string     `json:"api"`
 	Version string     `json:"version"`
 	Status  string     `json:"status"`
-	Data    MetrixData `json:"data"`
+	Data    metrixData `json:"data"`
 }
 
 // Function Returns Search Engine Statistics To Client
@@ -226,13 +258,13 @@ func metrix(w http.ResponseWriter, r *http.Request) {
 
 	var x, y, z int64 = dbStats()
 
-	responseData := MetrixData{
+	responseData := metrixData{
 		TotalQueries:  x,
 		TotalArticles: y,
 		LiveQueries:   z,
 	}
 
-	response := MetrixResponse{
+	response := metrixResponse{
 		API:     APIName,
 		Version: APIVersion,
 		Status:  "success",
