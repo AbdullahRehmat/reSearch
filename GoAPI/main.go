@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/mux"
@@ -62,29 +63,59 @@ func mongoDB(host, port string) *mongo.Client {
 }
 
 // Function Returns Search Engine Stats
-func dbStats() (x, y, z int64) {
+func dbStats() (x, y, xz int64) {
+
+	redis := redisDB(1)
+	x = redis.DBSize(rCtx).Val()
 
 	mongo := mongoDB(mongoHost, mongoPort)
 	defer mongo.Disconnect(mCtx)
-	x, err := mongo.Database("SearchEngineDB").Collection("returnedResults").EstimatedDocumentCount(mCtx)
+
+	y, err := mongo.Database("SearchEngineDB").Collection("returnedResults").EstimatedDocumentCount(mCtx)
 
 	if err != nil {
 		log.Fatal("dbStats() SearchEngineDB Error - ", err)
 	}
-	y, err = mongo.Database("ContentScraperDB").Collection("scrapedData").EstimatedDocumentCount(mCtx)
+
+	z, err := mongo.Database("ContentScraperDB").Collection("scrapedData").EstimatedDocumentCount(mCtx)
 
 	if err != nil {
 		log.Fatal("dbStats() ContentScraperDB Error - ", err)
 	}
 
-	redis := redisDB(1)
-	z = redis.DBSize(rCtx).Val()
+	return x, y, z
+}
 
-	if err != nil {
-		log.Fatal("RedisDB(1) Error - ", err)
+func redisKeyStatus(identifier string) bool {
+
+	var t int = 0
+	var response bool
+
+	db := redisDB(1)
+	defer db.Close()
+
+	for {
+		exists, err := db.Do(rCtx, "EXISTS", "id:"+identifier).Bool()
+
+		if err != nil {
+			log.Fatal("Command Failed: ", err)
+			break
+		}
+
+		time.Sleep(100 * time.Millisecond)
+		t += 1
+
+		if exists {
+			response = true
+			return response
+		} else if t == 25 {
+			response = false
+			return response
+		}
 	}
 
-	return x, y, z
+	return response
+
 }
 
 type queryData struct {
@@ -164,6 +195,13 @@ type resultsResponse struct {
 	Results    []resultsData `json:"results"`
 }
 
+type errorResponse struct {
+	API        string `json:"api"`
+	Version    string `json:"version"`
+	Identifier string `json:"identifier"`
+	Status     string `json:"status"`
+}
+
 // Function Collects Results From Redis And Returns Them To Client
 func resultsAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
@@ -172,92 +210,89 @@ func resultsAPI(w http.ResponseWriter, r *http.Request) {
 
 	// If Identifier Does Not Exit
 	if !found {
-		response := resultsResponse{
+		response := errorResponse{
 			API:        APIName,
 			Version:    APIVersion,
-			Status:     "ERROR: No Identifier",
 			Identifier: identifier,
+			Status:     "ERROR: No Identifier",
 		}
 
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(response)
 	}
 
-	var jsonID string = "id:" + identifier
-
 	db := redisDB(1)
 	defer db.Close()
 
-	// Wait Until Results Appear In Redis DB
-	for {
+	exists := redisKeyStatus(identifier)
 
-		exists, err := db.Do(rCtx, "EXISTS", jsonID).Bool()
+	// If Identifer Exists: Fetch Results
+	if exists {
+
+		// Collect Query From Redis
+		query, err := db.Do(rCtx, "JSON.GET", "id:"+identifier, ".query").Text()
 
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			log.Fatal("Command Failed: ", err)
-
-			break
 		}
 
-		// If Identifer Exists: Fetch Results
-		if exists {
+		query = strings.Trim(query, "\"")
 
-			// Collect Query From Redis
-			query, err := db.Do(rCtx, "JSON.GET", jsonID, ".query").Text()
+		// Collect Results From Redis
+		results, err := db.Do(rCtx, "JSON.GET", "id:"+identifier, ".results").Text()
 
-			if err != nil {
-				w.WriteHeader(http.StatusBadRequest)
-				log.Fatal("Command Failed: ", err)
-			}
-
-			query = strings.Trim(query, "\"")
-
-			// Collect Results From Redis
-			results, err := db.Do(rCtx, "JSON.GET", jsonID, ".results").Text()
-
-			if err != nil {
-				w.WriteHeader(http.StatusBadRequest)
-				log.Fatal("Command Failed: ", err)
-			}
-
-			var resultsJSON []resultsData
-			json.Unmarshal([]byte(results), &resultsJSON)
-
-			// Collect Time Taken From Redis
-			time_taken, err := db.Do(rCtx, "JSON.GET", jsonID, ".time_taken").Text()
-
-			if err != nil {
-				w.WriteHeader(http.StatusBadRequest)
-				log.Fatal("Command Failed: ", err)
-			}
-
-			time_taken = strings.Trim(time_taken, "\"")
-
-			response := resultsResponse{
-				API:        APIName,
-				Version:    APIVersion,
-				Status:     "SUCCESS",
-				Identifier: identifier,
-				Query:      query,
-				TimeTaken:  time_taken,
-				Results:    resultsJSON,
-			}
-
-			w.WriteHeader(http.StatusOK)
-			json.NewEncoder(w).Encode(response)
-
-			break
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			log.Fatal("Command Failed: ", err)
 		}
 
+		var resultsJSON []resultsData
+		json.Unmarshal([]byte(results), &resultsJSON)
+
+		// Collect Time Taken From Redis
+		time_taken, err := db.Do(rCtx, "JSON.GET", "id:"+identifier, ".time_taken").Text()
+
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			log.Fatal("Command Failed: ", err)
+		}
+
+		time_taken = strings.Trim(time_taken, "\"")
+
+		response := resultsResponse{
+			API:        APIName,
+			Version:    APIVersion,
+			Status:     "SUCCESS",
+			Identifier: identifier,
+			Query:      query,
+			TimeTaken:  time_taken,
+			Results:    resultsJSON,
+		}
+
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(response)
+
+	}
+
+	if !exists {
+		response := errorResponse{
+			API:        APIName,
+			Version:    APIVersion,
+			Identifier: identifier,
+			Status:     "ERROR: Identifier Does Not Exist",
+		}
+
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(response)
 	}
 
 }
 
 type metrixData struct {
-	TotalQueries  int64 `json:"totalQueries"`
-	TotalArticles int64 `json:"totalArticles"`
 	LiveQueries   int64 `json:"liveQueries"`
+	TotalSearches int64 `json:"totalSearches"`
+	TotalArticles int64 `json:"totalArticles"`
 }
 
 type metrixResponse struct {
@@ -274,9 +309,9 @@ func metrix(w http.ResponseWriter, r *http.Request) {
 	var x, y, z int64 = dbStats()
 
 	responseData := metrixData{
-		TotalQueries:  x,
-		TotalArticles: y,
-		LiveQueries:   z,
+		LiveQueries:   x,
+		TotalSearches: y,
+		TotalArticles: z,
 	}
 
 	response := metrixResponse{

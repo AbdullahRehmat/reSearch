@@ -52,10 +52,28 @@ db_2 = conn[mongo_db_2]
 col2 = db_2[mongo_col_2]
 
 
-def redis_results(identifier, id):
+def redis_key_status(identifier):
+    """Return True If Key Exist & False After 2.5 Seconds"""
+
+    t = 0
+    exists = True
+
+    while r1.exists("id:"+identifier) == 0:
+
+        time.sleep(0.1)
+        t += 1
+
+        if t == 25:
+            exists = False
+            break
+
+    return exists
+
+
+def redis_results(identifier, key):
     """ Collects Results As JSON From Redis  """
 
-    data = r1.json().get(str("id:" + identifier), JPath("." + id))
+    data = r1.json().get(str("id:" + identifier), JPath("." + key))
 
     return data
 
@@ -71,13 +89,9 @@ def mongo_results(identifier):
 # Define API Routes
 
 
-@app.route("/api/v1/")
+@app.route("/api/v1/", methods=["GET"])
 def index():
     """ Provides API Usage Information """
-
-    #
-    # NEEDS TO BE IMPLEMENTED!
-    #
 
     response = "reSearch Service: PyAPI - Version " + \
         str(api_version) + " <br/> https://github.com/AbdullahRehmat/reSearch/blob/main/Documentation/Documentation.md"
@@ -93,6 +107,7 @@ def api_query():
     query = request.json.get("query")
 
     if identifier == None and query == None:
+        status_code = 400
 
         response = {
             "api": api_name,
@@ -100,27 +115,23 @@ def api_query():
             "status": "ERROR: Identifier & Query Missing"
         }
 
-        status_code = 400
-
     elif identifier == None:
+        status_code = 400
 
         response = {
             "api": api_name,
             "version": api_version,
-            "status": "ERROR: No Idenfitifer"
+            "status": "ERROR: No Identifier"
         }
 
-        status_code = 400
-
     elif query == None:
+        status_code = 400
 
         response = {
             "api": api_name,
             "version": api_version,
             "status": "ERROR: No Query",
         }
-
-        status_code = 400
 
     else:
         status = "SUCCESS"
@@ -158,7 +169,9 @@ def api_results(identifier):
             "status": status
         }
 
-    else:
+    exists = redis_key_status(identifier)
+
+    if exists == True:
         status = "SUCCESS"
         status_code = 200
 
@@ -181,6 +194,16 @@ def api_results(identifier):
             "results": results
         }
 
+    else:
+        status = "ERROR: Identifier Does Not Exist"
+        status_code = 400
+
+        response = {
+            "api": api_name,
+            "version": api_version,
+            "status": status
+        }
+
     return jsonify(response), status_code
 
 
@@ -189,18 +212,18 @@ def api_metrix():
     """ Returns Search Engine Usage Statistics """
 
     # Fetch Statistics From Databases
-    db1Count = col1.estimated_document_count()
-    db2Count = col2.estimated_document_count()
     db3Count = r1.dbsize()
+    db2Count = col2.estimated_document_count()
+    db1Count = col1.estimated_document_count()
 
     response = {
         "api": api_name,
         "version": api_version,
         "status": "SUCCESS",
         "data": {
-            "liveQueries": db3Count,    # Queries That Have Not Timed Out
-            "totalQueries": db1Count,   # Number Of Queries Processed By SearchEngine
-            "totalArticles": db2Count   # Size Of SearchEngine Corpus
+            "liveQueries": db3Count,     # Queries That Have Not Timed Out
+            "totalSearches": db2Count,   # Number Of Queries Processed By SearchEngine
+            "totalArticles": db1Count    # Size Of SearchEngine Corpus
         }
     }
 
