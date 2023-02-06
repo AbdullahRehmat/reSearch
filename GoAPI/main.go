@@ -329,7 +329,7 @@ func metrix(w http.ResponseWriter, r *http.Request) {
 func main() {
 	router := mux.NewRouter()
 
-	router.HandleFunc("/api/v1/query", queryAPI).Methods("POST")
+	router.HandleFunc("/api/v1/search", queryAPI).Methods("POST")
 	router.HandleFunc("/api/v1/results/{identifier}", resultsAPI).Methods("GET")
 	router.HandleFunc("/api/v1/metrix", metrix).Methods("GET")
 

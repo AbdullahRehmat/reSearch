@@ -39,7 +39,7 @@ class ApiConn():
         session['query'] = query
 
         # Assemble URL and Payload
-        url = str(f"http://{app.config['API_HOST']}/api/v1/query")
+        url = str(f"http://{app.config['API_HOST']}/api/v1/search")
         payload = {"identifier": identifier, "query": query}
 
         # Send POST Request
@@ -47,7 +47,7 @@ class ApiConn():
 
         return api
 
-    def get_response():
+    def get_results():
         """ Collects response from API via unique ID """
 
         if 'identifier' in session:
@@ -63,7 +63,7 @@ class ApiConn():
             return str(time_taken), results
 
         else:
-            return "No Identifier was found... \n", 400
+            return "No Identifier Found... \n", 400
 
 
 class MyForm(FlaskForm):
@@ -97,7 +97,7 @@ def index():
 @app.route("/results")
 def results():
     query = session['query']
-    time_taken, results = ApiConn.get_response()
+    time_taken, results = ApiConn.get_results()
 
     return render_template('results.html', time_taken=time_taken, results=results, query=query)
 

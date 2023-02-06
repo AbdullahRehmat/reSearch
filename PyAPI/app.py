@@ -89,7 +89,7 @@ def mongo_results(identifier):
 # Define API Routes
 
 
-@app.route("/api/v1/", methods=["GET"])
+@app.route("/api/v1", methods=["GET"])
 def index():
     """ Provides API Usage Information """
 
@@ -99,7 +99,7 @@ def index():
     return response, 200
 
 
-@app.route("/api/v1/query", methods=["POST"])
+@app.route("/api/v1/search", methods=["POST"])
 def api_query():
     """ Receives Query From Client & Sends To SearchEngine"""
 
@@ -169,40 +169,42 @@ def api_results(identifier):
             "status": status
         }
 
-    exists = redis_key_status(identifier)
-
-    if exists == True:
-        status = "SUCCESS"
-        status_code = 200
-
-        # Wait Until Results Appear In Redis DB
-        while r1.exists("id:"+identifier) == 0:
-            time.sleep(0.1)
-
-        # Fetch Results From Redis
-        query = redis_results(identifier, "query")
-        results = redis_results(identifier, "results")
-        time_taken = redis_results(identifier, "time_taken")
-
-        response = {
-            "api": api_name,
-            "version": api_version,
-            "status": status,
-            "identifier": identifier,
-            "query": query,
-            "time_taken": time_taken,
-            "results": results
-        }
-
     else:
-        status = "ERROR: Identifier Does Not Exist"
-        status_code = 400
 
-        response = {
-            "api": api_name,
-            "version": api_version,
-            "status": status
-        }
+        exists = redis_key_status(identifier)
+
+        if exists == True:
+            status = "SUCCESS"
+            status_code = 200
+
+            # Wait Until Results Appear In Redis DB
+            while r1.exists("id:"+identifier) == 0:
+                time.sleep(0.1)
+
+            # Fetch Results From Redis
+            query = redis_results(identifier, "query")
+            results = redis_results(identifier, "results")
+            time_taken = redis_results(identifier, "time_taken")
+
+            response = {
+                "api": api_name,
+                "version": api_version,
+                "status": status,
+                "identifier": identifier,
+                "query": query,
+                "time_taken": time_taken,
+                "results": results
+            }
+
+        else:
+            status = "ERROR: Identifier Does Not Exist"
+            status_code = 400
+
+            response = {
+                "api": api_name,
+                "version": api_version,
+                "status": status
+            }
 
     return jsonify(response), status_code
 
