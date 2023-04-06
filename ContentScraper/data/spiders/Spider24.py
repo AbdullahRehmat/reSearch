@@ -71,6 +71,6 @@ class SpiderTwentyFour(Spider):
         for data in scrapedData:
             item = DataItem()
             item['title'] = data.css('a.articleLinkOrange::text').get()
-            item['source'] = 'HealthyMuslim.com - Article - Abu Iyyad'
+            item['source'] = 'HealthyMuslim.com - Article - Abu Iyaad'
             item['url'] = data.css('a.articleLinkOrange::attr(href)').get()
             yield item

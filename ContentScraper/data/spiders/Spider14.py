@@ -20,6 +20,6 @@ class SpiderFourteen(Spider):
         for data in scrapedData:
             item = DataItem()
             item['title'] = data.css('a.articleTitleListSmall::text').get()
-            item['source'] = 'IslamJesus.ws - Article - Abu Iyyad'
+            item['source'] = 'IslamJesus.ws - Article - Abu Iyaad'
             item['url'] = data.css('a.articleTitleListSmall::attr(href)').get()
             yield item

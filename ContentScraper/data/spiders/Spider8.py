@@ -23,6 +23,6 @@ class SpiderEight(Spider):
         for data in scrapedData:
             item = DataItem()
             item['title'] = data.css('a.articleTitleListSmall::text').get()
-            item['source'] = 'IslamAgainstExtremism.com - Article - Abu Iyyad'
+            item['source'] = 'IslamAgainstExtremism.com - Article - Abu Iyaad'
             item['url'] = data.css('a.articleTitleListSmall::attr(href)').get()
             yield item

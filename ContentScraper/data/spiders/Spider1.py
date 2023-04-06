@@ -21,6 +21,6 @@ class SpiderOne(Spider):
 
             item = DataItem()
             item['title'] = data.css('a.articleTitleListSmall::text').get()
-            item['source'] = 'Shia.bs - Article - Abu Iyyad'
+            item['source'] = 'Shia.bs - Article - Abu Iyaad'
             item['url'] = data.css('a.articleTitleListSmall::attr(href)').get()
             yield item
