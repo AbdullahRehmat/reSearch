@@ -26,12 +26,16 @@ if __name__ == "__main__":
 
         documents.append(document)
 
+    current_date = str(datetime.datetime.today().strftime('%d-%m-%Y'))
+
     json_output = {
         "version": "1.0.0",
-        "last_updated": str(datetime.datetime.today().strftime('%d-%m-%Y')),
+        "last_updated": current_date,
         "document_count": len(documents),
         "documents": documents
     }
 
-    with open("database_dump.json", "w") as outfile:
+    filename = "db-dump-" + current_date + ".json"
+
+    with open(filename, "w") as outfile:
         outfile.write(json.dumps(json_output))
