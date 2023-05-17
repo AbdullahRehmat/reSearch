@@ -214,18 +214,18 @@ def api_metrix():
     """ Returns Search Engine Usage Statistics """
 
     # Fetch Statistics From Databases
-    db3Count = r1.dbsize()
+    db1Count = r1.dbsize()
+    db3Count = col1.estimated_document_count()
     db2Count = col2.estimated_document_count()
-    db1Count = col1.estimated_document_count()
 
     response = {
         "api": api_name,
         "version": api_version,
         "status": "SUCCESS",
         "data": {
-            "liveQueries": db3Count,     # Queries That Have Not Timed Out
+            "liveQueries": db1Count,     # Queries That Have Not Timed Out
             "totalSearches": db2Count,   # Number Of Queries Processed By SearchEngine
-            "totalArticles": db1Count    # Size Of SearchEngine Corpus
+            "totalArticles": db3Count    # Size Of SearchEngine Corpus
         }
     }
 
