@@ -1,6 +1,8 @@
-# Sites
+# Sources
 
-List of Sites either scraped by ContentScraper or to be scraped
+List of websites scraped by `reSeach` via the `ContentScraper` service.
+
+
 
 ## Currently Scraped
 
@@ -30,15 +32,21 @@ List of Sites either scraped by ContentScraper or to be scraped
 - www.Manhaj.com
 - www.Maturidis.com
 
+
+
 ### Salafi Publications
 
 - www.SalafiPubs.com
 
 - www.SalafiSounds.com
 
+
+
 ## Untested
 
--
+-  
+
+
 
 ## Issues
 

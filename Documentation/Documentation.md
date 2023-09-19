@@ -1,90 +1,299 @@
-# Documentation
+# Documentation: reSearch
 
 [toc]
 
-## User Guide
+> Version: 2.0.0
+>
+> Last Update: 19-09-2023
+
+
+
+## Start Guide
 
 - Install [Docker-Compose](https://docs.docker.com/compose/)
-
-- Download Latest Release
+- Download Latest Release From GitHub Repository
 - Create Sub-Directory `./MongoDB`
 - Execute `./start.sh`
-- View Web Interface At: `http://localhost/index`
+
+- View Home Page: `http://localhost:80`
+
+- View Admin Page: `http://localhost:80/admin`
 
 
 
-## NGINX
+## About
 
-- NGINX + Gunicorn
-
-- HTTP + Production grade WSGI Server
+`reSearch` is a basic search engine based on the BM25 algorithm and runs as a series of microservices.
 
 
 
-## Website
+## Web Server: NGINX
 
-User Web Interface
+**Web Server, Load Balancer & Reverse Proxy**
 
-- User Accessible End-Points
-
-  - www.site.com/home
-  - www.site.com/results
-
-- Admin Accessible End-Points
-
-  - www.site.com/admin
+- Port: 80:80
 
 
 
+## Interface: Website
 
-## Search Engine
+**User Web-Interface**
 
-- Ranks a corpus of titles according to the incoming query using BM25 and returns them to the API via Redis Streams
+- Language: HTML5, CSS3, JavaScript
 
-
-
-
-## Content Scraper
-
-- Scrapes listed sites, collects required data & stores it in MongoDB
+- Port: 8000
 
 
 
-## GoAPI
+**Public Routes**
 
-GoLang (`gorilla/mux`) based API for communication between Frontend & Backend Services. 
-Format = JSON
+- `http://localhost:80/`
+- `http://localhost:80/index`
+- `http://localhost:80/home`
+- `http://localhost:80/results`
 
-### Routes
+
+
+**Private Routes**
+
+- `https://localhost:80/admin`
+
+
+
+## Interface: Android App
+
+Not Yet Implemented
+
+
+
+## API: Python
+
+**Microservice Communication API**
+
+- Language: Python 3
+- Framework: `flask`
+- Format: `JSON`
+
+- Port: 8000:-
+
+
+
+**Routes**
 
 - POST `/api/v1/query` - Send query to `SearchEngine` Service
-- GET `/api/v1/results` - Retrieves Results from `SearchEngine` Service as JSON
+
+> **Request: **
+>
+> {
+> 	"identifier": "sampl3id3nt1f1er",
+> 	"query": "What Is A Cookie?"
+> }
+>
+> **Response:**
+>
+> {
+> "api": "Py-API",
+> "version": "1.0.0",
+> "status": "SUCCESS",
+> "data": {
+>  "identifier": "sampl3id3nt1f1er",
+>  "query": "What Is A Cookie?"
+> 	}
+> } 
+
+- GET `/api/v1/results` - Retrieves results from `SearchEngine` Service as JSON
+
+> **Request: **
+>
+> http://localhost:8000/api/v1/results/<identifier> 
+>
+> **Response:**
+>
+> {
+> "api": "Py-API",
+> "version": "1.0.0",
+> "status": "SUCCESS",
+> "identifier": "sampl3id3nt1f1er",
+> "query": "What Is A Cookie?",
+> "time_taken": "205.50 ms",
+> "results": [
+>  {      "title": "What Are Cookies Made Of?",
+>    "url": "http://www.example.com/cookie-ingredients",
+>    "source": "example.com - Article - William Smith"
+>  },
+>
+> ​	{      "title": "How Are Cookies Made?",
+> ​      "url": "http://www.example.com/cookie-ingredients",
+> ​      "source": "example.com - Article - John Doe"
+> ​    }
+>
+> ]
+> }
+
 - GET `/api/v1/metrix` - Retrieves `SearchEngine` usage statistics
 
+> **Request: **
+>
+> http://localhost:8000/api/v1/metrix
+>
+> **Response:**
+>
+> {
+> "api": "Py-API",
+> "version": "1.0.0",
+> "status": "SUCCESS",
+> "data": {
+>  "liveQueries": 0,
+>  "totalSearches": 292,
+>  "totalArticles": 3819
+> 	}
+> }
 
 
-## GlobalAPI
 
-Python (`Flask`) based API Communication between Frontend and Backend Services. 
-Format = JSON
+## API: Go
 
-### Routes
+**Microservice Communication API**
+
+- Language: GoLang
+- Framework: `gorilla/mux`
+
+- Format: `JSON`
+- Port: 5000:-
+
+
+
+**Routes**
 
 - POST `/api/v1/query` - Send query to `SearchEngine` Service
+
+> **Request: **
+>
+> {
+> 	"identifier": "sampl3id3nt1f1er",
+> 	"query": "What Is A Cookie?"
+> }
+>
+> **Response:**
+>
+> {
+> "api": "Go-API",
+> "version": "1.0.0",
+> "status": "SUCCESS",
+> "data": {
+>  "identifier": "sampl3id3nt1f1er",
+>  "query": "What Is A Cookie?"
+> 	}
+> } 
+
 - GET `/api/v1/results` - Retrieves Results from `SearchEngine` Service as JSON
+
+> http://localhost:5000/api/v1/results/<identifier> 
+>
+> **Response:**
+>
+> {
+> "api": "Go-API",
+> "version": "1.0.0",
+> "status": "SUCCESS",
+> "identifier": "sampl3id3nt1f1er",
+> "query": "What Is A Cookie?",
+> "time_taken": "100.00 ms",
+> "results": [
+>  {      "title": "What Are Cookies Made Of?",
+>    "url": "http://www.example.com/cookie-ingredients",
+>    "source": "example.com - Article - William Smith"
+>  },
+>
+> ​	{      "title": "How Are Cookies Made?",
+> ​      "url": "http://www.example.com/cookie-ingredients",
+> ​      "source": "example.com - Article - John Doe"
+> ​    }
+>
+> ]
+> }
+
 - GET `/api/v1/metrix` - Retrieves `SearchEngine` usage statistics
 
+> **Request: **
+>
+> http://localhost:5000/api/v1/metrix
+>
+> **Response:**
+>
+> {
+> "api": "Py-API",
+> "version": "1.0.0",
+> "status": "SUCCESS",
+> "data": {
+>  "liveQueries": 0,
+>  "totalSearches": 292,
+>  "totalArticles": 3819
+> 	}
+> }
 
 
-## Redis
 
-Redis Database with RedisJSON module. Allows for communication between `SearchEngine` & API's
+## Service: SearchEngine
+
+**BM25 Based Search Engine**
+
+- Language: Python 3
+- Framework: `Flask`
+- Format: `JSON`
+- Method:
+  - Collects query from `Redis DB0`
+  - Ranks local corpus according to query provided
+  - Returns subsection of corpus as  results via `Redis DB1`
+
+
+
+## Service: ContentScraper
+
+**Automated Web Scraping Service**
+
+- Language: Python 3
+- Framework: `Scrapy`
+- Format: `JSON`
+- Method:
+  - Scraped predefined list of websites
+  - Collects data that matches predetermined criteria
+  - Stores scraped data in MongoDB - `ContentScraperDB`
+
+
+
+## Service: SpellChecker / LangFormatter
+
+**Basic English Language Sentence Formatter & Spell Checker**
+
+- Language: Python 3
+- Format: `JSON`
+- Method:
+  - Standardises spelling of corpus if provided
+  - Removes unwanted punctuation from input
+  - Removes unwanted non-standard English characters from input
+  - Replaces incorrectly spelt words with correct version
+  - Replaces incorrectly transliterated words with correct version
+
+
+
+## Database: Redis
+
+**Temporarily Stores Incoming Queries & Subsequently Generated Results**
+
+- Format: `JSON`
+- Modules: `RedisJSON`
+- Port: 6379:-
+
+
 
 ### DB 0
 
 - Type: JSON Stream
 - Traffic Type: Search Queries
 - Traffic Direction:  API -> `SearchEngine`
+
+
 
 ### DB 1
 
@@ -94,14 +303,22 @@ Redis Database with RedisJSON module. Allows for communication between `SearchEn
 
 
 
-## MongoDB
+## Database: MongoDB
+
+**Data Storage For Services**
+
+- Port: 27020:-
+
+
 
 ### ContentScraperDB
 
 Stores URLs + Titles from `ContentScraper`
 
-**All Records have form:**
 
+
+> **Record Format:**
+>
 > {
 >
 > "global_id": identifier - Unique 10 Character String
@@ -116,7 +333,7 @@ Stores URLs + Titles from `ContentScraper`
 
 
 
-#### Collections
+**Collections**
 
 - `scrapedData` - List of all scraped URLs with titles corrected by `SpellChecker`
 
@@ -126,8 +343,10 @@ Stores URLs + Titles from `ContentScraper`
 
 Stores URLs + Titles  as ranked by BM25 from `SearchEngine`
 
-**All Records have form:**
 
+
+> **Record Format**
+>
 > {
 >
 > "global_id": identifier - Unique 10 Character String
@@ -142,6 +361,6 @@ Stores URLs + Titles  as ranked by BM25 from `SearchEngine`
 
 
 
-#### Collections
+**Collections**
 
-- `returnedResults` - List of all results generated
+- `returnedResults` - Contains list of all results generated by `SearchEngine` 
