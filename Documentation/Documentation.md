@@ -27,6 +27,32 @@
 
 
 
+## To Do List
+
+**Website**
+
+- [ ] Implement new minimal website design
+
+
+
+**ContentScraper**
+
+- [ ] If Title contains "by", add speakers name to `resultSource` HTML tag
+- [ ] Write function that checks if website has already been scraped
+- [ ] Add `abuiyaad.com` to scraper
+
+
+
+**DataHandler**
+
+- [ ] Implement new service
+- [ ] Write new function that can export MongoDB Collection as `JSON`
+- [ ] Write new function that can import `JSON` files as MongoDB Collections
+
+
+
+
+
 ## Web Server: NGINX
 
 **Web Server, Load Balancer & Reverse Proxy**
@@ -74,7 +100,7 @@ Not Yet Implemented
 - Framework: `flask`
 - Format: `JSON`
 
-- Port: 8000:-
+- Port: 8000
 
 
 
@@ -159,7 +185,7 @@ Not Yet Implemented
 - Framework: `gorilla/mux`
 
 - Format: `JSON`
-- Port: 5000:-
+- Port: 5000
 
 
 
@@ -283,7 +309,7 @@ Not Yet Implemented
 
 - Format: `JSON`
 - Modules: `RedisJSON`
-- Port: 6379:-
+- Port: 6379
 
 
 
@@ -307,7 +333,7 @@ Not Yet Implemented
 
 **Data Storage For Services**
 
-- Port: 27020:-
+- Port: 27017
 
 
 
@@ -336,6 +362,9 @@ Stores URLs + Titles from `ContentScraper`
 **Collections**
 
 - `scrapedData` - List of all scraped URLs with titles corrected by `SpellChecker`
+  - 08/01/2023 - 2586 Records Stored
+  - 17/05/2023 - 3819 Records Stored
+
 
 
 
