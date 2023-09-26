@@ -1,5 +1,5 @@
 """
-    Basic Spell Checker & Punctuation Stripper
+    Basic Spell Checker & Punctuation Stripper.
     Used To Standarise Spelling According To 
     Provided JSON Dictionary.
 """
@@ -57,12 +57,12 @@ class SpellChecker:
     def fix_spelling(self, text: str) -> str:
         """ Correct Spelling In Accordance To Provided Wordlist """
 
-        # Loads JSON Wordlist File Into Memory
+        # Load JSON Wordlist File Into Memory
         self._load_wordlist()
 
-        # k = correctly spelled word
-        # v = list of incorrectly spelled versions of "k"
-        # i = iterate through list "v"
+        # k = Correctly spelled word
+        # v = [Incorrectly spelled versions of k]
+        # i = Current position in v
 
         for k, v in self.wordlist.items():
             for i in v:
@@ -78,7 +78,7 @@ class SpellChecker:
             return text
 
     def run_spell_checker(self, text: str) -> str:
-        """ Runs All Functions On Provided Text """
+        """ Runs All Functions On Input """
 
         if type(text) != str:
             return str(text)
