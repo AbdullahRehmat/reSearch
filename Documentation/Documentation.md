@@ -37,17 +37,25 @@
 
 **ContentScraper**
 
-- [ ] If Title contains "by", add speakers name to `resultSource` HTML tag
+- [x] If Title contains "by", add speakers name to `resultSource` HTML tag
 - [ ] Write function that checks if website has already been scraped
-- [ ] Add `abuiyaad.com` to scraper
+- [x] Add `abuiyaad.com` to scraper
+- [ ] Simplify codebase & remove repetition
+
+
+
+**SearchEngine**
+
+- [ ] Find way to remove `SearchEngine()` needing to access MongoDB
+- [ ] Rewrite `Corpus()` such that `Corpus.yield_corpus()` returns `[[title, url, source] [title, url, source]]`
 
 
 
 **DataHandler**
 
 - [ ] Implement new service
-- [ ] Write new function that can export MongoDB Collection as `JSON`
-- [ ] Write new function that can import `JSON` files as MongoDB Collections
+- [ ] Write class that can export MongoDB Collection as `JSON`
+- [ ] Write class that can import `JSON` files as MongoDB Collections
 
 
 
