@@ -54,6 +54,11 @@ class SpellChecker:
 
         return new_text
 
+    def set_title_case(self, text: str) -> str:
+        """ Converts Text To Title Case """
+
+        return text.title()
+
     def fix_spelling(self, text: str) -> str:
         """ Correct Spelling In Accordance To Provided Wordlist """
 
@@ -75,7 +80,7 @@ class SpellChecker:
                     return new_text
 
         else:
-            return text
+            return text.title()
 
     def run_spell_checker(self, text: str) -> str:
         """ Runs All Functions On Input """
@@ -86,6 +91,7 @@ class SpellChecker:
         text = self.strip_punctuation(text)
         text = self.strip_accents(text)
         text = self.format_spaces(text)
+        text = self.set_title_case(text)
         text = self.fix_spelling(text)
 
         return text
