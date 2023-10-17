@@ -3,6 +3,16 @@ from scrapy.selector import Selector
 from data.items import DataItem
 
 
+def splitAuthor(scrapedTitle) -> list:
+    """ Returns List Containing Title & Authors Name If Present """
+
+    if " By " in scrapedTitle:
+        return scrapedTitle.rsplit(" By ", 1)
+
+    else:
+        return [scrapedTitle, ""]
+
+
 class SpiderTwentyThree(Spider):
     name = "data"
 
@@ -31,9 +41,15 @@ class SpiderTwentyThree(Spider):
 
         for data in scrapedData:
             item = DataItem()
-            item['title'] = data.css(
+
+            scrapedTitle = data.css(
                 'h3.mh-posts-grid-title > a::attr(title)').get()
-            item['source'] = 'Salafi Sounds - Audio'
+
+            # Remove Author / Speaker From Title & Append To Source
+            title = splitAuthor(scrapedTitle)
+            item['title'] = title[0]
+            item['source'] = 'Salafi Sounds - Audio - ' + title[1]
             item['url'] = data.css(
                 'h3.mh-posts-grid-title > a::attr(href)').get()
+
             yield item
