@@ -8,6 +8,9 @@ def splitAuthor(scrapedTitle) -> list:
 
     if " By " in scrapedTitle:
         return scrapedTitle.rsplit(" By ", 1)
+    
+    elif " by " in scrapedTitle:
+        return scrapedTitle.rsplit(" by ", 1)
 
     else:
         return [scrapedTitle, ""]
