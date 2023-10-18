@@ -4,7 +4,7 @@
 
 > Version: 2.0.0
 >
-> Last Update: 19-09-2023
+> Last Update: 17-10-2023
 
 
 
@@ -31,16 +31,13 @@
 
 **Website**
 
-- [ ] Implement new minimal website design
+- [ ] Add Animation Transition To Buttons
 
 
 
 **ContentScraper**
 
-- [x] If Title contains "by", add speakers name to `resultSource` HTML tag
 - [ ] Write function that checks if website has already been scraped
-- [x] Add `abuiyaad.com` to scraper
-- [ ] Simplify codebase & remove repetition
 
 
 
@@ -372,6 +369,7 @@ Stores URLs + Titles from `ContentScraper`
 - `scrapedData` - List of all scraped URLs with titles corrected by `SpellChecker`
   - 08/01/2023 - 2586 Records Stored
   - 17/05/2023 - 3819 Records Stored
+  - 17/10/2023 - 3810 Records Stored
 
 
 

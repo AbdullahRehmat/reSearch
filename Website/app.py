@@ -66,7 +66,7 @@ class ApiConn():
             return "No Identifier Found... \n", 400
 
 
-class MyForm(FlaskForm):
+class SearchForm(FlaskForm):
 
     query = StringField("Search", validators=[DataRequired()],
                         render_kw={"placeholder": "Search..."})
@@ -75,7 +75,7 @@ class MyForm(FlaskForm):
 class Metrix():
 
     def data():
-        """ Sends Search Engine Useage Data to Client """
+        """ Sends Search Engine Usage Data to Client """
 
         api = get(f"http://{app.config['API_HOST']}/api/v1/metrix")
 
@@ -85,7 +85,7 @@ class Metrix():
 @app.route('/', methods=('GET', 'POST'))
 @app.route('/index', methods=('GET', 'POST'))
 def index():
-    form = MyForm()
+    form = SearchForm()
     if form.validate_on_submit():
 
         ApiConn.post_query(form.query.data)

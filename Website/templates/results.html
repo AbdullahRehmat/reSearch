@@ -8,23 +8,20 @@
 {% endblock %} 
 
 {% block body %}
-<section id="results-section">
-  <div class="page-heading">
-    <div class="page-title">
-      <a class="home-link" href="/">reSearch:</a> Results
-    </div>
+<section class="page-heading">
+  <div class="page-title">
+    <a class="home-link" href="/">reSearch:</a> Results
   </div>
+</section>
 
-  <div id="results-box">
-    {% for i in results %}
-    <a href="{{i['url']}}" class="searchResult" target="_blank" rel="noopener noreferrer">
-      {{ i['title'] }}
-      <br />
-      <p class="resultSource">{{ i['source'] }}</p>
-    </a>
+<section id="results-box">
+  {% for i in results %}
+  <a href="{{i['url']}}" class="searchResult" target="_blank" rel="noopener noreferrer">
+    {{ i['title'] }}
     <br />
-    {% endfor %}
-  </div>
+    <p class="resultSource">{{ i['source'] }}</p>
+  </a>
+  {% endfor %}
 </section>
 {% endblock %}
 
