@@ -10,7 +10,7 @@ import redis
 import pymongo
 from dotenv import load_dotenv
 from rank_bm25 import BM25Plus
-from redis.commands.json.path import Path as JPath
+from redis.commands.json.path import Path
 from spellchecker import SpellChecker
 
 
@@ -196,7 +196,7 @@ if __name__ == "__main__":
             results = s.yield_results(time_taken_ms)
 
             # Return Results To API
-            rdb1.json().set(str("id:" + identifier), JPath.rootPath(), results)
+            rdb1.json().set(str("id:" + identifier), Path.root_path(), results)
 
             # Add Results To MongoDB Collection
             # ONLY USED BY METRIX SERVICE
