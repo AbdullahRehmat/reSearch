@@ -103,7 +103,7 @@ def sources():
 
 @app.route("/admin")
 def admin():
-    data = API.get_metrix.text
+    data = API.get_metrix().text
     data = literal_eval(data)
     data = data["data"]
     data = tuple(data.values())

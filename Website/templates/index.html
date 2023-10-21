@@ -13,8 +13,8 @@ reSearch
 
 	<div id="search-box">
 		<form method="POST" action="/">
-			{{ form.csrf_token }} {{ form.query(autocomplete="off") }}
-			<input type="submit" value="Go" id="submit-button" />
+			{{ form.csrf_token }} {{ form.query(autocomplete="off", id_="search-form") }}
+			<input type="submit" value="Go" id="search-button" />
 		</form>
 	</div>
 </section>

@@ -10,14 +10,22 @@ html {
   --text-color-accent: #2c528c;
   --background-color-main: #ffffff;
   --background-color-accent: #dadce0;
+  --background-color-search: #dadce0;
+  --background-color-item: #dadce0;
+  --background-color-heading: #dadce0;
+  --background-color-footer: #dadce0;
 }
 
 .theme-dark {
   --text-color-primary: #ffffff;
-  --text-color-secondary: #9e9e9e;
+  --text-color-secondary: #9aa0a6;
   --text-color-accent: #ffc107;
-  --background-color-main: #121212;
-  --background-color-accent: #1e1e1e;
+  --background-color-main: #202124;
+  --background-color-accent: #282a2d;
+  --background-color-search: #303134;
+  --background-color-item: #303134;
+  --background-color-heading: #282a2d;
+  --background-color-footer: #171717;
 }
 
 @font-face {
@@ -33,47 +41,12 @@ body {
   display: block;
 }
 
-#search-section {
-  margin: auto;
-  text-align: center;
-  height: calc(100vh - 2.3rem);
-}
-
-#search-title {
-  font-size: 50px;
-  padding-top: 30vh;
-  margin-bottom: 3vh;
-}
-
-#search-version {
-  font-size: 15px;
-  padding-left: 0.25rem;
-  color: var(--text-color-accent);
-}
-
-#query {
-  width: 40vw;
-  padding: 13px;
-  font-size: 15px;
-  margin-bottom: 3vh;
-  border-radius: 15px;
-  transition: box-shadow 0.3s;
-  border: 1px solid var(--text-color-secondary);
-}
-
-#submit-button {
-  display: block;
-  margin: auto;
-  padding: 0.1rem;
-  visibility: hidden;
-}
-
 .page-heading {
   padding-top: 3vh;
   padding-bottom: 3vh;
   padding-left: 5rem;
   margin-bottom: 2vh;
-  background-color: var(--background-color-accent);
+  background-color: var(--background-color-heading);
 }
 
 .page-title {
@@ -93,82 +66,6 @@ body {
   -ms-transition: 0.15s;
   -moz-transition: 0.15s;
   -webkit-transition: 0.15s;
-}
-
-#results-box {
-  width: 75%;
-  padding-left: 4rem;
-  margin-bottom: 2rem;
-}
-
-.searchResult {
-  display: block;
-  padding: 0.5rem;
-  padding-left: 1rem;
-  font-size: 17.5px;
-  text-decoration: none;
-  color: var(--text-color-primary);
-}
-
-.searchResult:hover {
-  transition: 0.5s;
-  border-radius: 10px;
-  background-color: var(--background-color-accent);
-  color: var(--text-color-accent);
-}
-
-.resultSource {
-  margin: 0;
-  font-size: 13.5px;
-  line-height: 1.5;
-  font-style: italic;
-  color: var(--text-color-secondary);
-}
-
-.searchResult:hover > .resultSource {
-  transition: 0.5s;
-  color: var(--text-color-accent);
-}
-
-#admin-section {
-  height: calc(100vh - 2.3rem);
-}
-
-.admin-container {
-  width: 97vw;
-  margin: auto;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
-  align-items: stretch;
-  align-content: space-around;
-}
-
-.admin-item {
-  padding: 15px;
-  min-width: 20%;
-  min-height: 250px;
-  margin-top: 10px;
-  padding-top: 20px;
-  margin-bottom: 10px;
-  border-radius: 10px;
-  text-align: center;
-  align-self: stretch;
-  background-color: var(--background-color-accent);
-  box-shadow: 1px 1px 0 var(--text-color-accent);
-}
-
-.admin-item-title {
-  font-size: 23px;
-  margin-top: 5px;
-  margin-bottom: 10px;
-}
-
-.admin-item-contents {
-  padding: 5%;
-  padding-top: 20%;
-  font-size: 30px;
 }
 
 #buttons {
@@ -204,6 +101,137 @@ body {
   color: var(--text-color-accent);
 }
 
+/* SEARCH / HOME PAGE */
+
+#search-section {
+  margin: auto;
+  text-align: center;
+  height: calc(100vh - 2.3rem);
+}
+
+#search-title {
+  font-size: 50px;
+  padding-top: 30vh;
+  margin-bottom: 3vh;
+}
+
+#search-version {
+  font-size: 15px;
+  padding-left: 0.25rem;
+  color: var(--text-color-accent);
+}
+
+#search-form {
+  width: 40vw;
+  padding: 13px;
+  font-size: 15px;
+  margin-bottom: 3vh;
+  border-radius: 15px;
+  transition: box-shadow 0.3s;
+  color: var(--text-color-primary);
+  background-color: var(--background-color-search);
+  border: none;
+}
+
+#search-form:focus-visible {
+  outline: none;
+  border: 1px solid var(--text-color-accent);
+}
+
+#search-form:hover {
+  background-color: var(--background-color-search);
+  border: 1px solid var(--text-color-accent);
+}
+
+#search-button {
+  display: block;
+  margin: auto;
+  padding: 0.1rem;
+  visibility: hidden;
+}
+
+/* RESULTS PAGE */
+
+#results-section {
+  width: 75%;
+  padding-left: 4rem;
+  margin-bottom: 2rem;
+}
+
+.searchResult {
+  display: block;
+  padding: 0.5rem;
+  padding-left: 1rem;
+  font-size: 17.5px;
+  text-decoration: none;
+  color: var(--text-color-primary);
+}
+
+.searchResult:hover {
+  transition: 0.5s;
+  border-radius: 10px;
+  background-color: var(--background-color-accent);
+  color: var(--text-color-accent);
+}
+
+.resultSource {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  font-style: italic;
+  color: var(--text-color-secondary);
+}
+
+.searchResult:hover > .resultSource {
+  transition: 0.5s;
+  color: var(--text-color-accent);
+}
+
+/* ADMIN PAGE */
+
+#admin-section {
+  height: calc(100vh - 2.3rem);
+}
+
+#admin-container {
+  width: 97vw;
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: stretch;
+  align-content: space-around;
+}
+
+.admin-item {
+  padding: 15px;
+  min-width: 20%;
+  min-height: 250px;
+  margin-top: 10px;
+  padding-top: 20px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  text-align: center;
+  align-self: stretch;
+  background-color: var(--background-color-item);
+  box-shadow: 1px 1px 0 var(--text-color-accent);
+}
+
+.admin-item-title {
+  font-size: 23px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+.admin-item-contents {
+  padding: 5%;
+  padding-top: 20%;
+  font-size: 30px;
+}
+
+/* 404 PAGE */
+
 #errorPage {
   font-size: 25px;
   padding-top: 75px;
@@ -215,6 +243,8 @@ body {
   padding-left: 5rem;
   padding-bottom: 2rem;
 }
+
+/* SOURCES PAGE */
 
 .source-author {
   font-size: 20px;
@@ -251,6 +281,8 @@ body {
   color: var(--text-color-accent);
 }
 
+/* FOOTER */
+
 footer {
   width: 100%;
   height: 2.3rem;
@@ -261,7 +293,7 @@ footer {
   align-items: center;
   align-content: center;
   justify-content: center;
-  background-color: var(--background-color-accent);
+  background-color: var(--background-color-footer);
 }
 
 .footer-item {
@@ -287,6 +319,8 @@ footer {
   -webkit-transform: scale(1.07);
   color: var(--text-color-accent);
 }
+
+/* RESPONSIVE RULES */
 
 @media only screen and (max-width: 768px) {
   .page-heading {
