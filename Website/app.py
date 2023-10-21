@@ -1,5 +1,5 @@
 """
-    Python Webserver Powered By Flask. 
+    Python Webserver Powered By Flask.
 """
 
 import os
@@ -11,7 +11,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField
 from requests import post, get
 from wtforms.validators import DataRequired
-from flask import Flask, Response, render_template, redirect, url_for, session
+from flask import Flask, Response, render_template, redirect, url_for
 
 app = Flask(__name__)
 load_dotenv()
@@ -27,16 +27,10 @@ def generate_identifier(length):
     return ''.join(random.choice(letters) for i in range(length))
 
 
-class ApiConn():
+class API():
 
-    def post_query(query):
-        """ Sends query recieved to API for processing via POST """
-
-        identifier = generate_identifier(10)
-
-        # Add Identifier and Query to Session
-        session['identifier'] = identifier
-        session['query'] = query
+    def post_query(identifier, query):
+        """ Sends Unique ID & Query To API For Processing """
 
         # Assemble URL and Payload
         url = str(f"http://{app.config['API_HOST']}/api/v1/search")
@@ -47,23 +41,27 @@ class ApiConn():
 
         return api
 
-    def get_results():
-        """ Collects response from API via unique ID """
+    def get_results(identifier):
+        """ Returns Response From API Via Unique ID """
 
-        if 'identifier' in session:
-            identifier = session['identifier']
+        if identifier != "":
 
             url = str(
                 f"http://{app.config['API_HOST']}/api/v1/results/{identifier}")
 
             data = get(url).json()
-            time_taken = data["time_taken"]
-            results = data["results"]
 
-            return str(time_taken), results
+            return data["query"], data["results"], data["time_taken"]
 
         else:
-            return "No Identifier Found... \n", 400
+            return "No Identifier Provided... \n", 400
+
+    def get_metrix():
+        """ Returns Search Engine Usage Data """
+
+        api = get(f"http://{app.config['API_HOST']}/api/v1/metrix")
+
+        return api
 
 
 class SearchForm(FlaskForm):
@@ -72,34 +70,30 @@ class SearchForm(FlaskForm):
                         render_kw={"placeholder": "Search..."})
 
 
-class Metrix():
-
-    def data():
-        """ Sends Search Engine Usage Data to Client """
-
-        api = get(f"http://{app.config['API_HOST']}/api/v1/metrix")
-
-        return api
-
-
 @app.route('/', methods=('GET', 'POST'))
 @app.route('/index', methods=('GET', 'POST'))
 def index():
+
+    identifier = generate_identifier(10)
+
     form = SearchForm()
+
     if form.validate_on_submit():
 
-        ApiConn.post_query(form.query.data)
-        return redirect(url_for('results'))
+        API.post_query(identifier, form.query.data)
+
+        return redirect(url_for('results', identifier=identifier))
 
     return render_template('index.html', form=form)
 
 
-@app.route("/results")
-def results():
-    query = session['query']
-    time_taken, results = ApiConn.get_results()
+@app.route("/results/<identifier>")
+def results(identifier):
 
-    return render_template('results.html', time_taken=time_taken, results=results, query=query)
+    query, results, time_taken = API.get_results(identifier)
+
+    return render_template('results.html', query=query, results=results,
+                           time_taken=time_taken)
 
 
 @app.route("/sources")
@@ -109,12 +103,13 @@ def sources():
 
 @app.route("/admin")
 def admin():
-    data = Metrix.data().text
+    data = API.get_metrix.text
     data = literal_eval(data)
     data = data["data"]
     data = tuple(data.values())
 
-    return render_template('admin.html', stats=data, api=app.config['API_HOST'])
+    return render_template('admin.html', stats=data,
+                           api=app.config['API_HOST'])
 
 
 @app.route("/legal")
