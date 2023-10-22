@@ -5,14 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- External Dependencies -->
-    <!-- <link rel="preconnect" href="https://fonts.gstatic.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Lato&family=Roboto&display=swap"
-      rel="stylesheet"
-    /> -->
     <link
       rel="stylesheet"
-      href="https://unicons.iconscout.com/release/v4.0.0/css/line.css"
+      href="https://unicons.iconscout.com/release/v4.0.8/css/line.css"
     />
 
     <!-- Internal Dependencies -->
@@ -20,6 +15,7 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='css/styles.css') }}"
     />
+
     <script
       type="text/javascript"
       src="{{url_for('static', filename='js/main.js') }}"
@@ -41,10 +37,19 @@
           <i class="uil uil-moon"></i>
         </a>
       </div>
+      <div class="button">
+        <a
+          href="http://github.com/AbdullahRehmat/reSearch"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <i class="uil uil-code-branch"></i>
+        </a>
+      </div>
     </div>
 
     {% block body %} {% endblock %}
-    
+
     <footer>
       <div class="footer-item">
         <p>reSearch &copy; 2023</p>
