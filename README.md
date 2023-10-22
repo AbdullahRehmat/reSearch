@@ -19,36 +19,3 @@ View the Web Interface at:
 ### Documentation
 
 Please read documentation present in the `Documentation` directory.  
-
-
-
-## To Do 
-
-### General
-
-- [ ] Improve Website Interface
-- [ ] Write Android App
-
-
-
-### Service: APIs
-
-- [ ] Add Authentication to all API endpoints
-
-
-
-### Service: Databases
-
-- [ ] Add Database Passwords
-
-
-
-### Service: Content Scraper
-
-- [ ] Modify to collect Article Text
-
-
-
-### Service: Search Engine
-
-- [ ] Rank by Article Content

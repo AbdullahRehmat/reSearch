@@ -2,9 +2,9 @@
 
 [toc]
 
-> Version: 2.0.0
+> Version: 2.0.5
 >
-> Last Update: 17-10-2023
+> Last Update: 21-10-2023
 
 
 
@@ -29,22 +29,38 @@
 
 ## To Do List
 
-**Website**
+**General**
 
-- [ ] Add Animation Transition To Buttons
+- [ ] Choose A Python Linter: `pylint`, `flake8`, `mypy`
+- [ ] Add Error Handling For All Services
 
 
 
 **ContentScraper**
 
 - [ ] Write function that checks if website has already been scraped
+- [ ] Scrape page content from each URL collected as opposed to just the page title
 
 
 
 **SearchEngine**
 
+- [ ] Rank corpus according to page content as opposed to page title
 - [ ] Find way to remove `SearchEngine()` needing to access MongoDB
 - [ ] Rewrite `Corpus()` such that `Corpus.yield_corpus()` returns `[[title, url, source] [title, url, source]]`
+
+
+
+**Redis**
+
+- [ ] Find way to reduce the amount of connections services make / make connections persistent
+- [ ] Understand how to make the best use of Redis
+
+
+
+**MongoDB**
+
+- [ ] Find way to reduce the amount of connections services make / make connections persistent
 
 
 
@@ -53,8 +69,6 @@
 - [ ] Implement new service
 - [ ] Write class that can export MongoDB Collection as `JSON`
 - [ ] Write class that can import `JSON` files as MongoDB Collections
-
-
 
 
 
