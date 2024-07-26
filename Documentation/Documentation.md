@@ -36,6 +36,20 @@
 
 
 
+**Website**
+
+- [ ] Improve Color Schemes
+
+
+
+> Background		#111111
+> Search				  #333333
+> Accent Grey		#a5a5a5
+> Accent Yellow	#f9be1a
+> Sidebar				 #282828
+
+
+
 **ContentScraper**
 
 - [ ] Write function that checks if website has already been scraped
